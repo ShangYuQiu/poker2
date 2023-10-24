@@ -171,7 +171,7 @@ private JPanel crearJslider(){
             }
         });
 
-        // 添加文本框的输入监听器
+        // actionListener
         
         percentageInput.addActionListener(new ActionListener() {
             @Override
