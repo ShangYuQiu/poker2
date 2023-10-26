@@ -12,11 +12,11 @@ import java.util.ArrayList;
  */
 public class ListSelect {
     private JLabel[][] labels;
-    private float rango;
+    private float porcent;
     private String[] card;
     private ArrayList<Pair> listLabels;
     public ListSelect(){
-        this.rango=0.0f;
+        this.porcent=0.0f;
         this.listLabels =new ArrayList<Pair>();
         this.card=null;
         this.labels=null;
@@ -123,7 +123,7 @@ public void calcularRango(){
             r+=12;
         }
     }
-    this.rango=(r/1326)*100; 
+    this.porcent=(r/1326)*100; 
 }
 public void carta(String[] card){
     this.card=card;
@@ -134,11 +134,11 @@ public void labels(JLabel[][] labels){
 public void setListLabels(){
     this.listLabels =new ArrayList<Pair>();
 }
-public void setRango(){
-    this.rango=0.0f;
+public void setPorcent(){
+    this.porcent=0.0f;
 }
-public float getRango(){
-    return rango;
+public float getPorcent(){
+    return porcent;
 }
 public ArrayList<Pair> getListLabels(){
     return listLabels;

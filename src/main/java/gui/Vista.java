@@ -1,63 +1,6 @@
 //Ventana principal de GUI 
 package GUI;
 
-/*import java.awt.BorderLayout;
-import java.awt.Button;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.border.Border;
-
-public class Vista extends javax.swing.JFrame{
-
-public Vista (){
-    initGUI();
-}
-
-private void initGUI(){
-
-    JPanel mainPanel = new JPanel(new BorderLayout());
-    this.setContentPane(mainPanel);
-    this.setPreferredSize(new Dimension(1000,700));
-    
-    
-    JPanel viewsPanel = new JPanel(new GridLayout(1, 2));
-    mainPanel.add(viewsPanel, BorderLayout.CENTER);
-    
-    JPanel handPanel = createViewPanel (new JPanel(),"Hand Distribuition");
-    viewsPanel.add(handPanel);
-    
-    JLabel jug = new JLabel();
-    jug.setText("Player: ");
-    handPanel.add(jug);
-    
-    /*JTextField cards = new JTextField();
-    handPanel.add(cards);
-    cards.setPreferredSize ( new Dimension (100,50));
-    */
-    this.pack();
-
-}
-
-private JPanel createViewPanel(JComponent c, String title) {
-		
-    JPanel p = new JPanel(new BorderLayout());
-    Border borde=BorderFactory.createLineBorder(Color.black,2);
-    p.setBorder(BorderFactory.createTitledBorder(borde, title));
-    p.add( new JScrollPane(c));
-	
-    return p;
-}
-
-}*/
 
 import javax.swing.*;
 import java.awt.*;
@@ -65,6 +8,7 @@ import java.awt.event.*;
 import javax.swing.event.*;
 import javax.swing.border.*;
 import model.*;
+import java.util.ArrayList;
 public class Vista extends JFrame{
 private static JLabel[][] labels=new JLabel[13][13];
 private static JTextField textField = new JTextField();
@@ -72,10 +16,12 @@ private static String simb[]={"A","K","Q","J","T","9","8","7","6","5","4","3","2
 private static JSlider jSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
 private static JTextField percentageInput = new JTextField(5);
 private ListSelect listSelect;
+private ArrayList<String> rangoSelect;
 private String[] carta;
 public Vista (){
     this.carta=null;
     this.listSelect=new ListSelect();
+    this.rangoSelect=new ArrayList();
     initGUI();
 }
 
@@ -99,9 +45,14 @@ private void initGUI(){
 
 }
 private JPanel crearViewPanel(){
-    JPanel views = new JPanel(new GridLayout(13, 13));
-    setLabel(views);
+    JPanel views=new JPanel(new BorderLayout(1,1));
+    JPanel tabla = new JPanel(new GridLayout(13, 13));
+    setLabel(tabla);
     listSelect.labels(labels);
+    
+    views.setPreferredSize(new Dimension(500,500));
+    views.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+    views.add(tabla);
     return views;
 }
 private JPanel crearBoton(){
@@ -111,12 +62,14 @@ private JPanel crearBoton(){
             @Override
             public void actionPerformed(ActionEvent e) {
                 // despues de pulsar el boton clear
-                listSelect.setRango();
+                listSelect.setPorcent();
                 
-                jSlider.setValue((int) Math.round(listSelect.getRango()));
+                jSlider.setValue((int) Math.round(listSelect.getPorcent()));
+                textField.setEnabled(true);
                 textField.setText(""); 
                 setLabelsColor();
                 listSelect.setListLabels();
+                rangoSelect=new ArrayList();
             }
         });
         clear.setPreferredSize(new Dimension(150,20));
@@ -134,10 +87,10 @@ private JPanel crearTextoSeleccion(){
 
         textField.setPreferredSize(new Dimension(150, 70));
         textPanel.add(textField);
-        textPanel.setBorder(BorderFactory.createEmptyBorder(250, 0, 0, 0));
+        textPanel.setBorder(BorderFactory.createEmptyBorder(250, 0, 0, 20));
         
         textField.setBorder(BorderFactory.createLineBorder(Color.BLACK,5));
-        TitledBorder titledBorder = BorderFactory.createTitledBorder("Select");
+        TitledBorder titledBorder = BorderFactory.createTitledBorder("Rango");
         titledBorder.setTitleJustification(TitledBorder.CENTER);
         textField.setBorder(BorderFactory.createCompoundBorder(titledBorder, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
         textField.addActionListener(new ActionListener() {
@@ -149,11 +102,11 @@ private JPanel crearTextoSeleccion(){
                 listSelect.addLabels();
                 listSelect.calcularRango();
                 changeLabels();
-                jSlider.setValue((int)Math.round(listSelect.getRango()));
+                jSlider.setValue((int)Math.round(listSelect.getPorcent()));
             }
         });
-        JLabel select=new JLabel("selected");
-        textField.add(select);
+        JLabel rango=new JLabel("Rango");
+        textField.add(rango);
         return textPanel;
 }
 private JPanel crearJslider(){
@@ -163,11 +116,11 @@ private JPanel crearJslider(){
             @Override
             public void stateChanged(ChangeEvent e) {
                 float value = jSlider.getValue();
-                if(listSelect.getRango()==0.0){
+                if(listSelect.getPorcent()==0.0){
                     percentageInput.setText(String.valueOf(value)+"%");
                 }
                 else
-                percentageInput.setText(String.valueOf((int)Math.round(listSelect.getRango()*10)/10.0)+"%");
+                percentageInput.setText(String.valueOf((int)Math.round(listSelect.getPorcent()*10)/10.0)+"%");
             }
         });
 
@@ -194,19 +147,13 @@ private JPanel crearJslider(){
         slider.add(percentageInput);
         return slider;
 }
-//private JPanel createViewPanel(JComponent c, String title) {
-//		
-//    JPanel p = new JPanel(new BorderLayout());
-//    Border borde=BorderFactory.createLineBorder(Color.black,2);
-//    p.setBorder(BorderFactory.createTitledBorder(borde, title));
-//    p.add( new JScrollPane(c));
-//	
-//    return p;
-//}
+
 //dibujar la tabla de las cartas
 private void setLabel(JPanel panel){
+    
     for (int i = 0; i < 13; i++) {
             for (int j = 0; j < 13; j++) {
+                
                 if(i==j){
                     labels[i][j]=new JLabel(simb[i]+simb[j]);
                     labels[i][j].setBackground(Color.GREEN);
@@ -219,10 +166,34 @@ private void setLabel(JPanel panel){
                 labels[i][j]=new JLabel(simb[j]+simb[i]+"o");
                     labels[i][j].setBackground(Color.GRAY);
                 }
+                
                 labels[i][j].setOpaque(true);
-                    labels[i][j].setBorder(BorderFactory.createLineBorder(Color.BLACK));
-                    labels[i][j].setHorizontalAlignment(JLabel.CENTER);
-                    panel.add(labels[i][j]);
+                labels[i][j].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                labels[i][j].setHorizontalAlignment(JLabel.CENTER);
+                JLabel label=labels[i][j];
+                label.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        label.setBackground(Color.YELLOW);
+                        //texto de los rangos seleccionado
+                        //hay que modificar
+                        rangoSelect.add(label.getText());
+                        String rango="";
+                        rango+=rangoSelect.get(0);
+                        for(int i=1;i<rangoSelect.size();i++){
+                            rango+=",";
+                            rango+=rangoSelect.get(i);
+                        }
+                        textField.setText(rango);
+                        textField.setCaretColor(Color.LIGHT_GRAY);
+                        //para no editar el texto
+                        textField.setEnabled(false);
+                        
+                    }
+                });
+                panel.add(labels[i][j]);
+                    
+                    
             }
         }
     
