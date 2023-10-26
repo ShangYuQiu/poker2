@@ -19,6 +19,7 @@ public class HandSelecter {
     private List<String> introducedRange; //Rango de manos introducidas por el usuario
     private List<Pair> selectedHandsPos; //Posición en matriz de las manos seleccionadas 
     private float rangePercentage; //Porcentaje de rango que pertenece el rango actual (introducedRange)
+    
 
     public HandSelecter() {
         this.allHandsMap = new HashMap<>();
@@ -78,12 +79,22 @@ public class HandSelecter {
             }
         }
     }
-
+    
+    //cambia el JLabel cliked a String y lo pasa a JTextField
+    public String getSelectedCellText(){
+        String s="";
+        
+        return s;
+    }
     //Devuelve la posicion de una mano de la matriz
     public Pair returnCellPos(String mano) {
         return allHandsMap.get(mano);
     }
 
+    //Insertar rango seleccionado(por JLabel) a la lista introduceRange
+    public void addRangeSelect(String s){
+        this.introducedRange.add(s);
+    }
     //Guarda el rango de cartas introducido por el usuario
     public void setHandsRange(List<String> range) {
         this.introducedRange = range;
