@@ -51,6 +51,7 @@ public class HandSelecter {
                 //Salta de fila si se llega hasta final de columna
                 if (j == 12) {
                     i++;
+                    j=0;
                 }
 
             }

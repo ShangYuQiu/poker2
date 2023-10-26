@@ -1,4 +1,4 @@
-package poker2;
+/*package poker2;
 
 import GUI.Vista;
 
@@ -9,3 +9,4 @@ public class Poker2 {
         v.setVisible(true);
     }
 }
+*/

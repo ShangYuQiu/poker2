@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package model;
+/*package model;
 
 import javax.swing.JLabel;
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
  *
  * @author xinxi
  */
-public class ListSelect {
+/*public class ListSelect {
     private JLabel[][] labels;
     private float porcent;
     private String[] card;
@@ -144,3 +144,4 @@ public ArrayList<Pair> getListLabels(){
     return listLabels;
 }
 }
+*/

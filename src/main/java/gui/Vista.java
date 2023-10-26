@@ -1,5 +1,5 @@
 //Ventana principal de GUI 
-package GUI;
+/*package GUI;
 
 
 import javax.swing.*;
@@ -219,4 +219,4 @@ private void setLabelsColor(){
     }
 }
 }
-
+*/
