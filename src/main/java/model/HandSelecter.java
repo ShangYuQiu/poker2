@@ -26,7 +26,7 @@ public class HandSelecter {
         this.allHandsMap = new HashMap<>();
         this.rankingMap = new TreeMap<>();
         this.selectedHandsPos = new ArrayList<>();
-
+        this.introducedRange = new ArrayList<>();
         //Carga el ranking de SKLANSKY-CHUBUKOV en rankingMap
         loadRanking();
         //Carga las manos y su posición en la matriz
