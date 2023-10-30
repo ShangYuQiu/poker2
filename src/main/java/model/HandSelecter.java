@@ -1,10 +1,12 @@
 package model;
 //prueba
+
 import controller.Controller;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +21,6 @@ public class HandSelecter {
     private List<String> introducedRange; //Rango de manos introducidas por el usuario
     private List<Pair> selectedHandsPos; //Posición en matriz de las manos seleccionadas 
     private float rangePercentage; //Porcentaje de rango que pertenece el rango actual (introducedRange)
-    
 
     public HandSelecter() {
         this.allHandsMap = new HashMap<>();
@@ -31,8 +32,8 @@ public class HandSelecter {
         //Carga las manos y su posición en la matriz
         loadHands();
     }
-    
-    public void setController(Controller controller){
+
+    public void setController(Controller controller) {
         this.controller = controller;
     }
 
@@ -52,7 +53,7 @@ public class HandSelecter {
                 //Salta de fila si se llega hasta final de columna
                 if (j == 12) {
                     i++;
-                    j=0;
+                    j = 0;
                 }
 
             }
@@ -79,12 +80,322 @@ public class HandSelecter {
             }
         }
     }
-    
+
     //cambia el JLabel cliked a String y lo pasa a JTextField
-    public String getSelectedCellText(){
-        String s="";
+    public String getSelectedCellText() {
+        String s = "";
+        //ordenamos la lista
+        introducedRange.sort(new Comparator() {
+            @Override
+            public int compare(Object o1, Object o2) {
+                 if (o2.toString().compareTo(o1.toString()) > 0){
+                     return 1;
+                 }
+                 
+                 else if (o1.toString().equals(o2.toString())){
+                     return 0;
+                 }
+                 
+                 else {
+                     return -1;
+                 }
+            }
+        });
         
+        List<Pair> suited = new ArrayList<>(); // lista del valor numero de las dos cartas suited
+        List<Pair> offsuited = new ArrayList<>(); // lista del valor numero de las dos cartas offsuited
+        List<Pair> par= new ArrayList<>(); // lista del valor numero de las dos cartas pareja
+        List<String> sol = new ArrayList<>();
+        //separarl las cartas suited y offsuited
+        for (String c : introducedRange) {            
+            if (c.length() == 3){ // caso suited o offsuited
+                if(c.charAt(2) == 's'){                 
+                    Pair p = new Pair (chartoInt(c.charAt(0)), chartoInt(c.charAt(1)));
+                    suited.add(p);
+                }
+                else{
+                    Pair p = new Pair (chartoInt(c.charAt(0)), chartoInt(c.charAt(1)));
+                    offsuited.add(p);
+                }
+                
+            }
+            
+            else if (c.length() == 2){//caso pareja
+                Pair p = new Pair (chartoInt(c.charAt(0)), chartoInt(c.charAt(1)));
+                par.add(p);
+            }
+        }
+        
+        celltoSOffsuitedListString (suited,sol);
+        celltoSOffsuitedListString (offsuited,sol);
+        celltoParejaListString (par,sol);
+        
+        //ordenamos la lista de sol
+        sol.sort(new Comparator() {
+            @Override
+            public int compare(Object o1, Object o2) {
+                 if (o2.toString().compareTo(o1.toString()) > 0){
+                     return 1;
+                 }
+                 
+                 else if (o1.toString().equals(o2.toString())){
+                     return 0;
+                 }
+                 
+                 else {
+                     return -1;
+                 }
+            }
+        });
+        
+        //juntamos las soluciones
+        for (int i = 0;i< sol.size();i++){
+            s+= sol.get(i)+", ";
+        }
         return s;
+    }
+
+    //cambia char al integer
+    public int chartoInt(char a){
+        
+        int valor = 0;
+        try {
+            switch (a) {
+                case 'A' ->
+                    valor = 14;
+                case 'K' ->
+                    valor = 13;
+                case 'Q' ->
+                    valor = 12;
+                case 'J' ->
+                    valor = 11;
+                case 'T' ->
+                    valor = 10;
+                default ->
+                    valor = Character.getNumericValue(a);
+            }
+        } catch (NumberFormatException e) {
+            System.out.println(e);
+        }
+        
+        return valor;
+    }
+    
+    public String intToChar (int valor){
+    
+        String carta = null;
+        carta = switch (valor) {
+            case 10 -> "T";
+            case 11 -> "J";
+            case 12 -> "Q";
+            case 13 -> "K";
+            case 14 -> "A";
+            default -> Integer.toString(valor);
+        };
+        return carta;
+    }
+    
+    //Funcion para pasar valores numericos de las cartas suited/offsuited a Lista de String
+    
+    public void celltoSOffsuitedListString(List<Pair> array, List<String> sol){
+        boolean mas = false; // para ver si hay signo +;
+        boolean continuo = false;
+        Pair aux = new Pair(-1,-1); // para apuntar la posicion final de cartas consecutivos (caso + y -)
+        Pair ini = new Pair(-1,-1); // para apuntar la posicion inicial de cartas consecutivos (caso -)
+        boolean init = false; // para saber si ha apuntado la posicion inicial y evitar que actualice constantemente
+        
+        //si el tamaño del array es 1
+        if(array.size() == 1){
+            String a = intToChar(array.get(0).getFirst()) + intToChar(array.get(0).getSecond()) + "s";
+            sol.add(a);
+        }
+        //mas de un elemento      
+        for (int i = 0; i < array.size() -1;i++){
+            
+            if ((array.get(i).getFirst() - array.get(i).getSecond()) == 1){//posibilidad de tener signo + Ej AK o 98
+                mas = true;
+            }
+            
+            else{// posibilidad de - Ej AT A9 A8
+                if(!init){//si no esta asignado ini
+                    init=true;
+                    ini.setFirst(array.get(i).getFirst());
+                    ini.setSecond(array.get(i).getSecond());
+                }
+            }
+            
+            if ((array.get(i).getFirst() - array.get(i+1).getFirst()) == 0){ // empiezan con la misma carta ( Ej AQ AT)
+                
+                if(array.get(i).getSecond() - array.get(i+1).getSecond() == 1){ //la diferencia entre 2º componente es 1 (Ej AQ AJ)
+                    continuo = true;
+                    //guardamos la posicion donde vamos a almacenar cartas+
+                    aux.setFirst(array.get(i+1).getFirst());
+                    aux.setSecond(array.get(i+1).getSecond());
+                    if ( i == array.size()-2){ //si es el penultimo elemento
+
+                        if(mas){//si es el caso de +
+                            String a = intToChar (aux.getFirst()) + intToChar(aux.getSecond()) + "s" + "+";
+                            sol.add(a);
+                        }
+                        
+                        else{ // caso -
+                            if(init){// si esta asignado init
+                            String a = intToChar(ini.getFirst()) + intToChar(ini.getSecond())+ "s" 
+                                    + "-" + intToChar(aux.getFirst()) + intToChar(aux.getSecond())+ "s";
+                            sol.add(a);}
+                        }                       
+                    }                   
+                }
+                
+                else{//la diferencia entre 2º componente es mayor que 1 Ej AQ AT // AK AJ AT
+                    if ( aux.getFirst() != -1 && aux.getSecond() != -1 && continuo && mas){ //(Ej AK AQ AJ !! A9)-> AJ+
+                        String a = intToChar (aux.getFirst()) + intToChar(aux.getSecond()) + "s"+ "+";
+                        sol.add(a);
+                        //reseteamos a -1
+                        aux.setFirst(-1);
+                        aux.setSecond(-1);
+                        mas = false;
+                        continuo = false;
+                        init = false;
+                    }
+                    
+                    else if ( aux.getFirst() != -1 && aux.getSecond() != -1 && continuo && !mas){ //caso -
+                        String a = intToChar(ini.getFirst()) + intToChar(ini.getSecond())+ "s" 
+                                    + "-" + intToChar(aux.getFirst()) + intToChar(aux.getSecond())+ "s";
+                        sol.add(a);
+                        //reseteamos a -1
+                        aux.setFirst(-1);
+                        aux.setSecond(-1);
+                        continuo = false;
+                        init = false;
+                    }
+                    
+                    else if ( aux.getFirst() == -1 && aux.getSecond() == -1 && !continuo){ // El primero es un elemento solitario Ej AK,A8,A7                      
+                        mas = false;
+                        init =false;
+                        String a = intToChar (array.get(i).getFirst()) + intToChar(array.get(i).getSecond()) + "s";
+                        sol.add(a);
+                    }
+                    
+                    //para añadir el ultimo elemento que es solitario y comienza por la misma carta, EJ AK AQ A8 -> [AQ+ ,A8] , i solo llega hasta AQ
+                    if(i == array.size() - 2){ 
+                        String a = intToChar (array.get(i+1).getFirst()) + intToChar(array.get(i+1).getSecond()) + "s";
+                        sol.add(a);
+                    }
+                }               
+            }
+            
+            else{ // no empieza por la misma carta (Ej AK 98 65)
+                
+                if ( aux.getFirst() != -1 && aux.getSecond() != -1 && continuo&& mas){ //AK AQ 98-> AQ+
+                    String a = intToChar (aux.getFirst()) + intToChar(aux.getSecond()) + "s" + "+";                   
+                    sol.add(a);
+                    //reseteamos a -1
+                    aux.setFirst(-1);
+                    aux.setSecond(-1);
+                    mas = false;
+                    continuo = false;
+                    init = false;                    
+                }
+                
+                else if ( aux.getFirst() != -1 && aux.getSecond() != -1 && continuo && !mas){ //caso -
+                        String a = intToChar(ini.getFirst()) + intToChar(ini.getSecond())+ "s" 
+                                    + "-" + intToChar(aux.getFirst()) + intToChar(aux.getSecond())+ "s";
+                        sol.add(a);
+                        //reseteamos aux a -1
+                        aux.setFirst(-1);
+                        aux.setSecond(-1);
+                        continuo = false;
+                        init = false;
+                }
+                
+                else if ( aux.getFirst() == -1 && aux.getSecond() == -1 && !continuo){ //caso AK 98 -> AK // primer elemento solitario
+                    init =false;
+                    mas = false;
+                    String a = intToChar (array.get(i).getFirst()) + intToChar(array.get(i).getSecond()) + "s";
+                    sol.add(a);
+                }
+                //para añadir el ultimo elemento que es solitario y no comienza por la misma carta, ej: 98, AK AQ 98-> [AQ+ ,98] , i solo llega hasta AQ
+                if(i == array.size() - 2){ 
+                    String a = intToChar (array.get(i+1).getFirst()) + intToChar(array.get(i+1).getSecond()) + "s";
+                    sol.add(a);
+                    mas = false;
+                    continuo = false;
+                }
+            }            
+        }
+    }
+    
+    //Funcion para pasar valores numericos de las cartas pareja a Lista de String
+    public void celltoParejaListString(List<Pair> array, List<String> sol){
+        // 3 casos: + (AA) , - y solitario
+        boolean mas = false; // para ver si hay signo +;
+        boolean continuo = false;
+        Pair aux = new Pair(-1,-1); // para apuntar la posicion final de cartas consecutivos (caso + y -)
+        Pair ini = new Pair(-1,-1); // para apuntar la posicion inicial de cartas consecutivos (caso -)
+        boolean init = false; // para saber si ha apuntado la posicion inicial y evitar que actualice constantemente
+        
+        if (!array.isEmpty()){
+            if(array.get(0).getFirst() == 14 && array.get(0).getSecond() == 14){
+                mas = true;
+            }
+        }
+        
+        if(array.size() == 1){
+            String a = intToChar(array.get(0).getFirst()) + intToChar(array.get(0).getSecond());
+            sol.add(a);
+        }
+        
+        for(int i = 0; i < array.size() -1 ; i++){
+            
+            if(!mas && !init){//no comienza por AA y ini no esta inicializado
+                ini.setFirst(array.get(i+1).getFirst());
+                ini.setSecond(array.get(i+1).getSecond());
+            }
+            
+            if(array.get(i).getFirst() - array.get(i+1).getFirst() == 1){// si la diferencia es 1 Ej AA KK
+                continuo =true;
+                aux.setFirst(array.get(i+1).getFirst());
+                aux.setSecond(array.get(i+1).getSecond());
+            }
+            else{// si la diferencia es mayor que 1
+                if(aux.getFirst() == -1 && aux.getSecond() == -1 && !continuo){//caso AA QQ // primer elemento solitario o caso - KK QQ JJ 99 77 (las 9)
+                    init =false;
+                    mas = false;
+                    String a = intToChar (array.get(i).getFirst()) + intToChar(array.get(i).getSecond());
+                    sol.add(a);
+                }
+                
+                else if (aux.getFirst() != -1 && aux.getSecond() != -1 && continuo&& mas){ // AA KK !! JJ 99 
+                    String a = intToChar (aux.getFirst()) + intToChar(aux.getSecond()) + "+";                   
+                    sol.add(a);
+                    //reseteamos a -1
+                    aux.setFirst(-1);
+                    aux.setSecond(-1);
+                    mas = false;
+                    continuo = false;
+                    init = false;
+                }
+                
+                else if ( aux.getFirst() != -1 && aux.getSecond() != -1 && continuo && !mas){ //caso - KK QQ JJ 99 77-> KK-JJ
+                    String a = intToChar(ini.getFirst()) + intToChar(ini.getSecond()) 
+                              + "-" + intToChar(aux.getFirst()) + intToChar(aux.getSecond());
+                    sol.add(a);
+                    //reseteamos aux a -1
+                    aux.setFirst(-1);
+                    aux.setSecond(-1);
+                    continuo = false;
+                    init = false;
+                }
+                
+                if(i == array.size() - 2){ 
+                    String a = intToChar (array.get(i+1).getFirst()) + intToChar(array.get(i+1).getSecond());
+                    sol.add(a);
+                    mas = false;
+                    continuo = false;
+                }
+            }
+        }
     }
     //Devuelve la posicion de una mano de la matriz
     public Pair returnCellPos(String mano) {
@@ -92,9 +403,10 @@ public class HandSelecter {
     }
 
     //Insertar rango seleccionado(por JLabel) a la lista introduceRange
-    public void addRangeSelect(String s){
+    public void addRangeSelect(String s) {
         this.introducedRange.add(s);
     }
+
     //Guarda el rango de cartas introducido por el usuario
     public void setHandsRange(List<String> range) {
         this.introducedRange = range;
@@ -207,7 +519,7 @@ public class HandSelecter {
     public void clearRangePercentage() {
         this.rangePercentage = 0.0f;
     }
-   
+
     public float getRangePercentage() {
         return this.rangePercentage;
     }
@@ -215,6 +527,5 @@ public class HandSelecter {
     public void clearSelectedHandsPos() {
         this.selectedHandsPos.clear();
     }
-    
-    
+
 }

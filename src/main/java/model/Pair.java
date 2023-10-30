@@ -24,4 +24,12 @@ public class Pair {
     public int getSecond() {
         return second;
     }
+    
+    public void setFirst(int f){
+        this.first = f;
+    }
+    
+    public void setSecond(int s){
+        this.second = s;
+    }
 }

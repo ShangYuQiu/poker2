@@ -49,7 +49,7 @@ public class MainFrame extends JFrame {
                     public void mouseClicked(MouseEvent e) {
                         jl.setBackground(Color.YELLOW);
                         //texto de los rangos seleccionado
-                        
+                        controller.addRangeSelect( jl.getText());
                         //hay que modificar
                         inputRangeTextField.setCaretColor(Color.LIGHT_GRAY);
                         //para no editar el texto
