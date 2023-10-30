@@ -53,7 +53,9 @@ public class MainFrame extends JFrame {
                         //hay que modificar
                         inputRangeTextField.setCaretColor(Color.LIGHT_GRAY);
                         //para no editar el texto
+                        inputRangeTextField.setText(controller.getRangeSelect());
                         inputRangeTextField.setEnabled(false);
+                        
                         
                     }
                 });
@@ -99,7 +101,9 @@ public class MainFrame extends JFrame {
     public void clearRangePercentage() {
         this.controller.clearRangePercentage();
     }
-
+    public void clearIntroducedRange(){
+        this.controller.clearIntroducedRange();
+    }
     //Resetea la lista de manos dentro del rango
     public void clearSelectedHands() {
         this.controller.clearSelectedHands();
@@ -225,6 +229,7 @@ public class MainFrame extends JFrame {
         inputRangeTextField.setText("");
         resetCellsColor();  //Devuelve el color original a las celdas pintadas
         clearSelectedHands();   //Borra los elementos de la lista de manos dentro del rango
+        clearIntroducedRange(); //Borra los elementos de la lista de introducedRange
         inputRangeTextField.setEnabled(true);
     }//GEN-LAST:event_clearButtonActionPerformed
 

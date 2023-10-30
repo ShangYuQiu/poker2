@@ -51,4 +51,8 @@ public class Controller {
     public String getRangeSelect(){
         return hs.getSelectedCellText();
     }
+    
+    public void clearIntroducedRange(){
+        hs.clearIntroducedRange();
+    }
 }

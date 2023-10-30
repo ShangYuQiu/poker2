@@ -527,5 +527,8 @@ public class HandSelecter {
     public void clearSelectedHandsPos() {
         this.selectedHandsPos.clear();
     }
-
+    
+    public void clearIntroducedRange(){
+        this.introducedRange.clear();
+    }
 }
