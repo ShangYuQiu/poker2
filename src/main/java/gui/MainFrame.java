@@ -11,38 +11,43 @@ import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
 import model.Pair;
 
 public class MainFrame extends JFrame {
 
     //Variables estaticas
     private final static String simb[] = {"A", "K", "Q", "J", "T", "9", "8", "7", "6", "5", "4", "3", "2"};
+    private final Color VERDE = new Color(126, 246, 130);
+    private final Color AZUL = new Color(152, 201, 245);
+    private final Color ROJO = new Color(228, 115, 130);
     private static JLabel[][] handsLabel = new JLabel[13][13];
 
     //Variables locales
     private Controller controller;
-    
+
     public MainFrame() {
         initComponents(); //Inicializacion de los componentes visuales usando la utilidad de netbeans
         initMyComponents(); //Inicializacion de mis componentes
     }
-    
+
     private void initMyComponents() {
         //Inicializa la matriz de celdas 
         for (int i = 0; i < 13; ++i) {
             for (int j = 0; j < 13; ++j) {
                 if (i == j) {
                     handsLabel[i][j] = new JLabel(simb[i] + simb[j]);
-                    handsLabel[i][j].setBackground(Color.GREEN);
+                    handsLabel[i][j].setBackground(VERDE);
                 } else if (j > i) {
                     handsLabel[i][j] = new JLabel(simb[i] + simb[j] + "s");
-                    handsLabel[i][j].setBackground(Color.red);
+                    handsLabel[i][j].setBackground(ROJO);
                 } else {
                     handsLabel[i][j] = new JLabel(simb[j] + simb[i] + "o");
-                    handsLabel[i][j].setBackground(Color.GRAY);
+                    handsLabel[i][j].setBackground(AZUL);
                 }
                 handsLabel[i][j].setOpaque(true);
                 handsLabel[i][j].setBorder(BorderFactory.createRaisedSoftBevelBorder());
+                handsLabel[i][j].setHorizontalAlignment(SwingConstants.CENTER);
                 handMatrixPanel.add(handsLabel[i][j]);
                 JLabel jl = handsLabel[i][j];
                 jl.addMouseListener(new MouseAdapter() {
@@ -57,7 +62,7 @@ public class MainFrame extends JFrame {
                             inputRangeTextField.setText(controller.getRangeSelect()); //Vuelve a actualizar los rangos mostrados
                             calculateRangePercentage(); //Calcula el porcentaje de rango
                             percentageSlider.setValue((int) Math.round(getRangePercentage())); //Actualiza el porcentaje
-                            
+
                         } //Sino pintalo
                         else {
                             jl.setBackground(Color.YELLOW);
@@ -68,9 +73,9 @@ public class MainFrame extends JFrame {
                             calculateRangePercentage(); //Calcula el porcentaje de rango
                             percentageSlider.setValue((int) Math.round(getRangePercentage())); //Actualiza el porcentaje
                             inputRangeTextField.setEnabled(false); //Para no poder modificar
-                            
+
                         }
-                        
+
                     }
                 });
             }
@@ -88,11 +93,11 @@ public class MainFrame extends JFrame {
     private void resetCellsColor() {
         for (Pair p : getCellsToColor()) {
             if (p.getFirst() == p.getSecond()) {
-                handsLabel[p.getFirst()][p.getSecond()].setBackground(Color.GREEN);
+                handsLabel[p.getFirst()][p.getSecond()].setBackground(VERDE);
             } else if (p.getFirst() < p.getSecond()) {
-                handsLabel[p.getFirst()][p.getSecond()].setBackground(Color.red);
+                handsLabel[p.getFirst()][p.getSecond()].setBackground(ROJO);
             } else {
-                handsLabel[p.getFirst()][p.getSecond()].setBackground(Color.GRAY);
+                handsLabel[p.getFirst()][p.getSecond()].setBackground(AZUL);
             }
         }
     }
@@ -101,14 +106,14 @@ public class MainFrame extends JFrame {
     private void resetCellColor(String s) {
         Pair p = controller.returnCellPos(s);
         if (p.getFirst() == p.getSecond()) {
-            handsLabel[p.getFirst()][p.getSecond()].setBackground(Color.GREEN);
+            handsLabel[p.getFirst()][p.getSecond()].setBackground(VERDE);
         } else if (p.getFirst() < p.getSecond()) {
-            handsLabel[p.getFirst()][p.getSecond()].setBackground(Color.red);
+            handsLabel[p.getFirst()][p.getSecond()].setBackground(ROJO); 
         } else {
-            handsLabel[p.getFirst()][p.getSecond()].setBackground(Color.GRAY);
+            handsLabel[p.getFirst()][p.getSecond()].setBackground(AZUL); 
         }
     }
-    
+
     public void setController(Controller controller) {
         this.controller = controller;
     }
@@ -127,7 +132,7 @@ public class MainFrame extends JFrame {
     public void clearRangePercentage() {
         this.controller.clearRangePercentage();
     }
-    
+
     public void clearIntroducedRange() {
         this.controller.clearIntroducedRange();
     }
