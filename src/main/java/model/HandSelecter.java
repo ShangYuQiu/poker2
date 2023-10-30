@@ -88,76 +88,65 @@ public class HandSelecter {
         introducedRange.sort(new Comparator() {
             @Override
             public int compare(Object o1, Object o2) {
-                 if (o2.toString().compareTo(o1.toString()) > 0){
-                     return 1;
-                 }
-                 
-                 else if (o1.toString().equals(o2.toString())){
-                     return 0;
-                 }
-                 
-                 else {
-                     return -1;
-                 }
+                if (o2.toString().compareTo(o1.toString()) > 0) {
+                    return 1;
+                } else if (o1.toString().equals(o2.toString())) {
+                    return 0;
+                } else {
+                    return -1;
+                }
             }
         });
-        
+
         List<Pair> suited = new ArrayList<>(); // lista del valor numero de las dos cartas suited
         List<Pair> offsuited = new ArrayList<>(); // lista del valor numero de las dos cartas offsuited
-        List<Pair> par= new ArrayList<>(); // lista del valor numero de las dos cartas pareja
+        List<Pair> par = new ArrayList<>(); // lista del valor numero de las dos cartas pareja
         List<String> sol = new ArrayList<>();
         //separarl las cartas suited y offsuited
-        for (String c : introducedRange) {            
-            if (c.length() == 3){ // caso suited o offsuited
-                if(c.charAt(2) == 's'){                 
-                    Pair p = new Pair (chartoInt(c.charAt(0)), chartoInt(c.charAt(1)));
+        for (String c : introducedRange) {
+            if (c.length() == 3) { // caso suited o offsuited
+                if (c.charAt(2) == 's') {
+                    Pair p = new Pair(chartoInt(c.charAt(0)), chartoInt(c.charAt(1)));
                     suited.add(p);
-                }
-                else{
-                    Pair p = new Pair (chartoInt(c.charAt(0)), chartoInt(c.charAt(1)));
+                } else {
+                    Pair p = new Pair(chartoInt(c.charAt(0)), chartoInt(c.charAt(1)));
                     offsuited.add(p);
                 }
-                
-            }
-            
-            else if (c.length() == 2){//caso pareja
-                Pair p = new Pair (chartoInt(c.charAt(0)), chartoInt(c.charAt(1)));
+
+            } else if (c.length() == 2) {//caso pareja
+                Pair p = new Pair(chartoInt(c.charAt(0)), chartoInt(c.charAt(1)));
                 par.add(p);
             }
         }
-        
-        celltoSOffsuitedListString (suited,sol);
-        celltoSOffsuitedListString (offsuited,sol);
-        celltoParejaListString (par,sol);
-        
+
+        celltoSOffsuitedListString(suited, sol);
+        celltoSOffsuitedListString(offsuited, sol);
+        celltoParejaListString(par, sol);
+
         //ordenamos la lista de sol
         sol.sort(new Comparator() {
             @Override
             public int compare(Object o1, Object o2) {
-                 if (o2.toString().compareTo(o1.toString()) > 0){
-                     return 1;
-                 }
-                 
-                 else if (o1.toString().equals(o2.toString())){
-                     return 0;
-                 }
-                 
-                 else {
-                     return -1;
-                 }
+                if (o2.toString().compareTo(o1.toString()) > 0) {
+                    return 1;
+                } else if (o1.toString().equals(o2.toString())) {
+                    return 0;
+                } else {
+                    return -1;
+                }
             }
         });
-        
+
         //juntamos las soluciones
-        for (int i = 0;i< sol.size();i++){
-            s+= sol.get(i)+", ";
+        for (int i = 0; i < sol.size(); i++) {
+            s += sol.get(i) + ", ";
         }
         return s;
     }
 
     //cambia char al integer
-    public int chartoInt(char a){
-        
+    public int chartoInt(char a) {
+
         int valor = 0;
         try {
             switch (a) {
@@ -177,79 +166,79 @@ public class HandSelecter {
         } catch (NumberFormatException e) {
             System.out.println(e);
         }
-        
+
         return valor;
     }
-    
-    public String intToChar (int valor){
-    
+
+    public String intToChar(int valor) {
+
         String carta = null;
         carta = switch (valor) {
-            case 10 -> "T";
-            case 11 -> "J";
-            case 12 -> "Q";
-            case 13 -> "K";
-            case 14 -> "A";
-            default -> Integer.toString(valor);
+            case 10 ->
+                "T";
+            case 11 ->
+                "J";
+            case 12 ->
+                "Q";
+            case 13 ->
+                "K";
+            case 14 ->
+                "A";
+            default ->
+                Integer.toString(valor);
         };
         return carta;
     }
-    
+
     //Funcion para pasar valores numericos de las cartas suited/offsuited a Lista de String
-    
-    public void celltoSOffsuitedListString(List<Pair> array, List<String> sol){
+    public void celltoSOffsuitedListString(List<Pair> array, List<String> sol) {
         boolean mas = false; // para ver si hay signo +;
         boolean continuo = false;
-        Pair aux = new Pair(-1,-1); // para apuntar la posicion final de cartas consecutivos (caso + y -)
-        Pair ini = new Pair(-1,-1); // para apuntar la posicion inicial de cartas consecutivos (caso -)
+        Pair aux = new Pair(-1, -1); // para apuntar la posicion final de cartas consecutivos (caso + y -)
+        Pair ini = new Pair(-1, -1); // para apuntar la posicion inicial de cartas consecutivos (caso -)
         boolean init = false; // para saber si ha apuntado la posicion inicial y evitar que actualice constantemente
-        
+
         //si el tamaño del array es 1
-        if(array.size() == 1){
+        if (array.size() == 1) {
             String a = intToChar(array.get(0).getFirst()) + intToChar(array.get(0).getSecond()) + "s";
             sol.add(a);
         }
         //mas de un elemento      
-        for (int i = 0; i < array.size() -1;i++){
-            
-            if ((array.get(i).getFirst() - array.get(i).getSecond()) == 1){//posibilidad de tener signo + Ej AK o 98
+        for (int i = 0; i < array.size() - 1; i++) {
+
+            if ((array.get(i).getFirst() - array.get(i).getSecond()) == 1) {//posibilidad de tener signo + Ej AK o 98
                 mas = true;
-            }
-            
-            else{// posibilidad de - Ej AT A9 A8
-                if(!init){//si no esta asignado ini
-                    init=true;
+            } else {// posibilidad de - Ej AT A9 A8
+                if (!init) {//si no esta asignado ini
+                    init = true;
                     ini.setFirst(array.get(i).getFirst());
                     ini.setSecond(array.get(i).getSecond());
                 }
             }
-            
-            if ((array.get(i).getFirst() - array.get(i+1).getFirst()) == 0){ // empiezan con la misma carta ( Ej AQ AT)
-                
-                if(array.get(i).getSecond() - array.get(i+1).getSecond() == 1){ //la diferencia entre 2º componente es 1 (Ej AQ AJ)
+
+            if ((array.get(i).getFirst() - array.get(i + 1).getFirst()) == 0) { // empiezan con la misma carta ( Ej AQ AT)
+
+                if (array.get(i).getSecond() - array.get(i + 1).getSecond() == 1) { //la diferencia entre 2º componente es 1 (Ej AQ AJ)
                     continuo = true;
                     //guardamos la posicion donde vamos a almacenar cartas+
-                    aux.setFirst(array.get(i+1).getFirst());
-                    aux.setSecond(array.get(i+1).getSecond());
-                    if ( i == array.size()-2){ //si es el penultimo elemento
+                    aux.setFirst(array.get(i + 1).getFirst());
+                    aux.setSecond(array.get(i + 1).getSecond());
+                    if (i == array.size() - 2) { //si es el penultimo elemento
 
-                        if(mas){//si es el caso de +
-                            String a = intToChar (aux.getFirst()) + intToChar(aux.getSecond()) + "s" + "+";
+                        if (mas) {//si es el caso de +
+                            String a = intToChar(aux.getFirst()) + intToChar(aux.getSecond()) + "s" + "+";
                             sol.add(a);
+                        } else { // caso -
+                            if (init) {// si esta asignado init
+                                String a = intToChar(ini.getFirst()) + intToChar(ini.getSecond()) + "s"
+                                        + "-" + intToChar(aux.getFirst()) + intToChar(aux.getSecond()) + "s";
+                                sol.add(a);
+                            }
                         }
-                        
-                        else{ // caso -
-                            if(init){// si esta asignado init
-                            String a = intToChar(ini.getFirst()) + intToChar(ini.getSecond())+ "s" 
-                                    + "-" + intToChar(aux.getFirst()) + intToChar(aux.getSecond())+ "s";
-                            sol.add(a);}
-                        }                       
-                    }                   
-                }
-                
-                else{//la diferencia entre 2º componente es mayor que 1 Ej AQ AT // AK AJ AT
-                    if ( aux.getFirst() != -1 && aux.getSecond() != -1 && continuo && mas){ //(Ej AK AQ AJ !! A9)-> AJ+
-                        String a = intToChar (aux.getFirst()) + intToChar(aux.getSecond()) + "s"+ "+";
+                    }
+                } else {//la diferencia entre 2º componente es mayor que 1 Ej AQ AT // AK AJ AT
+                    if (aux.getFirst() != -1 && aux.getSecond() != -1 && continuo && mas) { //(Ej AK AQ AJ !! A9)-> AJ+
+                        String a = intToChar(aux.getFirst()) + intToChar(aux.getSecond()) + "s" + "+";
                         sol.add(a);
                         //reseteamos a -1
                         aux.setFirst(-1);
@@ -257,117 +246,32 @@ public class HandSelecter {
                         mas = false;
                         continuo = false;
                         init = false;
-                    }
-                    
-                    else if ( aux.getFirst() != -1 && aux.getSecond() != -1 && continuo && !mas){ //caso -
-                        String a = intToChar(ini.getFirst()) + intToChar(ini.getSecond())+ "s" 
-                                    + "-" + intToChar(aux.getFirst()) + intToChar(aux.getSecond())+ "s";
+                    } else if (aux.getFirst() != -1 && aux.getSecond() != -1 && continuo && !mas) { //caso -
+                        String a = intToChar(ini.getFirst()) + intToChar(ini.getSecond()) + "s"
+                                + "-" + intToChar(aux.getFirst()) + intToChar(aux.getSecond()) + "s";
                         sol.add(a);
                         //reseteamos a -1
                         aux.setFirst(-1);
                         aux.setSecond(-1);
                         continuo = false;
                         init = false;
-                    }
-                    
-                    else if ( aux.getFirst() == -1 && aux.getSecond() == -1 && !continuo){ // El primero es un elemento solitario Ej AK,A8,A7                      
+                    } else if (aux.getFirst() == -1 && aux.getSecond() == -1 && !continuo) { // El primero es un elemento solitario Ej AK,A8,A7                      
                         mas = false;
-                        init =false;
-                        String a = intToChar (array.get(i).getFirst()) + intToChar(array.get(i).getSecond()) + "s";
+                        init = false;
+                        String a = intToChar(array.get(i).getFirst()) + intToChar(array.get(i).getSecond()) + "s";
                         sol.add(a);
                     }
-                    
+
                     //para añadir el ultimo elemento que es solitario y comienza por la misma carta, EJ AK AQ A8 -> [AQ+ ,A8] , i solo llega hasta AQ
-                    if(i == array.size() - 2){ 
-                        String a = intToChar (array.get(i+1).getFirst()) + intToChar(array.get(i+1).getSecond()) + "s";
+                    if (i == array.size() - 2) {
+                        String a = intToChar(array.get(i + 1).getFirst()) + intToChar(array.get(i + 1).getSecond()) + "s";
                         sol.add(a);
                     }
-                }               
-            }
-            
-            else{ // no empieza por la misma carta (Ej AK 98 65)
-                
-                if ( aux.getFirst() != -1 && aux.getSecond() != -1 && continuo&& mas){ //AK AQ 98-> AQ+
-                    String a = intToChar (aux.getFirst()) + intToChar(aux.getSecond()) + "s" + "+";                   
-                    sol.add(a);
-                    //reseteamos a -1
-                    aux.setFirst(-1);
-                    aux.setSecond(-1);
-                    mas = false;
-                    continuo = false;
-                    init = false;                    
                 }
-                
-                else if ( aux.getFirst() != -1 && aux.getSecond() != -1 && continuo && !mas){ //caso -
-                        String a = intToChar(ini.getFirst()) + intToChar(ini.getSecond())+ "s" 
-                                    + "-" + intToChar(aux.getFirst()) + intToChar(aux.getSecond())+ "s";
-                        sol.add(a);
-                        //reseteamos aux a -1
-                        aux.setFirst(-1);
-                        aux.setSecond(-1);
-                        continuo = false;
-                        init = false;
-                }
-                
-                else if ( aux.getFirst() == -1 && aux.getSecond() == -1 && !continuo){ //caso AK 98 -> AK // primer elemento solitario
-                    init =false;
-                    mas = false;
-                    String a = intToChar (array.get(i).getFirst()) + intToChar(array.get(i).getSecond()) + "s";
-                    sol.add(a);
-                }
-                //para añadir el ultimo elemento que es solitario y no comienza por la misma carta, ej: 98, AK AQ 98-> [AQ+ ,98] , i solo llega hasta AQ
-                if(i == array.size() - 2){ 
-                    String a = intToChar (array.get(i+1).getFirst()) + intToChar(array.get(i+1).getSecond()) + "s";
-                    sol.add(a);
-                    mas = false;
-                    continuo = false;
-                }
-            }            
-        }
-    }
-    
-    //Funcion para pasar valores numericos de las cartas pareja a Lista de String
-    public void celltoParejaListString(List<Pair> array, List<String> sol){
-        // 3 casos: + (AA) , - y solitario
-        boolean mas = false; // para ver si hay signo +;
-        boolean continuo = false;
-        Pair aux = new Pair(-1,-1); // para apuntar la posicion final de cartas consecutivos (caso + y -)
-        Pair ini = new Pair(-1,-1); // para apuntar la posicion inicial de cartas consecutivos (caso -)
-        boolean init = false; // para saber si ha apuntado la posicion inicial y evitar que actualice constantemente
-        
-        if (!array.isEmpty()){
-            if(array.get(0).getFirst() == 14 && array.get(0).getSecond() == 14){
-                mas = true;
-            }
-        }
-        
-        if(array.size() == 1){
-            String a = intToChar(array.get(0).getFirst()) + intToChar(array.get(0).getSecond());
-            sol.add(a);
-        }
-        
-        for(int i = 0; i < array.size() -1 ; i++){
-            
-            if(!mas && !init){//no comienza por AA y ini no esta inicializado
-                ini.setFirst(array.get(i+1).getFirst());
-                ini.setSecond(array.get(i+1).getSecond());
-            }
-            
-            if(array.get(i).getFirst() - array.get(i+1).getFirst() == 1){// si la diferencia es 1 Ej AA KK
-                continuo =true;
-                aux.setFirst(array.get(i+1).getFirst());
-                aux.setSecond(array.get(i+1).getSecond());
-            }
-            else{// si la diferencia es mayor que 1
-                if(aux.getFirst() == -1 && aux.getSecond() == -1 && !continuo){//caso AA QQ // primer elemento solitario o caso - KK QQ JJ 99 77 (las 9)
-                    init =false;
-                    mas = false;
-                    String a = intToChar (array.get(i).getFirst()) + intToChar(array.get(i).getSecond());
-                    sol.add(a);
-                }
-                
-                else if (aux.getFirst() != -1 && aux.getSecond() != -1 && continuo&& mas){ // AA KK !! JJ 99 
-                    String a = intToChar (aux.getFirst()) + intToChar(aux.getSecond()) + "+";                   
+            } else { // no empieza por la misma carta (Ej AK 98 65)
+
+                if (aux.getFirst() != -1 && aux.getSecond() != -1 && continuo && mas) { //AK AQ 98-> AQ+
+                    String a = intToChar(aux.getFirst()) + intToChar(aux.getSecond()) + "s" + "+";
                     sol.add(a);
                     //reseteamos a -1
                     aux.setFirst(-1);
@@ -375,11 +279,81 @@ public class HandSelecter {
                     mas = false;
                     continuo = false;
                     init = false;
+                } else if (aux.getFirst() != -1 && aux.getSecond() != -1 && continuo && !mas) { //caso -
+                    String a = intToChar(ini.getFirst()) + intToChar(ini.getSecond()) + "s"
+                            + "-" + intToChar(aux.getFirst()) + intToChar(aux.getSecond()) + "s";
+                    sol.add(a);
+                    //reseteamos aux a -1
+                    aux.setFirst(-1);
+                    aux.setSecond(-1);
+                    continuo = false;
+                    init = false;
+                } else if (aux.getFirst() == -1 && aux.getSecond() == -1 && !continuo) { //caso AK 98 -> AK // primer elemento solitario
+                    init = false;
+                    mas = false;
+                    String a = intToChar(array.get(i).getFirst()) + intToChar(array.get(i).getSecond()) + "s";
+                    sol.add(a);
                 }
-                
-                else if ( aux.getFirst() != -1 && aux.getSecond() != -1 && continuo && !mas){ //caso - KK QQ JJ 99 77-> KK-JJ
-                    String a = intToChar(ini.getFirst()) + intToChar(ini.getSecond()) 
-                              + "-" + intToChar(aux.getFirst()) + intToChar(aux.getSecond());
+                //para añadir el ultimo elemento que es solitario y no comienza por la misma carta, ej: 98, AK AQ 98-> [AQ+ ,98] , i solo llega hasta AQ
+                if (i == array.size() - 2) {
+                    String a = intToChar(array.get(i + 1).getFirst()) + intToChar(array.get(i + 1).getSecond()) + "s";
+                    sol.add(a);
+                    mas = false;
+                    continuo = false;
+                }
+            }
+        }
+    }
+
+    //Funcion para pasar valores numericos de las cartas pareja a Lista de String
+    public void celltoParejaListString(List<Pair> array, List<String> sol) {
+        // 3 casos: + (AA) , - y solitario
+        boolean mas = false; // para ver si hay signo +;
+        boolean continuo = false;
+        Pair aux = new Pair(-1, -1); // para apuntar la posicion final de cartas consecutivos (caso + y -)
+        Pair ini = new Pair(-1, -1); // para apuntar la posicion inicial de cartas consecutivos (caso -)
+        boolean init = false; // para saber si ha apuntado la posicion inicial y evitar que actualice constantemente
+
+        if (!array.isEmpty()) {
+            if (array.get(0).getFirst() == 14 && array.get(0).getSecond() == 14) {
+                mas = true;
+            }
+        }
+
+        if (array.size() == 1) {
+            String a = intToChar(array.get(0).getFirst()) + intToChar(array.get(0).getSecond());
+            sol.add(a);
+        }
+
+        for (int i = 0; i < array.size() - 1; i++) {
+
+            if (!mas && !init) {//no comienza por AA y ini no esta inicializado
+                ini.setFirst(array.get(i + 1).getFirst());
+                ini.setSecond(array.get(i + 1).getSecond());
+            }
+
+            if (array.get(i).getFirst() - array.get(i + 1).getFirst() == 1) {// si la diferencia es 1 Ej AA KK
+                continuo = true;
+                aux.setFirst(array.get(i + 1).getFirst());
+                aux.setSecond(array.get(i + 1).getSecond());
+            } else {// si la diferencia es mayor que 1
+                if (aux.getFirst() == -1 && aux.getSecond() == -1 && !continuo) {//caso AA QQ // primer elemento solitario o caso - KK QQ JJ 99 77 (las 9)
+                    init = false;
+                    mas = false;
+                    String a = intToChar(array.get(i).getFirst()) + intToChar(array.get(i).getSecond());
+                    sol.add(a);
+                } else if (aux.getFirst() != -1 && aux.getSecond() != -1 && continuo && mas) { // AA KK !! JJ 99 
+                    String a = intToChar(aux.getFirst()) + intToChar(aux.getSecond()) + "+";
+                    sol.add(a);
+                    //reseteamos a -1
+                    aux.setFirst(-1);
+                    aux.setSecond(-1);
+                    mas = false;
+                    continuo = false;
+                    init = false;
+                } else if (aux.getFirst() != -1 && aux.getSecond() != -1 && continuo && !mas) { //caso - KK QQ JJ 99 77-> KK-JJ
+                    String a = intToChar(ini.getFirst()) + intToChar(ini.getSecond())
+                            + "-" + intToChar(aux.getFirst()) + intToChar(aux.getSecond());
                     sol.add(a);
                     //reseteamos aux a -1
                     aux.setFirst(-1);
@@ -387,9 +361,9 @@ public class HandSelecter {
                     continuo = false;
                     init = false;
                 }
-                
-                if(i == array.size() - 2){ 
-                    String a = intToChar (array.get(i+1).getFirst()) + intToChar(array.get(i+1).getSecond());
+
+                if (i == array.size() - 2) {
+                    String a = intToChar(array.get(i + 1).getFirst()) + intToChar(array.get(i + 1).getSecond());
                     sol.add(a);
                     mas = false;
                     continuo = false;
@@ -397,6 +371,7 @@ public class HandSelecter {
             }
         }
     }
+
     //Devuelve la posicion de una mano de la matriz
     public Pair returnCellPos(String mano) {
         return allHandsMap.get(mano);
@@ -412,86 +387,91 @@ public class HandSelecter {
         this.introducedRange = range;
     }
 
-    //Desglosa el rango de manos en posiciones de casillas que hay que pintar y los introduce en una lista
+    //Desglosa un unico rango en posiciones de celdas seleccionadas
+    public void singleRangeToCellPos(String s) {
+        //Caso 1: si el rango actual contiene "+"
+        if (s.contains("+")) {
+            String hand = s.replaceAll("\\+", ""); //La mano si el rango
+            Pair pos = returnCellPos(hand); //Pos de la mano sobre el que está definido el rango
+            int x = pos.getFirst();
+            int y = pos.getSecond();
+
+            //Caso 1.1: si la mano es "Suited"
+            if (s.contains("s")) {
+                //Inserta todas las manos de la fila mejores que "hand" sin formar pareja
+                while (y >= 0 && x != y) {
+                    selectedHandsPos.add(new Pair(x, y));
+                    y--;
+                }
+            } //Caso 1.2: si la mano es "Offsuited"
+            else if (s.contains("o")) {
+                //Inserta todas las manos de la columna mejores que "hand" sin formar pareja
+                while (x >= 0 && x != y) {
+                    selectedHandsPos.add(new Pair(x, y));
+                    x--;
+                }
+            } //Caso 1.3: si la mano no es "Suited" ni "Offsuited" 
+            else {
+                //Inserta todas las manos en la diagonal mejores que "hand" formando pareja
+                while (x >= 0 && y >= 0) {
+                    selectedHandsPos.add(new Pair(x, y));
+                    x--;
+                    y--;
+                }
+            }
+        } //Caso 2: si el rango actual contiene "-"
+        else if (s.contains("-")) {
+            String[] hand = s.split("-"); //Separamos las 2 partes del rango de mano
+            Pair posIz = returnCellPos(hand[0]); //coordenada de la mano del limite izquierdo
+            Pair posDr = returnCellPos(hand[1]); //coordenada de la mano del limite derecho
+
+            //Valores auxiliares para saber los extremos que cubren los rangos
+            int xMax = Math.max(posIz.getFirst(), posDr.getFirst());
+            int xMin = Math.min(posIz.getFirst(), posDr.getFirst());
+            int yMax = Math.max(posIz.getSecond(), posDr.getSecond());
+            int yMin = Math.min(posIz.getSecond(), posDr.getSecond());
+
+            //Caso 2.1: si la mano es "Suited"
+            if (s.contains("s")) {
+
+                //Inserta todas las manos comprendidas en el rango definido
+                while (yMin <= yMax) {
+                    selectedHandsPos.add(new Pair(xMin, yMin));
+                    yMin++;
+                }
+
+            } //Caso 2.2: si la mano es "Offsuited" 
+            else if (s.contains("o")) {
+
+                //Inserta todas las manos comprendidas en el rango definido
+                while (xMin <= xMax) {
+                    selectedHandsPos.add(new Pair(xMin, yMin));
+                    xMin++;
+                }
+
+            } //Caso 2.3: si la mano no es "Suited" ni "Offsuited"
+            else {
+
+                //Inserta todas las manos compredidas en el rango definido
+                while (xMin <= xMax && yMin <= yMax) {
+                    selectedHandsPos.add(new Pair(xMax, yMax));
+                    xMax--;
+                    yMax--;
+                }
+            }
+
+        } //Caso 3: si la mano no contiene "+" ni "-"
+        else {
+            //Se inserta tal cual ya que no define ningun rango
+            Pair pos = returnCellPos(s);
+            selectedHandsPos.add(new Pair(pos.getFirst(), pos.getSecond()));
+        }
+    }
+
+    //Desglosa todos los rangos de manos en posiciones de casillas que hay que pintar y los introduce en una lista
     public void rangeToCellsPos() {
         for (int i = 0; i < introducedRange.size(); i++) {
-            //Caso 1: si el rango actual contiene "+"
-            if (introducedRange.get(i).contains("+")) {
-                String hand = introducedRange.get(i).replaceAll("\\+", ""); //La mano si el rango
-                Pair pos = returnCellPos(hand); //Pos de la mano sobre el que está definido el rango
-                int x = pos.getFirst();
-                int y = pos.getSecond();
-
-                //Caso 1.1: si la mano es "Suited"
-                if (introducedRange.get(i).contains("s")) {
-                    //Inserta todas las manos de la fila mejores que "hand" sin formar pareja
-                    while (y >= 0 && x != y) {
-                        selectedHandsPos.add(new Pair(x, y));
-                        y--;
-                    }
-                } //Caso 1.2: si la mano es "Offsuited"
-                else if (introducedRange.get(i).contains("o")) {
-                    //Inserta todas las manos de la columna mejores que "hand" sin formar pareja
-                    while (x >= 0 && x != y) {
-                        selectedHandsPos.add(new Pair(x, y));
-                        x--;
-                    }
-                } //Caso 1.3: si la mano no es "Suited" ni "Offsuited" 
-                else {
-                    //Inserta todas las manos en la diagonal mejores que "hand" formando pareja
-                    while (x >= 0 && y >= 0) {
-                        selectedHandsPos.add(new Pair(x, y));
-                        x--;
-                        y--;
-                    }
-                }
-            } //Caso 2: si el rango actual contiene "-"
-            else if (introducedRange.get(i).contains("-")) {
-                String[] hand = introducedRange.get(i).split("-"); //Separamos las 2 partes del rango de mano
-                Pair posIz = returnCellPos(hand[0]); //coordenada de la mano del limite izquierdo
-                Pair posDr = returnCellPos(hand[1]); //coordenada de la mano del limite derecho
-
-                //Valores auxiliares para saber los extremos que cubren los rangos
-                int xMax = Math.max(posIz.getFirst(), posDr.getFirst());
-                int xMin = Math.min(posIz.getFirst(), posDr.getFirst());
-                int yMax = Math.max(posIz.getSecond(), posDr.getSecond());
-                int yMin = Math.min(posIz.getSecond(), posDr.getSecond());
-
-                //Caso 2.1: si la mano es "Suited"
-                if (introducedRange.get(i).contains("s")) {
-
-                    //Inserta todas las manos comprendidas en el rango definido
-                    while (yMin <= yMax) {
-                        selectedHandsPos.add(new Pair(xMin, yMin));
-                        yMin++;
-                    }
-
-                } //Caso 2.2: si la mano es "Offsuited" 
-                else if (introducedRange.get(i).contains("o")) {
-
-                    //Inserta todas las manos comprendidas en el rango definido
-                    while (xMin <= xMax) {
-                        selectedHandsPos.add(new Pair(xMin, yMin));
-                        xMin++;
-                    }
-
-                } //Caso 2.3: si la mano no es "Suited" ni "Offsuited"
-                else {
-
-                    //Inserta todas las manos compredidas en el rango definido
-                    while (xMin <= xMax && yMin <= yMax) {
-                        selectedHandsPos.add(new Pair(xMax, yMax));
-                        xMax--;
-                        yMax--;
-                    }
-                }
-
-            } //Caso 3: si la mano no contiene "+" ni "-"
-            else {
-                //Se inserta tal cual ya que no define ningun rango
-                Pair pos = returnCellPos(introducedRange.get(i));
-                selectedHandsPos.add(new Pair(pos.getFirst(), pos.getSecond()));
-            }
+            singleRangeToCellPos(introducedRange.get(i));
         }
     }
 
@@ -527,8 +507,18 @@ public class HandSelecter {
     public void clearSelectedHandsPos() {
         this.selectedHandsPos.clear();
     }
-    
-    public void clearIntroducedRange(){
+
+    public void clearIntroducedRange() {
         this.introducedRange.clear();
+    }
+    
+    //Borra una entrada en la lista de rangos de manos
+    public void deleteSingleIntroducedRange(String s){
+        this.introducedRange.remove(s);
+    }
+    
+    //Borra una entrada en la lista de coordenadas
+    public void deleteSingleSelectedHandPos(String s){
+        this.selectedHandsPos.remove(returnCellPos(s));
     }
 }

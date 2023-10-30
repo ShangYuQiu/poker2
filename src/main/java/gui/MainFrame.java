@@ -4,6 +4,7 @@ import controller.Controller;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.BorderFactory;
@@ -20,12 +21,12 @@ public class MainFrame extends JFrame {
 
     //Variables locales
     private Controller controller;
-
+    
     public MainFrame() {
         initComponents(); //Inicializacion de los componentes visuales usando la utilidad de netbeans
         initMyComponents(); //Inicializacion de mis componentes
     }
-
+    
     private void initMyComponents() {
         //Inicializa la matriz de celdas 
         for (int i = 0; i < 13; ++i) {
@@ -47,15 +48,29 @@ public class MainFrame extends JFrame {
                 jl.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        jl.setBackground(Color.YELLOW);
-                        //texto de los rangos seleccionado
-                        controller.addRangeSelect(jl.getText());
-                        //hay que modificar
-                        inputRangeTextField.setCaretColor(Color.LIGHT_GRAY);
-                        //para no editar el texto
-                        inputRangeTextField.setText(controller.getRangeSelect());
-                        inputRangeTextField.setEnabled(false);
-
+                        //Si ya esta pintado de amarillo
+                        if (jl.getBackground().equals(Color.YELLOW)) {
+                            resetCellColor(jl.getText()); //Devuelve la celda seleccionada a su color original
+                            //Actualiza en las listas de rangos introducidos 
+                            controller.deleteSingleIntroducedRange(jl.getText());
+                            controller.deleteSingleSelectedHandPos(jl.getText());
+                            inputRangeTextField.setText(controller.getRangeSelect()); //Vuelve a actualizar los rangos mostrados
+                            calculateRangePercentage(); //Calcula el porcentaje de rango
+                            percentageSlider.setValue((int) Math.round(getRangePercentage())); //Actualiza el porcentaje
+                            
+                        } //Sino pintalo
+                        else {
+                            jl.setBackground(Color.YELLOW);
+                            //texto de los rangos seleccionado
+                            controller.addRangeSelect(jl.getText());
+                            controller.singleRangeToCellPos(jl.getText()); //Necesario para poder borrar el color amarillo con boton "clear"
+                            inputRangeTextField.setText(controller.getRangeSelect()); //Actualiza el texto de rango 
+                            calculateRangePercentage(); //Calcula el porcentaje de rango
+                            percentageSlider.setValue((int) Math.round(getRangePercentage())); //Actualiza el porcentaje
+                            inputRangeTextField.setEnabled(false); //Para no poder modificar
+                            
+                        }
+                        
                     }
                 });
             }
@@ -82,6 +97,18 @@ public class MainFrame extends JFrame {
         }
     }
 
+    //Devuelve una unica celda a su color original
+    private void resetCellColor(String s) {
+        Pair p = controller.returnCellPos(s);
+        if (p.getFirst() == p.getSecond()) {
+            handsLabel[p.getFirst()][p.getSecond()].setBackground(Color.GREEN);
+        } else if (p.getFirst() < p.getSecond()) {
+            handsLabel[p.getFirst()][p.getSecond()].setBackground(Color.red);
+        } else {
+            handsLabel[p.getFirst()][p.getSecond()].setBackground(Color.GRAY);
+        }
+    }
+    
     public void setController(Controller controller) {
         this.controller = controller;
     }
@@ -100,7 +127,7 @@ public class MainFrame extends JFrame {
     public void clearRangePercentage() {
         this.controller.clearRangePercentage();
     }
-
+    
     public void clearIntroducedRange() {
         this.controller.clearIntroducedRange();
     }
@@ -150,6 +177,7 @@ public class MainFrame extends JFrame {
         handMatrixPanel.setPreferredSize(new java.awt.Dimension(400, 400));
         handMatrixPanel.setLayout(new java.awt.GridLayout(13, 13));
 
+        percentageSlider.setValue(0);
         percentageSlider.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 percentageSliderStateChanged(evt);
@@ -169,6 +197,7 @@ public class MainFrame extends JFrame {
         });
 
         clearButton.setText("clear");
+        clearButton.setFocusPainted(false);
         clearButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 clearButtonActionPerformed(evt);
@@ -263,13 +292,14 @@ public class MainFrame extends JFrame {
 
     //Listener del cuadro de texto de rango
     private void inputRangeTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputRangeTextFieldActionPerformed
-         String inputText = inputRangeTextField.getText();
+        String inputText = inputRangeTextField.getText();
         String[] range = inputText.split(",");
-        setHandsRange(Arrays.asList(range)); //Guardo el rango de manos
+        List<String> tempList = new ArrayList<>(Arrays.asList(range)); //Importante inicializar de esta manera sino lanza excepcion
+        setHandsRange(tempList); //Guardo el rango de manos
         rangeToCellsPos(); //Busca las posiciones de las celdas dentro del rango
         calculateRangePercentage(); //Calcula el porcentaje de rango
         colorCellsYellow(); //Resalta las celdas dentro del rango
-        percentageSlider.setValue((int) Math.round(getRangePercentage())); 
+        percentageSlider.setValue((int) Math.round(getRangePercentage()));
     }//GEN-LAST:event_inputRangeTextFieldActionPerformed
 
 
