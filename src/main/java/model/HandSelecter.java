@@ -81,7 +81,7 @@ public class HandSelecter {
         }
     }
 
-    //cambia el JLabel cliked a String y lo pasa a JTextField
+    //Convierte el JLabel de la celda seleccionado a String y lo pasa a JTextField
     public String getSelectedCellText() {
         String s = "";
         //ordenamos la lista

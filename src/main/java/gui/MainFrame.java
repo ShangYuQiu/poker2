@@ -25,7 +25,7 @@ public class MainFrame extends JFrame {
         initComponents(); //Inicializacion de los componentes visuales usando la utilidad de netbeans
         initMyComponents(); //Inicializacion de mis componentes
     }
-       
+
     private void initMyComponents() {
         //Inicializa la matriz de celdas 
         for (int i = 0; i < 13; ++i) {
@@ -49,14 +49,13 @@ public class MainFrame extends JFrame {
                     public void mouseClicked(MouseEvent e) {
                         jl.setBackground(Color.YELLOW);
                         //texto de los rangos seleccionado
-                        controller.addRangeSelect( jl.getText());
+                        controller.addRangeSelect(jl.getText());
                         //hay que modificar
                         inputRangeTextField.setCaretColor(Color.LIGHT_GRAY);
                         //para no editar el texto
                         inputRangeTextField.setText(controller.getRangeSelect());
                         inputRangeTextField.setEnabled(false);
-                        
-                        
+
                     }
                 });
             }
@@ -101,26 +100,28 @@ public class MainFrame extends JFrame {
     public void clearRangePercentage() {
         this.controller.clearRangePercentage();
     }
-    public void clearIntroducedRange(){
+
+    public void clearIntroducedRange() {
         this.controller.clearIntroducedRange();
     }
+
     //Resetea la lista de manos dentro del rango
     public void clearSelectedHands() {
         this.controller.clearSelectedHands();
     }
-    
+
     //Guarda un nuevo rango de manos
-    public void setHandsRange(List<String> range){
+    public void setHandsRange(List<String> range) {
         this.controller.setHandsRange(range);
     }
-    
+
     //Busca las posiciones de todas las celdas que hay pintar 
-    public void rangeToCellsPos(){
+    public void rangeToCellsPos() {
         this.controller.rangeToCellsPos();
     }
-    
+
     //Calcula el porcentaje del rango de mano actual
-    public void calculateRangePercentage(){
+    public void calculateRangePercentage() {
         this.controller.calculateRangePercentage();
     }
 
@@ -262,7 +263,7 @@ public class MainFrame extends JFrame {
 
     //Listener del cuadro de texto de rango
     private void inputRangeTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputRangeTextFieldActionPerformed
-        String inputText = inputRangeTextField.getText();
+         String inputText = inputRangeTextField.getText();
         String[] range = inputText.split(",");
         setHandsRange(Arrays.asList(range)); //Guardo el rango de manos
         rangeToCellsPos(); //Busca las posiciones de las celdas dentro del rango
