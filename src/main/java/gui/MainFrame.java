@@ -281,10 +281,12 @@ public class MainFrame extends JFrame {
         clearRangePercentage(); //Resetea el porcentaje a 0
         percentageSlider.setValue((int) Math.round(getRangePercentage()));
         inputRangeTextField.setText("");
+        percentageTextField.setText(String.valueOf(0.0f) + '%');
         resetCellsColor();  //Devuelve el color original a las celdas pintadas
         clearSelectedHands();   //Borra los elementos de la lista de manos dentro del rango
         clearIntroducedRange(); //Borra los elementos de la lista de introducedRange
         inputRangeTextField.setEnabled(true);
+        
     }//GEN-LAST:event_clearButtonActionPerformed
 
     //Listener del JSlider
@@ -320,6 +322,8 @@ public class MainFrame extends JFrame {
         rangeToCellsPos(); //Busca las posiciones de las celdas dentro del rango
         calculateRangePercentage(); //Calcula el porcentaje de rango
         colorCellsYellow(); //Resalta las celdas dentro del rango
+        inputRangeTextField.setEnabled(false);
+        percentageTextField.setText(String.valueOf((int)Math.round(getRangePercentage()*10)/10.0) + "%");
     }//GEN-LAST:event_inputRangeTextFieldActionPerformed
 
 
