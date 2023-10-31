@@ -8,7 +8,9 @@ package model;
  *
  * @author xinxi
  */
-public class Pair {
+
+
+public class Pair implements Comparable<Pair>{
 
     private int first;
     private int second;
@@ -51,5 +53,28 @@ public class Pair {
         hash = 23 * hash + this.first;
         hash = 23 * hash + this.second;
         return hash;
+    }
+   @Override
+    public int compareTo(Pair other) {
+        if(other.getFirst() - this.first > 0){
+            return 1;
+        }
+        
+        else if (other.getFirst() - this.first == 0){
+            if(other.getSecond() - this.second > 0){
+                return 1;
+            }
+            else if (other.getSecond() - this.second == 0){
+                return 0;
+            }
+            
+            else{
+                return -1;
+            }
+        }
+        
+        else{
+            return -1;
+        }
     }
 }
