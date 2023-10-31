@@ -17,6 +17,7 @@ public class HandSelecter {
     private static String simb[] = {"A", "K", "Q", "J", "T", "9", "8", "7", "6", "5", "4", "3", "2"};
     private Controller controller;
     private Map<String, Pair> allHandsMap; //Par clave valor, representa una Mano, y su poscición en la Matriz
+    private Map<Pair,String> allPosHandsMap;//Par clave valor, representa una posicion, y la mano que esta en esa posicion
     private Map<Float, List<Pair>> rankingMap;  //Par clave valor, representa el ranking, y su posición en la Matriz (Ordenado por clave)
     private List<String> introducedRange; //Rango de manos introducidas por el usuario
     private List<Pair> selectedHandsPos; //Posición en matriz de las manos seleccionadas 
@@ -25,6 +26,7 @@ public class HandSelecter {
 
     public HandSelecter() {
         this.allHandsMap = new HashMap<>();
+        this.allPosHandsMap=new HashMap<>();
         this.rankingMap = new TreeMap<>(Collections.reverseOrder());
         this.selectedHandsPos = new ArrayList<>();
         this.introducedRange = new ArrayList<>();
@@ -78,12 +80,15 @@ public class HandSelecter {
                 //Si se encuentra por encima de la diagonal principal
                 if (j > i) {
                     allHandsMap.put(simb[i] + simb[j] + "s", new Pair(i, j));
+                    allPosHandsMap.put(new Pair(i, j),simb[i] + simb[j] + "s");
                 } //Si se encuentra por debajo de la diagonal principal
                 else if (i > j) {
                     allHandsMap.put(simb[j] + simb[i] + "o", new Pair(i, j));
+                    allPosHandsMap.put(new Pair(i, j),simb[j] + simb[i] + "o");
                 } //Si encuentra en la diagonal principal
                 else {
                     allHandsMap.put(simb[i] + simb[i], new Pair(i, j));
+                    allPosHandsMap.put(new Pair(i, j),simb[i] + simb[j]);
                 }
             }
         }
@@ -542,6 +547,7 @@ public class HandSelecter {
 
     //Devuelve las posiciones de las casillas que hay que pintar segun el valor del JSlider
     public List<Pair> getPercentagePaintedCells(float percentage) {
+        this.introducedRange.clear();
         this.percentagePaintedCells.clear();
         float val = Math.round((percentage / 100) * 169); //Numero de celdas a pintar
         int count = 0;
@@ -566,6 +572,7 @@ public class HandSelecter {
                 break;
             }
         }
+        addIntroducedRange();
         return this.percentagePaintedCells;
     }
 
@@ -613,5 +620,10 @@ public class HandSelecter {
     //Borra una entrada en la lista de coordenadas
     public void deleteSingleSelectedHandPos(String s) {
         this.selectedHandsPos.remove(returnCellPos(s));
+    }
+    private void addIntroducedRange(){
+        for(Pair p:percentagePaintedCells){
+            introducedRange.add(allPosHandsMap.get(p));
+        }
     }
 }

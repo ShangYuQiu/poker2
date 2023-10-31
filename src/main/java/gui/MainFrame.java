@@ -294,6 +294,7 @@ public class MainFrame extends JFrame {
         float value = percentageSlider.getValue();
         resetPurpleCellsColor();
         colorCellsPurple(value);
+        inputRangeTextField.setText(controller.getRangeSelect()); //Actualiza el texto de rango 
         percentageTextField.setText(String.valueOf(value) + "%");
     }//GEN-LAST:event_percentageSliderStateChanged
 
@@ -301,6 +302,9 @@ public class MainFrame extends JFrame {
     private void percentageTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_percentageTextFieldActionPerformed
         try {
             float value = Float.parseFloat(percentageTextField.getText());
+            resetPurpleCellsColor();
+            colorCellsPurple(value);
+            inputRangeTextField.setText(controller.getRangeSelect()); //Actualiza el texto de rango 
             //Si el porcetaje es un numero dentro de los limties se redondea
             if (value >= 0 && value <= 100) {
                 percentageSlider.setValue((int) Math.round(value));
