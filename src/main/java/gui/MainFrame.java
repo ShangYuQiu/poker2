@@ -301,7 +301,8 @@ public class MainFrame extends JFrame {
     //Listener del JTextField del Porcentaje
     private void percentageTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_percentageTextFieldActionPerformed
         try {
-            float value = Float.parseFloat(percentageTextField.getText());
+            String valorIntroducido=percentageTextField.getText().replace("%","");
+            float value = Float.parseFloat(valorIntroducido);
             resetPurpleCellsColor();
             colorCellsPurple(value);
             inputRangeTextField.setText(controller.getRangeSelect()); //Actualiza el texto de rango 

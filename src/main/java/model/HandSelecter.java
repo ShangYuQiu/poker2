@@ -661,6 +661,7 @@ public class HandSelecter {
     public void deleteSingleSelectedHandPos(String s) {
         this.selectedHandsPos.remove(returnCellPos(s));
     }
+    //aniadir los textos de las posiciones de las casillas seleccionado segun el valor del JSlider
     private void addIntroducedRange(){
         for(Pair p:percentagePaintedCells){
             introducedRange.add(allPosHandsMap.get(p));
