@@ -433,6 +433,7 @@ public class HandSelecter {
     public void singleRangeToCellPos(String s) {
         //Caso 1: si el rango actual contiene "+"
         if (s.contains("+")) {
+            
             String hand = s.replaceAll("\\+", ""); //La mano si el rango
             Pair pos = returnCellPos(hand); //Pos de la mano sobre el que está definido el rango
             int x = pos.getFirst();
@@ -460,7 +461,7 @@ public class HandSelecter {
                     x--;
                     y--;
                 }
-            }
+            }  
         } //Caso 2: si el rango actual contiene "-"
         else if (s.contains("-")) {
             String[] hand = s.split("-"); //Separamos las 2 partes del rango de mano
@@ -477,18 +478,35 @@ public class HandSelecter {
             if (s.contains("s")) {
 
                 //Inserta todas las manos comprendidas en el rango definido
-                while (yMin <= yMax) {
-                    selectedHandsPos.add(new Pair(xMin, yMin));
-                    yMin++;
+                //horizontal
+                if(xMin==xMax){
+                    while (yMin <= yMax) {
+                        selectedHandsPos.add(new Pair(xMin, yMin));
+                        yMin++;
+                    }
+                }
+                else{//vertical
+                    while (xMin <= xMax) {
+                        selectedHandsPos.add(new Pair(xMin, yMin));
+                        xMin++;
+                    }
                 }
 
             } //Caso 2.2: si la mano es "Offsuited" 
             else if (s.contains("o")) {
 
                 //Inserta todas las manos comprendidas en el rango definido
-                while (xMin <= xMax) {
-                    selectedHandsPos.add(new Pair(xMin, yMin));
-                    xMin++;
+                if(yMin==yMax){//vertical
+                    while (xMin <= xMax) {
+                        selectedHandsPos.add(new Pair(xMin, yMin));
+                        xMin++;
+                    }
+                }
+                else{//horizontal
+                    while (yMin <= yMax) {
+                        selectedHandsPos.add(new Pair(xMin, yMin));
+                        yMin++;
+                    }
                 }
 
             } //Caso 2.3: si la mano no es "Suited" ni "Offsuited"
