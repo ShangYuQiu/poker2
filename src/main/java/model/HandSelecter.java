@@ -1,5 +1,4 @@
 package model;
-//prueba
 
 import controller.Controller;
 import java.io.BufferedReader;
@@ -59,7 +58,7 @@ public class HandSelecter {
                     rankingMap.get(rank).add(new Pair(i, j));
                 }
                 j++;
-                
+
                 //Salta de fila si se llega hasta final de columna
                 if (j == 13) {
                     i++;
@@ -93,7 +92,7 @@ public class HandSelecter {
     //Convierte el JLabel de la celda seleccionado a String y lo pasa a JTextField
     public String getSelectedCellText() {
         String s = "";
-        
+
         //ordenamos la lista
         /*introducedRange.sort(new Comparator() {
             @Override
@@ -107,7 +106,6 @@ public class HandSelecter {
                 }
             }
         });*/
-        
         List<Pair> suited = new ArrayList<>(); // lista del valor numero de las dos cartas suited
         List<Pair> offsuited = new ArrayList<>(); // lista del valor numero de las dos cartas offsuited
         List<Pair> par = new ArrayList<>(); // lista del valor numero de las dos cartas pareja
@@ -128,11 +126,11 @@ public class HandSelecter {
                 par.add(p);
             }
         }
-        
+
         Collections.sort(suited);
-        celltoSOffsuitedListString(suited, sol,true);
+        celltoSOffsuitedListString(suited, sol, true);
         Collections.sort(offsuited);
-        celltoSOffsuitedListString(offsuited, sol,false);
+        celltoSOffsuitedListString(offsuited, sol, false);
         Collections.sort(par);
         celltoParejaListString(par, sol);
 
@@ -211,12 +209,11 @@ public class HandSelecter {
         Pair ini = new Pair(-1, -1); // para apuntar la posicion inicial de cartas consecutivos (caso -)
         boolean init = false; // para saber si ha apuntado la posicion inicial y evitar que actualice constantemente
         String suit = null;
-        
-        if(suited){
+
+        if (suited) {
             suit = "s";
-        }
-        else{
-            suit ="o";
+        } else {
+            suit = "o";
         }
         //si el tamaño del array es 1
         if (array.size() == 1) {
@@ -326,67 +323,64 @@ public class HandSelecter {
     }
 
     //Funcion para pasar valores numericos de las cartas pareja a Lista de String
-    public void celltoParejaListString(List<Pair> array, List<String> sol){
+    public void celltoParejaListString(List<Pair> array, List<String> sol) {
         // 3 casos: + (AA) , - y solitario
         boolean mas = false; // para ver si hay signo +;
         boolean continuo = false;
-        Pair aux = new Pair(-1,-1); // para apuntar la posicion final de cartas consecutivos (caso + y -)
-        Pair ini = new Pair(-1,-1); // para apuntar la posicion inicial de cartas consecutivos (caso -)
+        Pair aux = new Pair(-1, -1); // para apuntar la posicion final de cartas consecutivos (caso + y -)
+        Pair ini = new Pair(-1, -1); // para apuntar la posicion inicial de cartas consecutivos (caso -)
         boolean init = false; // para saber si ha apuntado la posicion inicial y evitar que actualice constantemente
-        
-        if (!array.isEmpty()){
-            if(array.get(0).getFirst() == 14 && array.get(0).getSecond() == 14){
-                mas = true;               
+
+        if (!array.isEmpty()) {
+            if (array.get(0).getFirst() == 14 && array.get(0).getSecond() == 14) {
+                mas = true;
             }
         }
-        
-        if(array.size() == 1){
+
+        if (array.size() == 1) {
             String a = intToChar(array.get(0).getFirst()) + intToChar(array.get(0).getSecond());
             sol.add(a);
         }
-        
-        for ( int i = 0; i < array.size() -1; i++){
-            
+
+        for (int i = 0; i < array.size() - 1; i++) {
+
             /*if (!init && mas){
                 init = true;
                 aux.setFirst(array.get(i+1).getFirst());
                 aux.setSecond(array.get(i+1).getSecond());
             }
-            else*/ if (!init){
+            else*/ if (!init) {
                 init = true;
                 ini.setFirst(array.get(i).getFirst());
                 ini.setSecond(array.get(i).getSecond());
             }
-            
-            if ( (array.get(i).getFirst() - array.get(i+1).getSecond()) == 1){ // si la diferencia es 1
+
+            if ((array.get(i).getFirst() - array.get(i + 1).getSecond()) == 1) { // si la diferencia es 1
                 continuo = true;
-                 
-                aux.setFirst(array.get(i+1).getFirst());
-                aux.setSecond(array.get(i+1).getSecond());
-                
-                if (i == array.size()-2){
-                    if(!mas){// caso -
-                        if(init){
-                            String a = intToChar(ini.getFirst()) + intToChar(ini.getSecond()) 
+
+                aux.setFirst(array.get(i + 1).getFirst());
+                aux.setSecond(array.get(i + 1).getSecond());
+
+                if (i == array.size() - 2) {
+                    if (!mas) {// caso -
+                        if (init) {
+                            String a = intToChar(ini.getFirst()) + intToChar(ini.getSecond())
                                     + "-" + intToChar(aux.getFirst()) + intToChar(aux.getSecond());
                             sol.add(a);
                         }
-                    }
-                    else{
-                        String a = intToChar (aux.getFirst()) + intToChar(aux.getSecond())+ "+";
+                    } else {
+                        String a = intToChar(aux.getFirst()) + intToChar(aux.getSecond()) + "+";
                         sol.add(a);
                     }
                 }
-            }           
-            else{// si la diferencia es mayor que 1
-                if( aux.getFirst() == -1 && aux.getSecond() == -1 && !continuo){//el primer elemento es solitario AA QQ
+            } else {// si la diferencia es mayor que 1
+                if (aux.getFirst() == -1 && aux.getSecond() == -1 && !continuo) {//el primer elemento es solitario AA QQ
                     mas = false;
-                    init =false;
-                    String a = intToChar (array.get(i).getFirst()) + intToChar(array.get(i).getSecond());
+                    init = false;
+                    String a = intToChar(array.get(i).getFirst()) + intToChar(array.get(i).getSecond());
                     sol.add(a);
-                }
-                else if (aux.getFirst() != -1 && aux.getSecond() != -1 && continuo && mas){// AA KK QQ 99 -> QQ+
-                    String a = intToChar (aux.getFirst()) + intToChar(aux.getSecond())+ "+";
+                } else if (aux.getFirst() != -1 && aux.getSecond() != -1 && continuo && mas) {// AA KK QQ 99 -> QQ+
+                    String a = intToChar(aux.getFirst()) + intToChar(aux.getSecond()) + "+";
                     sol.add(a);
                     //reseteamos a -1
                     aux.setFirst(-1);
@@ -538,16 +532,26 @@ public class HandSelecter {
         for (Float key : rankingMap.keySet()) {
             if (count < val) {
                 List<Pair> parejas = rankingMap.get(key);
-                this.percentagePaintedCells.addAll(parejas);
-                count += parejas.size();
+
+                //Si hay mas celdas de las que se hay que pintar
+                if (count + parejas.size() > val) {
+                    int elemToAdd = parejas.size() - (count + parejas.size() - (int) val);
+                    this.percentagePaintedCells.addAll(parejas.subList(0, elemToAdd));
+                    count += elemToAdd;
+                } //Si se puede pintar todas las celdas del ranking actual
+                else {
+                    this.percentagePaintedCells.addAll(parejas);
+                    count += parejas.size();
+                }
+
             } else {
                 break;
             }
         }
         return this.percentagePaintedCells;
     }
-    
-    public List<Pair> getPercentagePaintedCells(){
+
+    public List<Pair> getPercentagePaintedCells() {
         return this.percentagePaintedCells;
     }
 
