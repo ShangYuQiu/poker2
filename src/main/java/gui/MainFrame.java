@@ -21,6 +21,7 @@ public class MainFrame extends JFrame {
     private final Color VERDE = new Color(126, 246, 130);
     private final Color AZUL = new Color(152, 201, 245);
     private final Color ROJO = new Color(228, 115, 130);
+    private final Color MORADO = new Color(229, 137, 252);
     private static JLabel[][] handsLabel = new JLabel[13][13];
 
     //Variables locales
@@ -61,7 +62,6 @@ public class MainFrame extends JFrame {
                             controller.deleteSingleSelectedHandPos(jl.getText());
                             inputRangeTextField.setText(controller.getRangeSelect()); //Vuelve a actualizar los rangos mostrados
                             calculateRangePercentage(); //Calcula el porcentaje de rango
-                            percentageSlider.setValue((int) Math.round(getRangePercentage())); //Actualiza el porcentaje
 
                         } //Sino pintalo
                         else {
@@ -71,7 +71,6 @@ public class MainFrame extends JFrame {
                             controller.singleRangeToCellPos(jl.getText()); //Necesario para poder borrar el color amarillo con boton "clear"
                             inputRangeTextField.setText(controller.getRangeSelect()); //Actualiza el texto de rango 
                             calculateRangePercentage(); //Calcula el porcentaje de rango
-                            percentageSlider.setValue((int) Math.round(getRangePercentage())); //Actualiza el porcentaje
                             inputRangeTextField.setEnabled(false); //Para no poder modificar
 
                         }
@@ -86,6 +85,26 @@ public class MainFrame extends JFrame {
     private void colorCellsYellow() {
         for (Pair p : getCellsToColor()) {
             handsLabel[p.getFirst()][p.getSecond()].setBackground(Color.YELLOW);
+        }
+    }
+
+    //Pinta las casillas de morado segun el JSlider
+    private void colorCellsPurple(Float percentage) {
+        for (Pair p : controller.getPercentagePaintedCells(percentage)) {
+            handsLabel[p.getFirst()][p.getSecond()].setBackground(MORADO);
+        }
+    }
+
+    //Devuelve las celdas purpuras a su color original
+    private void resetPurpleCellsColor() {
+        for (Pair p : controller.getPercentagePaintedCells()) {
+            if (p.getFirst() == p.getSecond()) {
+                handsLabel[p.getFirst()][p.getSecond()].setBackground(VERDE);
+            } else if (p.getFirst() < p.getSecond()) {
+                handsLabel[p.getFirst()][p.getSecond()].setBackground(ROJO);
+            } else {
+                handsLabel[p.getFirst()][p.getSecond()].setBackground(AZUL);
+            }
         }
     }
 
@@ -108,9 +127,9 @@ public class MainFrame extends JFrame {
         if (p.getFirst() == p.getSecond()) {
             handsLabel[p.getFirst()][p.getSecond()].setBackground(VERDE);
         } else if (p.getFirst() < p.getSecond()) {
-            handsLabel[p.getFirst()][p.getSecond()].setBackground(ROJO); 
+            handsLabel[p.getFirst()][p.getSecond()].setBackground(ROJO);
         } else {
-            handsLabel[p.getFirst()][p.getSecond()].setBackground(AZUL); 
+            handsLabel[p.getFirst()][p.getSecond()].setBackground(AZUL);
         }
     }
 
@@ -271,12 +290,9 @@ public class MainFrame extends JFrame {
     //Listener del JSlider
     private void percentageSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_percentageSliderStateChanged
         float value = percentageSlider.getValue();
-        //Si no se ha introducido un rango todavia 
-        if (getRangePercentage() == 0.0) {
-            percentageTextField.setText(String.valueOf(value) + "%");
-        } //Si ya hay un rango de mano introducido, calcular el porcentaje 
-        else
-            percentageTextField.setText(String.valueOf((int) Math.round(getRangePercentage() * 10) / 10.0) + "%");
+        resetPurpleCellsColor();
+        colorCellsPurple(value);
+        percentageTextField.setText(String.valueOf(value) + "%");
     }//GEN-LAST:event_percentageSliderStateChanged
 
     //Listener del JTextField del Porcentaje
@@ -304,7 +320,6 @@ public class MainFrame extends JFrame {
         rangeToCellsPos(); //Busca las posiciones de las celdas dentro del rango
         calculateRangePercentage(); //Calcula el porcentaje de rango
         colorCellsYellow(); //Resalta las celdas dentro del rango
-        percentageSlider.setValue((int) Math.round(getRangePercentage()));
     }//GEN-LAST:event_inputRangeTextFieldActionPerformed
 
 

@@ -35,6 +35,11 @@ public class Pair {
     }
 
     @Override
+    public String toString() {
+        return String.format("(%d,%d)", first, second);
+    }
+
+    @Override
     public boolean equals(Object o) {
         Pair tmp = (Pair) o;
 

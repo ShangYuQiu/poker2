@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -17,16 +18,18 @@ public class HandSelecter {
     private static String simb[] = {"A", "K", "Q", "J", "T", "9", "8", "7", "6", "5", "4", "3", "2"};
     private Controller controller;
     private Map<String, Pair> allHandsMap; //Par clave valor, representa una Mano, y su poscición en la Matriz
-    private Map<Float, Pair> rankingMap;  //Par clave valor, representa el ranking, y su posición en la Matriz (Ordenado por clave)
+    private Map<Float, List<Pair>> rankingMap;  //Par clave valor, representa el ranking, y su posición en la Matriz (Ordenado por clave)
     private List<String> introducedRange; //Rango de manos introducidas por el usuario
     private List<Pair> selectedHandsPos; //Posición en matriz de las manos seleccionadas 
+    private List<Pair> percentagePaintedCells; //Posición de las celdas pintadas según porcentaje (Apartado 2)
     private float rangePercentage; //Porcentaje de rango que pertenece el rango actual (introducedRange)
 
     public HandSelecter() {
         this.allHandsMap = new HashMap<>();
-        this.rankingMap = new TreeMap<>();
+        this.rankingMap = new TreeMap<>(Collections.reverseOrder());
         this.selectedHandsPos = new ArrayList<>();
         this.introducedRange = new ArrayList<>();
+        this.percentagePaintedCells = new ArrayList<>();
         //Carga el ranking de SKLANSKY-CHUBUKOV en rankingMap
         loadRanking();
         //Carga las manos y su posición en la matriz
@@ -48,14 +51,20 @@ public class HandSelecter {
             while ((line = reader.readLine()) != null) {
                 float rank = Float.parseFloat(line);
 
-                rankingMap.put(rank, new Pair(i, j));
-
+                //Importante hacer asi porque treeMap no permite duplicados
+                if (rankingMap.containsKey(rank)) {
+                    rankingMap.get(rank).add(new Pair(i, j));
+                } else {
+                    rankingMap.put(rank, new ArrayList<>());
+                    rankingMap.get(rank).add(new Pair(i, j));
+                }
+                j++;
+                
                 //Salta de fila si se llega hasta final de columna
-                if (j == 12) {
+                if (j == 13) {
                     i++;
                     j = 0;
                 }
-
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -477,7 +486,30 @@ public class HandSelecter {
 
     //Devuelve las posiciones de las casillas que hay que pintar
     public List<Pair> getCellsToColor() {
-        return selectedHandsPos;
+        return this.selectedHandsPos;
+    }
+
+    //Devuelve las posiciones de las casillas que hay que pintar segun el valor del JSlider
+    public List<Pair> getPercentagePaintedCells(float percentage) {
+        this.percentagePaintedCells.clear();
+        float val = Math.round((percentage / 100) * 169); //Numero de celdas a pintar
+        int count = 0;
+
+        //Importante recorrer por clave, garantiza orden
+        for (Float key : rankingMap.keySet()) {
+            if (count < val) {
+                List<Pair> parejas = rankingMap.get(key);
+                this.percentagePaintedCells.addAll(parejas);
+                count += parejas.size();
+            } else {
+                break;
+            }
+        }
+        return this.percentagePaintedCells;
+    }
+    
+    public List<Pair> getPercentagePaintedCells(){
+        return this.percentagePaintedCells;
     }
 
     //Calcula el porcentaje al que pertenece el rango actual 
@@ -511,14 +543,14 @@ public class HandSelecter {
     public void clearIntroducedRange() {
         this.introducedRange.clear();
     }
-    
+
     //Borra una entrada en la lista de rangos de manos
-    public void deleteSingleIntroducedRange(String s){
+    public void deleteSingleIntroducedRange(String s) {
         this.introducedRange.remove(s);
     }
-    
+
     //Borra una entrada en la lista de coordenadas
-    public void deleteSingleSelectedHandPos(String s){
+    public void deleteSingleSelectedHandPos(String s) {
         this.selectedHandsPos.remove(returnCellPos(s));
     }
 }

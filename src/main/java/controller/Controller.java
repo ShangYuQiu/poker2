@@ -19,8 +19,8 @@ public class Controller {
     public List<Pair> getCellsToColor() {
         return hs.getCellsToColor();
     }
-    
-    public Pair returnCellPos(String s){
+
+    public Pair returnCellPos(String s) {
         return hs.returnCellPos(s);
     }
 
@@ -35,12 +35,12 @@ public class Controller {
     public void clearSelectedHands() {
         hs.clearSelectedHandsPos();
     }
-    
-    public void  deleteSingleSelectedHandPos(String s){
+
+    public void deleteSingleSelectedHandPos(String s) {
         hs.deleteSingleSelectedHandPos(s);
     }
-    
-    public void deleteSingleIntroducedRange(String s){
+
+    public void deleteSingleIntroducedRange(String s) {
         hs.deleteSingleIntroducedRange(s);
     }
 
@@ -52,6 +52,14 @@ public class Controller {
         hs.rangeToCellsPos();
     }
 
+    public List<Pair> getPercentagePaintedCells(Float percentage) {
+        return hs.getPercentagePaintedCells(percentage);
+    }
+    
+    public List<Pair> getPercentagePaintedCells(){
+        return hs.getPercentagePaintedCells();
+    }
+
     public void calculateRangePercentage() {
         hs.calculateRangePercentage();
     }
@@ -59,23 +67,23 @@ public class Controller {
     public void addRangeSelect(String s) {
         hs.addRangeSelect(s);
     }
-    
-    public String getRangeSelect(){
+
+    public String getRangeSelect() {
         return hs.getSelectedCellText();
     }
-    
-    public void clearIntroducedRange(){
+
+    public void clearIntroducedRange() {
         hs.clearIntroducedRange();
     }
-    
+
     //Calcula las coordenas de todos los rangos de cartas introducidas
-    public void rangeToCellPos(){
+    public void rangeToCellPos() {
         hs.rangeToCellsPos();
     }
-    
+
     //Calcula las coordenas de un unico rango de cartas introducidas
-    public void singleRangeToCellPos(String s){
+    public void singleRangeToCellPos(String s) {
         hs.singleRangeToCellPos(s);
     }
-    
+
 }
