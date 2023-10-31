@@ -290,7 +290,47 @@ public class HandSelecter {
                         sol.add(a);
                     }
                 }
-            } else { // no empieza por la misma carta (Ej AK 98 65)
+            } 
+            else if ((array.get(i).getFirst() - array.get(i + 1).getFirst()) == 1){//la diferencia del primer carta es 1
+                    
+                if ((array.get(i).getSecond() - array.get(i + 1).getSecond()) == 0) {// la segunda carta es misma
+                    continuo = true;
+                    aux.setFirst(array.get(i + 1).getFirst());
+                    aux.setSecond(array.get(i + 1).getSecond());
+
+                    if (i == array.size() - 2) { //si es el penultimo elemento
+                        if (init) {// si esta asignado init
+                            String a = intToChar(ini.getFirst()) + intToChar(ini.getSecond()) + suit
+                                    + "-" + intToChar(aux.getFirst()) + intToChar(aux.getSecond()) + suit;
+                            sol.add(a);
+                        }
+                    }
+
+                } else {//la segunda carta no es la misma
+                    if (aux.getFirst() != -1 && aux.getSecond() != -1 && continuo && !mas) { //(Ej K6 Q6 J6 T5 -> K6-J6
+                        String a = intToChar(aux.getFirst()) + intToChar(aux.getSecond()) + suit + "-";
+                        sol.add(a);
+                        //reseteamos a -1
+                        aux.setFirst(-1);
+                        aux.setSecond(-1);
+                        mas = false;
+                        continuo = false;
+                        init = false;
+                    }
+                    else if (aux.getFirst() == -1 && aux.getSecond() == -1 && !continuo) {// El primero es un elemento solitario Ej Q5 J4 T4                     
+                        mas = false;
+                        init = false;
+                        String a = intToChar(array.get(i).getFirst()) + intToChar(array.get(i).getSecond()) + suit;
+                        sol.add(a);
+                    }
+                    
+                    if (i == array.size() - 2) {
+                        String a = intToChar(array.get(i + 1).getFirst()) + intToChar(array.get(i + 1).getSecond()) + suit;
+                        sol.add(a);
+                    }
+                }
+            }
+            else { // no empieza por la misma carta (Ej AK 98 65)
 
                 if (aux.getFirst() != -1 && aux.getSecond() != -1 && continuo && mas) { //AK AQ 98-> AQ+
                     String a = intToChar(aux.getFirst()) + intToChar(aux.getSecond()) + suit + "+";
