@@ -86,4 +86,19 @@ public class Controller {
         hs.singleRangeToCellPos(s);
     }
 
+    public int getNumBoardCard(){
+        return hs.getNumBoardCard();
+    }
+
+    public void addBoardCard(String card ){
+        hs.addBoardCard(card);
+    }
+    
+    public void removeBoardCard(String card){
+        hs.removeBoardCard(card);
+    }
+    
+    public List<String> getBoardCards(){
+        return hs.getBoardCards();
+    }
 }

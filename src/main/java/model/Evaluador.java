@@ -5,10 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- *
- * @author shangyu
- */
 public class Evaluador {
     
     public Evaluador(){
