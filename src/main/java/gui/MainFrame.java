@@ -31,6 +31,30 @@ public class MainFrame extends JFrame {
     private JLabel[][] boardLabel = new JLabel[13][4]; //JLabel de las cartas del board
     private JLabel[] selectedBoardJLabel = new JLabel[5]; //Lista de los JLabel del board seleccionados
     private Controller controller;
+    
+    /*
+    straight flush--
+    4 of a kind-----
+    full house------
+    flush-----------
+    straight--------
+    3 of a kind----- 
+    two pair--------
+    pair------------ 
+    no made hand----
+    */
+    
+    //JLabel de los combos
+    private JLabel straightFlush = new JLabel("straigth flush  ");
+    private JLabel fourOfKind = new JLabel("4 of a kind     ");
+    private JLabel fullHouse = new JLabel("full house      ");
+    private JLabel flush = new JLabel ("flush           ");
+    private JLabel straight = new JLabel ("straight        ");
+    private JLabel threeOfKind = new JLabel ("3 of a kind     ");
+    private JLabel twoPair = new JLabel ("two pair        ");
+    private JLabel pair = new JLabel ("pair            ");
+    private JLabel noMadeHand = new JLabel("no made hand    ");
+    
 
     public MainFrame() {
         initComponents(); //Inicializacion de los componentes visuales usando la utilidad de netbeans
@@ -184,6 +208,19 @@ public class MainFrame extends JFrame {
             selectedBoardJLabel[i].setForeground(Color.BLACK);
             this.selectedBoardPanel.add(selectedBoardJLabel[i]);
         }
+        
+        //Inicializa el panel de combos
+        comboPanel.add(straightFlush);
+        comboPanel.add(fourOfKind);
+        comboPanel.add(fullHouse);
+        comboPanel.add(flush);
+        comboPanel.add(straight);
+        comboPanel.add(threeOfKind);
+        comboPanel.add(twoPair);
+        comboPanel.add(pair);
+        comboPanel.add(noMadeHand);
+        
+
 
     }
 
@@ -344,18 +381,8 @@ public class MainFrame extends JFrame {
         boardPanel.setPreferredSize(new java.awt.Dimension(123, 400));
         boardPanel.setLayout(new java.awt.GridLayout(13, 4));
 
-        comboPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        javax.swing.GroupLayout comboPanelLayout = new javax.swing.GroupLayout(comboPanel);
-        comboPanel.setLayout(comboPanelLayout);
-        comboPanelLayout.setHorizontalGroup(
-            comboPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 150, Short.MAX_VALUE)
-        );
-        comboPanelLayout.setVerticalGroup(
-            comboPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 320, Short.MAX_VALUE)
-        );
+        comboPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Statistics", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI Black", 3, 12), new java.awt.Color(0, 102, 255))); // NOI18N
+        comboPanel.setLayout(new javax.swing.BoxLayout(comboPanel, javax.swing.BoxLayout.Y_AXIS));
 
         handMatrixPanel.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         handMatrixPanel.setToolTipText("");
@@ -392,20 +419,23 @@ public class MainFrame extends JFrame {
                     .addComponent(selectedBoardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(comboPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(inputRangeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(clearButton)
-                    .addComponent(inputTextFieldLabel))
-                .addContainerGap(11, Short.MAX_VALUE))
+                    .addComponent(comboPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(inputRangeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(clearButton)
+                            .addComponent(inputTextFieldLabel))
+                        .addGap(0, 193, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(9, 9, 9)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(comboPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(comboPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
                         .addComponent(inputTextFieldLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(inputRangeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
