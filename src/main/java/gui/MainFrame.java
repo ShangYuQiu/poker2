@@ -93,6 +93,7 @@ public class MainFrame extends JFrame {
                             controller.deleteSingleSelectedHandPos(jl.getText());
                             inputRangeTextField.setText(controller.getRangeSelect()); //Vuelve a actualizar los rangos mostrados
                             calculateRangePercentage(); //Calcula el porcentaje de rango
+                            percentageTextField.setText(String.valueOf((int) Math.round(getRangePercentage() * 10) / 10.0) + "%");
 
                         } //Sino pintalo
                         else {
@@ -103,6 +104,7 @@ public class MainFrame extends JFrame {
                             inputRangeTextField.setText(controller.getRangeSelect()); //Actualiza el texto de rango 
                             calculateRangePercentage(); //Calcula el porcentaje de rango
                             inputRangeTextField.setEnabled(false); //Para no poder modificar
+                            percentageTextField.setText(String.valueOf((int) Math.round(getRangePercentage() * 10) / 10.0) + "%");
 
                         }
 
