@@ -373,6 +373,7 @@ public class HandSelecter {
         }
     }
 
+    /*
     public int calculateNumCombos(List<Carta> board){ // calcula los combos que hay (usar introducedRange)
         int combos = 0;
         
@@ -485,6 +486,8 @@ public class HandSelecter {
         
         return combos;
     }
+    */
+    
     //Funcion para pasar valores numericos de las cartas pareja a Lista de String
     public void celltoParejaListString(List<Pair> array, List<String> sol) {
         // 3 casos: + (AA) , - y solitario

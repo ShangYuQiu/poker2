@@ -10,65 +10,115 @@ public class Evaluador {
 
     private List<Carta> board; //Cartas del board comunes
     private Map<String, List<String>> combos; //Par clave valor, donde (KK, <KhKh, KcKc...>), muestra los posibles combos
-    
-
-    //Contador de las jugadas
-    private int numStraightFlush;
-    private int numFourOfKind;
-    private int numFullHouse;
-    private int numFlush;
-    private int numStraight;
-    private int numThreeOfKind;
-    private int numTwoPair;
-    private int numPair;
-    private int numNoMadeHand;
+    private Map<String, Map<String, Integer>> jugadas; //Par clave valor, donde (<Trio, <AA, 3>>), muestra las cartas asociadas a cada jugada y cuantos
 
     public Evaluador() {
-        this.numStraightFlush = 0;
-        this.numFourOfKind = 0;
-        this.numFullHouse = 0;
-        this.numFlush = 0;
-        this.numStraight = 0;
-        this.numThreeOfKind = 0;
-        this.numTwoPair = 0;
-        this.numPair = 0;
-        this.numNoMadeHand = 0;
         this.board = new ArrayList<>();
         this.combos = new HashMap<>();
+
+        //Inicializa las entradas de las posibles jugadas
+        this.jugadas = new HashMap<>();
+        this.jugadas.put("straightFlush", new HashMap<>());
+        this.jugadas.put("fourOfKind", new HashMap<>());
+        this.jugadas.put("fullHouse", new HashMap<>());
+        this.jugadas.put("flush", new HashMap<>());
+        this.jugadas.put("straight", new HashMap<>());
+        this.jugadas.put("threeOfKind", new HashMap<>());
+        this.jugadas.put("twoPair", new HashMap<>());
+        this.jugadas.put("pair", new HashMap<>());
+        this.jugadas.put("noMadeHand", new HashMap<>());
+
     }
-    
+
     //Calcula todos los combos
-    public void evalueAllCombos(){
-        
+    public void evalueAllCombos() {
+        //Primero filtra todos los combos quitando las que ya aparecen en el board
+        filterBoardCombos();
+
+        //Calcula todos las jugadas con todos los combos
+        for (Map.Entry<String, List<String>> entrada : combos.entrySet()) {
+            String rango = entrada.getKey(); //Por ejemplo AA
+            List<String> manos = entrada.getValue(); //Por ejemplo AhAh, AcAc...
+
+            for (String mano : manos) {
+                List<String> tmp = new ArrayList<>();
+                tmp.add(mano.substring(0, 2));
+                tmp.add(mano.substring(2, 4));
+                evalue(rango, tmp);
+
+            }
+        }
+
     }
-    
-    
+
     //Calcula el combo de una mano
-    public void evalue(List<String> mano){
-        
+    public void evalue(String rango, List<String> mano) {
+        //Combina las cartas del board con las de la mano
+        List<Carta> cartas = new ArrayList<>();
+        cartas.addAll(this.board);
+        cartas.addAll(convertirStringsToCartas(mano));
+
+        //Ordena las cartas de mayor a menor
+        Collections.sort(cartas);
+
+        //Comprueba si se forma una de las siguientes jugadas
+        if (EscaleraColor(cartas)) {
+            Map<String, Integer> j = jugadas.get("straightFlush");
+            j.put(rango, j.get(rango) + 1);
+
+        } else if (Poker(cartas)) {
+            Map<String, Integer> j = jugadas.get("fourOfKind");
+            j.put(rango, j.get(rango) + 1);
+        } else if (FullHouse(cartas)) {
+            Map<String, Integer> j = jugadas.get("fullHouse");
+            j.put(rango, j.get(rango) + 1);
+        } else if (Flush(cartas)) {
+            Map<String, Integer> j = jugadas.get("flush");
+            j.put(rango, j.get(rango) + 1);
+        } else if (Escalera(cartas)) {
+            Map<String, Integer> j = jugadas.get("straight");
+            j.put(rango, j.get(rango) + 1);
+        } else if (Trio(cartas)) {
+            Map<String, Integer> j = jugadas.get("threeOfKind");
+            j.put(rango, j.get(rango) + 1);
+        } else if (DoblePareja(cartas)) {
+            Map<String, Integer> j = jugadas.get("twoPair");
+            j.put(rango, j.get(rango) + 1);
+        } else if (Pareja(cartas)) {
+            Map<String, Integer> j = jugadas.get("pair");
+            j.put(rango, j.get(rango) + 1);
+        } else {
+            Map<String, Integer> j = jugadas.get("noMadeHand");
+            j.put(rango, j.get(rango) + 1);
+        }
     }
-    
 
     //Filtra quitando aquellos combos que aparecen las cartas del board
     public void filterBoardCombos() {
         //Para cada carta del board miro si puedo eliminar combos
-        for (Carta c : board) {
+        for (Carta b : board) {
             //Miro en cada mano
             for (String rango : combos.keySet()) {
+                List<String> cartas = new ArrayList<>(combos.get(rango));
+
                 //Si el combo contiene una carta del board hay que eliminar combos
-                if (rango.contains(c.getSimb())) {
-                    String carta = c.getSimb() + c.getPalo();
-                    
-                   for(String s : combos.get(rango)){
-                       if(s.contains(carta)){
-                           combos.get(rango).remove(s);
-                       }
-                   }
-                    
-                    
+                for (String carta : combos.get(rango)) {
+                    if (carta.contains(b.toString())) {
+                        cartas.remove(carta);
+                    }
                 }
+
+                //TODO no terminado ta mal
             }
         }
+    }
+
+    public List<Carta> convertirStringsToCartas(List<String> mano) {
+        List<Carta> ret = new ArrayList<>();
+        for (String s : mano) {
+            ret.add(new Carta(Character.toString(s.charAt(0)), Character.toString(s.charAt(1))));
+        }
+        return ret;
     }
 
     //Comprueba si hay escelera de color
@@ -106,7 +156,6 @@ public class Evaluador {
     //Comprueba si hay escalera
     public boolean Escalera(List<Carta> c) {
         boolean escalera = false;
-        Collections.sort(c);
 
         boolean ace = false;
 
@@ -166,7 +215,6 @@ public class Evaluador {
     //Comprueba si hay poker
     public boolean Poker(List<Carta> c) {
         boolean poker = false;
-        Collections.sort(c);
 
         int i = 0;
         int cont = 1;
@@ -195,7 +243,6 @@ public class Evaluador {
     //Comprueba si hay full house
     public boolean FullHouse(List<Carta> c) {
         boolean fullHouse = false;
-        Collections.sort(c);
 
         if (Trio(c)) {
             c.remove(0);
@@ -245,7 +292,6 @@ public class Evaluador {
     //Comprueba si hay trio
     public boolean Trio(List<Carta> c) {
         boolean trio = false;
-        Collections.sort(c);
         int i = 0;
         int cont = 1;   //Numero de cartas del trio actual
 
@@ -274,7 +320,6 @@ public class Evaluador {
     //Comprueba si hay doble pareja
     public boolean DoblePareja(List<Carta> c) {
         boolean doblePareja = false;
-        Collections.sort(c);
 
         //Se busca la primera pareja
         if (Pareja(c)) {
@@ -293,7 +338,6 @@ public class Evaluador {
     //Comprueba si hay pareja
     public boolean Pareja(List<Carta> c) {
         boolean pareja = false;
-        Collections.sort(c);
 
         int i = 0;
         while (i < c.size() - 1) {
@@ -307,11 +351,6 @@ public class Evaluador {
         }
 
         return pareja;
-    }
-
-    //Calcula el numero de combos totales
-    public int getTotalCombos() {
-        return numStraightFlush + numFourOfKind + numFullHouse + numFlush + numStraight + numThreeOfKind + numTwoPair + numPair + numNoMadeHand;
     }
 
     public void setBoard(List<String> c) {
