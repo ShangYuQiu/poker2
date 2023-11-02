@@ -4,6 +4,7 @@ import controller.Controller;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import static java.lang.Math.abs;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -367,6 +368,118 @@ public class HandSelecter {
         }
     }
 
+    public int calculateNumCombos(List<Carta> board){ // calcula los combos que hay (usar introducedRange)
+        int combos = 0;
+        
+        List<Pair> suited = new ArrayList<>(); // lista del valor numero de las dos cartas suited
+        List<Pair> offsuited = new ArrayList<>(); // lista del valor numero de las dos cartas offsuited
+        List<Pair> par = new ArrayList<>(); // lista del valor numero de las dos cartas pareja
+        
+        for (String c : introducedRange) {
+            if (c.length() == 3) { // caso suited o offsuited
+                if (c.charAt(2) == 's') {
+                    Pair p = new Pair(chartoInt(c.charAt(0)), chartoInt(c.charAt(1)));
+                    suited.add(p);
+                } else {
+                    Pair p = new Pair(chartoInt(c.charAt(0)), chartoInt(c.charAt(1)));
+                    offsuited.add(p);
+                }
+
+            } else if (c.length() == 2) {//caso pareja
+                Pair p = new Pair(chartoInt(c.charAt(0)), chartoInt(c.charAt(1)));
+                par.add(p);
+            }
+        }
+        
+        Collections.sort(suited);
+        Collections.sort(offsuited);
+        Collections.sort(par);
+        
+        List<Integer> numCartas = new ArrayList<>(13);
+        
+        for (int k = 0; k < numCartas.size(); k++){// indica cuantas cartas de diferentes tipos hay (usamos indice para tomar de referencia el valor)
+            numCartas.set(k, 0);
+        }
+        
+        for ( int i = 0; i < board.size();i++){
+           
+            int a = abs(board.get(i).getVal() - 14);
+            numCartas.set(a, numCartas.get(a)+1); // sumamos uno a la carta/posicion correspondientes
+        }
+        
+        combos +=calcularCombosOffsuited(offsuited,numCartas);
+        combos +=calcularCombosSuited(suited,numCartas);
+        combos +=calcularCombosPareja(par,numCartas);
+        
+        return combos;
+    }
+    
+    private int calcularCombosOffsuited(List<Pair> o , List<Integer> numCartas){
+        int combos = 0;
+        
+        for (int j = 0; j < o.size();j++){
+            int pos1 = o.get(j).getFirst();
+            int pos2 = o.get(j).getSecond();
+            
+            int a= abs(pos1 - 14);
+            int b = abs(pos2-14);
+            
+            if (numCartas.get(a) > 0){// si el numero de cartas (misma que la de suited)que hay en board es mayor que 0  
+                combos = combos + ( 12 - 3*numCartas.get(a));
+            }
+            else {
+                if (numCartas.get(b) > 0){
+                    combos = combos + ( 12 - 3*numCartas.get(b));
+                }
+            }
+        }
+        
+        return combos;
+    }
+    
+    private int calcularCombosSuited(List<Pair> o , List<Integer> numCartas){
+        int combos = 0;
+        
+        for (int j = 0; j < o.size();j++){
+            int pos1 = o.get(j).getFirst();
+            int pos2 = o.get(j).getSecond();
+            
+            int a= abs(pos1 - 14);
+            int b = abs(pos2-14);
+            
+            if (numCartas.get(a) > 0){// si el numero de cartas (misma que la de suited)que hay en board es mayor que 0  
+                combos = combos + ( 4 - numCartas.get(a));
+            }
+            else {
+                if (numCartas.get(b) > 0){
+                    combos = combos + ( 4 - numCartas.get(b));
+                }
+            }
+        }
+        
+        return combos;
+    }
+    
+    private int calcularCombosPareja(List<Pair> o , List<Integer> numCartas){
+        int combos = 0;
+        
+        for (int j = 0; j < o.size();j++){
+            int pos1 = o.get(j).getFirst();
+            
+            int a= abs(pos1 - 14);
+            
+            if (null != numCartas.get(a))switch (numCartas.get(a)) {
+                // si el numero de cartas (misma que la de suited)que hay en board es mayor que 0
+                case 0 -> combos +=6;  
+                case 1 -> combos += 3;
+                case 2 -> combos += 1;
+                default -> {
+                }
+            }           
+        }
+        
+        return combos;
+    }
     //Funcion para pasar valores numericos de las cartas pareja a Lista de String
     public void celltoParejaListString(List<Pair> array, List<String> sol) {
         // 3 casos: + (AA) , - y solitario
