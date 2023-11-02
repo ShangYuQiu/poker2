@@ -4,7 +4,6 @@ import controller.Controller;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import static java.lang.Math.abs;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -27,6 +26,7 @@ public class HandSelecter {
     private Controller controller;
     private List<String> boardCards;
     private int numBoardCards; //Numero de cartas seleccioandas del board
+    private Evaluador ev;
 
     public HandSelecter() {
         this.allHandsMap = new HashMap<>();
@@ -37,6 +37,7 @@ public class HandSelecter {
         this.percentagePaintedCells = new ArrayList<>();
         this.boardCards = new ArrayList<>();
         this.numBoardCards = 0;
+        this.ev=new Evaluador();
         //Carga el ranking de SKLANSKY-CHUBUKOV en rankingMap
         loadRanking();
         //Carga las manos y su posición en la matriz
@@ -807,5 +808,21 @@ public class HandSelecter {
     public List<String> getBoardCards(){
         return this.boardCards;
     }
+    
+  
+//    public void p(){
+//        ev.addMapCombos(introducedRange);
+//        ev.filterBoardCombos();
+//        
+//        for(String s: ev.getCombos().keySet()){
+//            List<String> card = ev.getCombos().get(s);
+//            System.out.print(s+"->");
+//            for(int i=0;i<card.size();i++){
+//                System.out.print(card.get(i)+ " ");
+//            }
+//            System.out.println();
+//            
+//        }
+//    }
 
 }
