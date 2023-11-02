@@ -16,16 +16,45 @@ import model.Pair;
 
 public class MainFrame extends JFrame {
 
-    //Variables estaticas
-    private final static String simb[] = {"A", "K", "Q", "J", "T", "9", "8", "7", "6", "5", "4", "3", "2"};
-    private final Color VERDE = new Color(126, 246, 130);
-    private final Color AZUL = new Color(152, 201, 245);
-    private final Color ROJO = new Color(228, 115, 130);
-    private final Color MORADO = new Color(229, 137, 252);
-    private static JLabel[][] handsLabel = new JLabel[13][13];
+    //Colores personalizados
+    private static final Color VERDE = new Color(126, 246, 130);
+    private static final Color AZUL = new Color(152, 201, 245);
+    private static final Color ROJO = new Color(228, 115, 130);
+    private static final Color MORADO = new Color(229, 137, 252);
+    private static final Color ROJO_FUERTE = new Color(199, 27, 8);
+    private static final Color VERDE_FUERTE = new Color(8, 199, 27);
+    private static final Color AZUL_FUERTE = new Color(8, 27, 199);
 
-    //Variables locales
+    //Variables
+    private final static String simb[] = {"A", "K", "Q", "J", "T", "9", "8", "7", "6", "5", "4", "3", "2"};
+    private JLabel[][] handsLabel = new JLabel[13][13]; //JLabel de todas las posibles manos   
+    private JLabel[][] boardLabel = new JLabel[13][4]; //JLabel de las cartas del board
+    private JLabel[] selectedBoardJLabel = new JLabel[5]; //Lista de los JLabel del board seleccionados
     private Controller controller;
+    
+    /*
+    straight flush--
+    4 of a kind-----
+    full house------
+    flush-----------
+    straight--------
+    3 of a kind----- 
+    two pair--------
+    pair------------ 
+    no made hand----
+    */
+    
+    //JLabel de los combos
+    private JLabel straightFlush = new JLabel("straigth flush  ");
+    private JLabel fourOfKind = new JLabel("4 of a kind     ");
+    private JLabel fullHouse = new JLabel("full house      ");
+    private JLabel flush = new JLabel ("flush           ");
+    private JLabel straight = new JLabel ("straight        ");
+    private JLabel threeOfKind = new JLabel ("3 of a kind     ");
+    private JLabel twoPair = new JLabel ("two pair        ");
+    private JLabel pair = new JLabel ("pair            ");
+    private JLabel noMadeHand = new JLabel("no made hand    ");
+    
 
     public MainFrame() {
         initComponents(); //Inicializacion de los componentes visuales usando la utilidad de netbeans
@@ -33,7 +62,7 @@ public class MainFrame extends JFrame {
     }
 
     private void initMyComponents() {
-        //Inicializa la matriz de celdas 
+        //Inicializa la matriz de celdas de todas las manos
         for (int i = 0; i < 13; ++i) {
             for (int j = 0; j < 13; ++j) {
                 if (i == j) {
@@ -49,8 +78,10 @@ public class MainFrame extends JFrame {
                 handsLabel[i][j].setOpaque(true);
                 handsLabel[i][j].setBorder(BorderFactory.createRaisedSoftBevelBorder());
                 handsLabel[i][j].setHorizontalAlignment(SwingConstants.CENTER);
+                handsLabel[i][j].setForeground(Color.BLACK);
                 handMatrixPanel.add(handsLabel[i][j]);
                 JLabel jl = handsLabel[i][j];
+
                 jl.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
@@ -62,6 +93,7 @@ public class MainFrame extends JFrame {
                             controller.deleteSingleSelectedHandPos(jl.getText());
                             inputRangeTextField.setText(controller.getRangeSelect()); //Vuelve a actualizar los rangos mostrados
                             calculateRangePercentage(); //Calcula el porcentaje de rango
+                            percentageTextField.setText(String.valueOf((int) Math.round(getRangePercentage() * 10) / 10.0) + "%");
 
                         } //Sino pintalo
                         else {
@@ -72,6 +104,7 @@ public class MainFrame extends JFrame {
                             inputRangeTextField.setText(controller.getRangeSelect()); //Actualiza el texto de rango 
                             calculateRangePercentage(); //Calcula el porcentaje de rango
                             inputRangeTextField.setEnabled(false); //Para no poder modificar
+                            percentageTextField.setText(String.valueOf((int) Math.round(getRangePercentage() * 10) / 10.0) + "%");
 
                         }
 
@@ -79,6 +112,132 @@ public class MainFrame extends JFrame {
                 });
             }
         }
+
+        //Inicializa las celdas que representa todas las cartas posibles del board
+        for (int i = 0; i < 13; ++i) {
+            for (int j = 0; j < 4; ++j) {
+
+                //Pintar de rojo
+                if (j == 0) {
+                    boardLabel[i][j] = new JLabel(simb[i] + 'h');
+                    boardLabel[i][j].setBackground(ROJO);
+
+                } //Pintar de verde
+                else if (j == 1) {
+                    boardLabel[i][j] = new JLabel(simb[i] + 'c');
+                    boardLabel[i][j].setBackground(VERDE);
+
+                } //Pintar de azul
+                else if (j == 2) {
+                    boardLabel[i][j] = new JLabel(simb[i] + 'd');
+                    boardLabel[i][j].setBackground(AZUL);
+                } //Pintar de gris
+                else {
+                    boardLabel[i][j] = new JLabel(simb[i] + 's');
+                    boardLabel[i][j].setBackground(Color.LIGHT_GRAY);
+                }
+
+                boardLabel[i][j].setOpaque(true);
+                boardLabel[i][j].setBorder(BorderFactory.createRaisedSoftBevelBorder());
+                boardLabel[i][j].setHorizontalAlignment(SwingConstants.CENTER);
+                boardLabel[i][j].setForeground(Color.BLACK);
+                boardPanel.add(boardLabel[i][j]);
+                JLabel label = boardLabel[i][j];
+
+                label.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+
+                        //Si el board no esta lleno
+                        if (controller.getNumBoardCard() < 5) {
+                            if (label.getBackground().equals(ROJO)) {
+                                label.setBackground(ROJO_FUERTE);
+                                controller.addBoardCard(label.getText());
+                            } else if (label.getBackground().equals(VERDE)) {
+                                label.setBackground(VERDE_FUERTE);
+                                controller.addBoardCard(label.getText());
+                            } else if (label.getBackground().equals(AZUL)) {
+                                label.setBackground(AZUL_FUERTE);
+                                controller.addBoardCard(label.getText());
+                            } else if (label.getBackground().equals(Color.LIGHT_GRAY)) {
+                                label.setBackground(Color.DARK_GRAY);
+                                controller.addBoardCard(label.getText());
+                            } else if (label.getBackground().equals(ROJO_FUERTE)) {
+                                label.setBackground(ROJO);
+                                controller.removeBoardCard(label.getText());
+                            } else if (label.getBackground().equals(VERDE_FUERTE)) {
+                                label.setBackground(VERDE);
+                                controller.removeBoardCard(label.getText());
+                            } else if (label.getBackground().equals(AZUL_FUERTE)) {
+                                label.setBackground(AZUL);
+                                controller.removeBoardCard(label.getText());
+                            } else if (label.getBackground().equals(Color.DARK_GRAY)) {
+                                label.setBackground(Color.LIGHT_GRAY);
+                                controller.removeBoardCard(label.getText());
+                            }
+                            refreshBoardCards();
+
+                        } //Si el board esta lleno 
+                        else {
+                            if (label.getBackground().equals(ROJO_FUERTE)) {
+                                label.setBackground(ROJO);
+                                controller.removeBoardCard(label.getText());
+                            } else if (label.getBackground().equals(VERDE_FUERTE)) {
+                                label.setBackground(VERDE);
+                                controller.removeBoardCard(label.getText());
+                            } else if (label.getBackground().equals(AZUL_FUERTE)) {
+                                label.setBackground(AZUL);
+                                controller.removeBoardCard(label.getText());
+                            } else if (label.getBackground().equals(Color.DARK_GRAY)) {
+                                label.setBackground(Color.LIGHT_GRAY);
+                                controller.removeBoardCard(label.getText());
+                            }
+                            refreshBoardCards();
+                        }
+
+                    }
+
+                });
+
+            }
+        }
+        //Inicializa las celdas con las cartas del board
+        for (int i = 0; i < 5; ++i) {
+            selectedBoardJLabel[i] = new JLabel("");
+            selectedBoardJLabel[i].setOpaque(true);
+            selectedBoardJLabel[i].setBorder(BorderFactory.createRaisedSoftBevelBorder());
+            selectedBoardJLabel[i].setHorizontalAlignment(SwingConstants.CENTER);
+            selectedBoardJLabel[i].setForeground(Color.BLACK);
+            this.selectedBoardPanel.add(selectedBoardJLabel[i]);
+        }
+        
+        //Inicializa el panel de combos
+        comboPanel.add(straightFlush);
+        comboPanel.add(fourOfKind);
+        comboPanel.add(fullHouse);
+        comboPanel.add(flush);
+        comboPanel.add(straight);
+        comboPanel.add(threeOfKind);
+        comboPanel.add(twoPair);
+        comboPanel.add(pair);
+        comboPanel.add(noMadeHand);
+        
+
+
+    }
+
+    //Actualiza las cartas del board actuales
+    private void refreshBoardCards() {
+        List<String> cartas = controller.getBoardCards();
+
+        for (int i = 0; i < cartas.size(); ++i) {
+            selectedBoardJLabel[i].setText(cartas.get(i));
+        }
+
+        for (int i = cartas.size(); i < 5; ++i) {
+            selectedBoardJLabel[i].setText("");
+        }
+
     }
 
     //Resalta las celdas dentro del Rango definido
@@ -185,21 +344,17 @@ public class MainFrame extends JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        handMatrixPanel = new javax.swing.JPanel();
         percentageSlider = new javax.swing.JSlider();
         percentageTextField = new javax.swing.JTextField();
         inputRangeTextField = new javax.swing.JTextField();
+        inputTextFieldLabel = new javax.swing.JLabel();
+        boardPanel = new javax.swing.JPanel();
+        comboPanel = new javax.swing.JPanel();
+        handMatrixPanel = new javax.swing.JPanel();
         clearButton = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
+        selectedBoardPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        handMatrixPanel.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        handMatrixPanel.setToolTipText("");
-        handMatrixPanel.setMaximumSize(new java.awt.Dimension(400, 400));
-        handMatrixPanel.setMinimumSize(new java.awt.Dimension(400, 400));
-        handMatrixPanel.setPreferredSize(new java.awt.Dimension(400, 400));
-        handMatrixPanel.setLayout(new java.awt.GridLayout(13, 13));
 
         percentageSlider.setValue(0);
         percentageSlider.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -220,6 +375,24 @@ public class MainFrame extends JFrame {
             }
         });
 
+        inputTextFieldLabel.setText("Selected");
+
+        boardPanel.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        boardPanel.setMaximumSize(new java.awt.Dimension(123, 400));
+        boardPanel.setMinimumSize(new java.awt.Dimension(123, 400));
+        boardPanel.setPreferredSize(new java.awt.Dimension(123, 400));
+        boardPanel.setLayout(new java.awt.GridLayout(13, 4));
+
+        comboPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Statistics", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI Black", 3, 12), new java.awt.Color(0, 102, 255))); // NOI18N
+        comboPanel.setLayout(new javax.swing.BoxLayout(comboPanel, javax.swing.BoxLayout.Y_AXIS));
+
+        handMatrixPanel.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        handMatrixPanel.setToolTipText("");
+        handMatrixPanel.setMaximumSize(new java.awt.Dimension(400, 400));
+        handMatrixPanel.setMinimumSize(new java.awt.Dimension(400, 400));
+        handMatrixPanel.setPreferredSize(new java.awt.Dimension(400, 400));
+        handMatrixPanel.setLayout(new java.awt.GridLayout(13, 13));
+
         clearButton.setText("clear");
         clearButton.setFocusPainted(false);
         clearButton.addActionListener(new java.awt.event.ActionListener() {
@@ -228,7 +401,7 @@ public class MainFrame extends JFrame {
             }
         });
 
-        jLabel1.setText("Selected");
+        selectedBoardPanel.setLayout(new java.awt.GridLayout(1, 5));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -236,41 +409,51 @@ public class MainFrame extends JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(handMatrixPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(percentageSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(percentageTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(handMatrixPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(percentageTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(boardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(selectedBoardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(comboPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(93, 93, 93)
-                        .addComponent(clearButton))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(61, 61, 61)
-                        .addComponent(inputRangeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(109, 109, 109)
-                        .addComponent(jLabel1)))
-                .addContainerGap(76, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(inputRangeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(clearButton)
+                            .addComponent(inputTextFieldLabel))
+                        .addGap(0, 193, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(9, 9, 9)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel1)
+                        .addComponent(comboPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(inputTextFieldLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(inputRangeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(clearButton))
-                    .addComponent(handMatrixPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(percentageSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(percentageTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(44, 44, 44))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(selectedBoardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(boardPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 397, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(handMatrixPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(percentageTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(percentageSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(63, Short.MAX_VALUE))
         );
 
         pack();
@@ -286,7 +469,7 @@ public class MainFrame extends JFrame {
         clearSelectedHands();   //Borra los elementos de la lista de manos dentro del rango
         clearIntroducedRange(); //Borra los elementos de la lista de introducedRange
         inputRangeTextField.setEnabled(true);
-        
+
     }//GEN-LAST:event_clearButtonActionPerformed
 
     //Listener del JSlider
@@ -301,7 +484,7 @@ public class MainFrame extends JFrame {
     //Listener del JTextField del Porcentaje
     private void percentageTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_percentageTextFieldActionPerformed
         try {
-            String valorIntroducido=percentageTextField.getText().replace("%","");
+            String valorIntroducido = percentageTextField.getText().replace("%", "");
             float value = Float.parseFloat(valorIntroducido);
             resetPurpleCellsColor();
             colorCellsPurple(value);
@@ -328,16 +511,19 @@ public class MainFrame extends JFrame {
         calculateRangePercentage(); //Calcula el porcentaje de rango
         colorCellsYellow(); //Resalta las celdas dentro del rango
         inputRangeTextField.setEnabled(false);
-        percentageTextField.setText(String.valueOf((int)Math.round(getRangePercentage()*10)/10.0) + "%");
+        percentageTextField.setText(String.valueOf((int) Math.round(getRangePercentage() * 10) / 10.0) + "%");
     }//GEN-LAST:event_inputRangeTextFieldActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel boardPanel;
     private javax.swing.JButton clearButton;
+    private javax.swing.JPanel comboPanel;
     private javax.swing.JPanel handMatrixPanel;
     private javax.swing.JTextField inputRangeTextField;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel inputTextFieldLabel;
     private javax.swing.JSlider percentageSlider;
     private javax.swing.JTextField percentageTextField;
+    private javax.swing.JPanel selectedBoardPanel;
     // End of variables declaration//GEN-END:variables
 }

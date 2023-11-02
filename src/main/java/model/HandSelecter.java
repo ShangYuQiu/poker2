@@ -16,14 +16,17 @@ import java.util.TreeMap;
 public class HandSelecter {
 
     private static String simb[] = {"A", "K", "Q", "J", "T", "9", "8", "7", "6", "5", "4", "3", "2"};
-    private Controller controller;
+    
     private Map<String, Pair> allHandsMap; //Par clave valor, representa una Mano, y su poscición en la Matriz
     private Map<Pair,String> allPosHandsMap;//Par clave valor, representa una posicion, y la mano que esta en esa posicion
-    private Map<Float, List<Pair>> rankingMap;  //Par clave valor, representa el ranking, y su posición en la Matriz (Ordenado por clave)
+    private Map<Float, List<Pair>> rankingMap;  //Par clave valor, representa el ranking, y su posición en la Matriz (Ordenado por clave)    
     private List<String> introducedRange; //Rango de manos introducidas por el usuario
     private List<Pair> selectedHandsPos; //Posición en matriz de las manos seleccionadas 
     private List<Pair> percentagePaintedCells; //Posición de las celdas pintadas según porcentaje (Apartado 2)
     private float rangePercentage; //Porcentaje de rango que pertenece el rango actual (introducedRange)
+    private Controller controller;
+    private List<String> boardCards;
+    private int numBoardCards; //Numero de cartas seleccioandas del board
 
     public HandSelecter() {
         this.allHandsMap = new HashMap<>();
@@ -32,6 +35,8 @@ public class HandSelecter {
         this.selectedHandsPos = new ArrayList<>();
         this.introducedRange = new ArrayList<>();
         this.percentagePaintedCells = new ArrayList<>();
+        this.boardCards = new ArrayList<>();
+        this.numBoardCards = 0;
         //Carga el ranking de SKLANSKY-CHUBUKOV en rankingMap
         loadRanking();
         //Carga las manos y su posición en la matriz
@@ -779,6 +784,25 @@ public class HandSelecter {
         for(Pair p:percentagePaintedCells){
             introducedRange.add(allPosHandsMap.get(p));
         }
+    }
+    
+    public int getNumBoardCard(){
+        return this.numBoardCards;
+    }
+    
+    
+    public void addBoardCard(String card ){
+        this.boardCards.add(card);
+        this.numBoardCards++;
+    }
+    
+    public void removeBoardCard(String card){
+        this.boardCards.remove(card);
+        this.numBoardCards--;
+    }
+    
+    public List<String> getBoardCards(){
+        return this.boardCards;
     }
 
 }
