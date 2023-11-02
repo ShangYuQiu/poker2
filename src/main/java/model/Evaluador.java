@@ -10,7 +10,7 @@ public class Evaluador {
 
     private List<Carta> board; //Cartas del board comunes
     private Map<String, List<String>> combos; //Par clave valor, donde (KK, <KhKh, KcKc...>), muestra los posibles combos
-    
+
 
     //Contador de las jugadas
     private int numStraightFlush;
@@ -47,28 +47,78 @@ public class Evaluador {
     public void evalue(List<String> mano){
         
     }
-    
-
+    //aniadir todos los combos a la map combos 
+    public void addMapCombos(List<String> introducedRange){
+        String[] palo={"h","c","d","s"};
+        for(String s: introducedRange){
+            if(s.contains("s")){//para los suite
+                int i=0;
+                combos.put(s,new ArrayList());
+                while(i<4){
+                    combos.get(s).add(new String(s.substring(0,1)+palo[i]+s.substring(1,2)+palo[i]));
+                    i++;
+                }
+            }
+            else if(s.contains("o"))//offsuite
+            {
+                int i=0;
+                int j=1;
+                combos.put(s,new ArrayList());
+                while(i<4){
+                    combos.get(s).add(new String(s.substring(0,1)+palo[i]+s.substring(1,2)+palo[j]));
+                    j++;
+                    if(j==i){
+                        j++;
+                    }
+                    if(j>=4){
+                        i++;
+                        j=0;
+                    }
+                }
+            }
+            else{//pares
+                int i=0;
+                int j=1;
+                combos.put(s,new ArrayList());
+                while(i<3){
+                    combos.get(s).add(new String(s.substring(0,1)+palo[i]+s.substring(1,2)+palo[j]));
+                    j++;
+                    if(j>=4){
+                        i++;
+                        j=i+1;
+                    }
+                }
+            }
+        }
+        board.add(new Carta("A","h"));
+    }
     //Filtra quitando aquellos combos que aparecen las cartas del board
     public void filterBoardCombos() {
+        List<String> BoardCombos=new ArrayList();//para guardar todos los combos que deben eliminar
         //Para cada carta del board miro si puedo eliminar combos
         for (Carta c : board) {
             //Miro en cada mano
             for (String rango : combos.keySet()) {
                 //Si el combo contiene una carta del board hay que eliminar combos
                 if (rango.contains(c.getSimb())) {
-                    String carta = c.getSimb() + c.getPalo();
-                    
-                   for(String s : combos.get(rango)){
-                       if(s.contains(carta)){
-                           combos.get(rango).remove(s);
+                    //String carta = c.getSimb() + c.getPalo();
+                    List<String> card=combos.get(rango);
+                    for(String s : card){
+                       if(s.contains(c.getPalo())){
+                           BoardCombos.add(s);
                        }
                    }
-                    
-                    
                 }
             }
         }
+        //recorremos combos para eliminar todo que aparece en la lista boardCombo
+        for (String rango : combos.keySet()) {
+            for(String s: BoardCombos){
+                combos.get(rango).remove(s);
+            }
+        }
+        
+        
     }
 
     //Comprueba si hay escelera de color
@@ -319,5 +369,8 @@ public class Evaluador {
         for (String s : c) {
             this.board.add(new Carta(Character.toString(s.charAt(0)), Character.toString(s.charAt(1))));
         }
+    }
+    public Map<String, List<String>> getCombos(){
+        return this.combos;
     }
 }
