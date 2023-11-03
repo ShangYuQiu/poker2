@@ -213,7 +213,7 @@ public class Evaluador {
         return escalera;
     }
 
-    //Comprueba si hay poker
+    //Comprueba si hay poker //to do
     public boolean Poker(List<Carta> c) {
         boolean poker = false;
         Collections.sort(c);
@@ -242,15 +242,13 @@ public class Evaluador {
         return poker;
     }
 
-    //Comprueba si hay full house
+    //Comprueba si hay full house //to do
     public boolean FullHouse(List<Carta> c) {
         boolean fullHouse = false;
         Collections.sort(c);
 
-        if (Trio(c)) {
-            c.remove(0);
-            c.remove(0);
-            c.remove(0);
+        if (Trio(c) != null) {
+             // elimiar de la lista c las cartas devueltas de trio
 
             if (Pareja(c)) {
                 fullHouse = true;
@@ -293,12 +291,13 @@ public class Evaluador {
     }
 
     //Comprueba si hay trio
-    public boolean Trio(List<Carta> c) {
+    public List<Carta> Trio(List<Carta> c) { // return lista 
         boolean trio = false;
         Collections.sort(c);
         int i = 0;
         int cont = 1;   //Numero de cartas del trio actual
-
+        List<Carta> trios = new ArrayList<>();
+        
         while (i < c.size() - 1) {
             int cur = c.get(i).getVal();
             int sig = c.get(i + 1).getVal();
@@ -314,11 +313,21 @@ public class Evaluador {
             //Si hay trio
             if (cont == 3) {
                 trio = true;
+                trios.add(c.get(i));
+                trios.add(c.get(i-1));
+                trios.add(c.get(i-2));
+                
                 break;
             }
             i++;
         }
-        return trio;
+        // 
+        if(trio){
+            return trios;
+        }
+        else {
+            return null;
+        }
     }
 
     //Comprueba si hay doble pareja
@@ -359,6 +368,19 @@ public class Evaluador {
         return pareja;
     }
 
+    public boolean hayCartaMano(List<Carta> c){
+        
+        int i  = 0;
+        boolean hay = false;
+        while( i < c.size() && !hay){
+            
+            if(c.get(i).getesdeMesa() == false){
+                hay = true;
+            }
+            i++;
+        }
+        return hay;
+    }
     //Calcula el numero de combos totales
     public int getTotalCombos() {
         return numStraightFlush + numFourOfKind + numFullHouse + numFlush + numStraight + numThreeOfKind + numTwoPair + numPair + numNoMadeHand;
@@ -367,7 +389,9 @@ public class Evaluador {
     public void setBoard(List<String> c) {
         this.board.clear();
         for (String s : c) {
-            this.board.add(new Carta(Character.toString(s.charAt(0)), Character.toString(s.charAt(1))));
+            Carta card =new Carta(Character.toString(s.charAt(0)), Character.toString(s.charAt(1)));
+            card.setesdeMesa(true);
+            this.board.add(card);
         }
     }
     public Map<String, List<String>> getCombos(){
