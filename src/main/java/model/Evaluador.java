@@ -44,10 +44,10 @@ public class Evaluador {
     
     
     //Calcula el combo de una mano
-    public void evalue(List<String> mano){
+    public void evalue(List<String> introducedRange){
         
     }
-    //aniadir todos los combos a la map combos 
+    //aniadir todos los combos de las cartas introducidos a la map de combos 
     public void addMapCombos(List<String> introducedRange){
         String[] palo={"h","c","d","s"};
         for(String s: introducedRange){
@@ -117,10 +117,10 @@ public class Evaluador {
                 combos.get(rango).remove(s);
             }
         }
-        
-        
+   
     }
 
+    
     //Comprueba si hay escelera de color
     public boolean EscaleraColor(List<Carta> c) {
         boolean escaleraColor = false;
@@ -372,5 +372,41 @@ public class Evaluador {
     }
     public Map<String, List<String>> getCombos(){
         return this.combos;
+    }
+    
+    public int getnumStraightFlush(){
+        return this.numStraightFlush;
+    }
+    
+    public int getnumFourOfKind(){
+        return this.numFourOfKind;
+    }
+    
+    public int getnumFullHouse(){
+        return this.numFullHouse;
+    }
+    
+    public int getnumFlush(){
+        return this.numFlush;
+    }
+    
+    public int getnumStraight(){
+        return this.numStraight;
+    }
+    
+    public int getnumThreeOfKind(){
+        return this.numThreeOfKind;
+    }
+    
+    public int getnumTwoPair(){
+        return this.numTwoPair;
+    }
+    
+    public int getnumPair(){
+        return this.numPair;
+    }
+    
+    public int getnumNoMadeHand(){
+        return this.numNoMadeHand;
     }
 }

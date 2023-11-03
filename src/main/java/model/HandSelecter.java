@@ -106,19 +106,6 @@ public class HandSelecter {
     public String getSelectedCellText() {
         String s = "";
 
-        //ordenamos la lista
-        /*introducedRange.sort(new Comparator() {
-            @Override
-            public int compare(Object o1, Object o2) {
-                if (o2.toString().compareTo(o1.toString()) > 0) {
-                    return 1;
-                } else if (o1.toString().equals(o2.toString())) {
-                    return 0;
-                } else {
-                    return -1;
-                }
-            }
-        });*/
         List<Pair> suited = new ArrayList<>(); // lista del valor numero de las dos cartas suited
         List<Pair> offsuited = new ArrayList<>(); // lista del valor numero de las dos cartas offsuited
         List<Pair> par = new ArrayList<>(); // lista del valor numero de las dos cartas pareja
@@ -791,7 +778,6 @@ public class HandSelecter {
     public int getNumBoardCard(){
         return this.numBoardCards;
     }
-    
     
     public void addBoardCard(String card ){
         this.boardCards.add(card);
