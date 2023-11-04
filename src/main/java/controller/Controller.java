@@ -3,6 +3,8 @@ package controller;
 
 import gui.MainFrame;
 import java.util.List;
+import java.util.Map;
+import model.Evaluador;
 import model.HandSelecter;
 import model.Pair;
 
@@ -10,14 +12,33 @@ public class Controller {
 
     private HandSelecter hs;
     private MainFrame frame;
+    private Evaluador ev;
 
     public Controller(HandSelecter hs, MainFrame frame) {
         this.hs = hs;
         this.frame = frame;
+        this.ev = new Evaluador();
+    }
+
+    //Devuelve los resultados una vez calculados los combos
+    public Map<String, Map<String, Integer>> getComboResults() {
+        return ev.getComboResults();
+    }
+
+    public void evalueAllCombos() {
+        ev.evalueAllCombos(hs.getBoardCards(), hs.getIntroducedRange());
+    }
+    
+    public int getHandTotalCombos(String s){
+        return ev.calculateHandTotalCombos(s);
     }
 
     public List<Pair> getCellsToColor() {
         return hs.getCellsToColor();
+    }
+
+    public List<String> getIntroducedRange() {
+        return hs.getIntroducedRange();
     }
 
     public Pair returnCellPos(String s) {
@@ -55,8 +76,8 @@ public class Controller {
     public List<Pair> getPercentagePaintedCells(Float percentage) {
         return hs.getPercentagePaintedCells(percentage);
     }
-    
-    public List<Pair> getPercentagePaintedCells(){
+
+    public List<Pair> getPercentagePaintedCells() {
         return hs.getPercentagePaintedCells();
     }
 
@@ -86,19 +107,19 @@ public class Controller {
         hs.singleRangeToCellPos(s);
     }
 
-    public int getNumBoardCard(){
+    public int getNumBoardCard() {
         return hs.getNumBoardCard();
     }
 
-    public void addBoardCard(String card ){
+    public void addBoardCard(String card) {
         hs.addBoardCard(card);
     }
-    
-    public void removeBoardCard(String card){
+
+    public void removeBoardCard(String card) {
         hs.removeBoardCard(card);
     }
-    
-    public List<String> getBoardCards(){
+
+    public List<String> getBoardCards() {
         return hs.getBoardCards();
     }
 }

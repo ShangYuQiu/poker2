@@ -6,16 +6,16 @@ public class Carta implements Comparable<Carta> {
     private final String palo; //Representa el palo al que pertenece la carta
     private int valor; //Valor real representativo
     private boolean esdeMesa; //Si la carta es del board o es no comun
-    
+
     public Carta(String simbolo, String palo) {
         this.simbolo = simbolo;
         this.palo = palo;
         esdeMesa = false;
         init(); //Parsea la carta a su valor real referencial
     }
-    
+
     //Setter
-    public void setValor(int val){
+    public void setValor(int val) {
         this.valor = val;
     }
 
@@ -42,7 +42,6 @@ public class Carta implements Comparable<Carta> {
         }
     }
 
-    
     //Getters y Setters
     public int getVal() {
         return valor;
@@ -56,26 +55,32 @@ public class Carta implements Comparable<Carta> {
         return simbolo;
     }
 
-    public void setesdeMesa(boolean b){
+    public void setesdeMesa(boolean b) {
         this.esdeMesa = b;
     }
-    
-    public boolean getesdeMesa(){
+
+    public boolean getesdeMesa() {
         return this.esdeMesa;
     }
+
+    @Override
+    public String toString() {
+        return this.simbolo + this.palo;
+    }
+
     @Override
     public int compareTo(Carta o) {
 
-//      //Orden descendente
-       /*if (this.valor < o.getVal()) {
+        //Orden descendente
+        if (this.valor < o.getVal()) {
             return 1;
         } else if (this.valor == o.getVal()) {
             return 0;
-       } else {
+        } else {
             return -1;
-        }*/
-        
-        return o.getVal() - this.valor;
+        }
+
+        //return o.getVal() - this.valor;
     }
 
 }
