@@ -809,6 +809,10 @@ public class HandSelecter {
         return this.boardCards;
     }
     
+    public List<String> getIntroducedRange(){
+        return this.introducedRange;
+    }
+    
   
 //    public void p(){
 //        ev.addMapCombos(introducedRange);

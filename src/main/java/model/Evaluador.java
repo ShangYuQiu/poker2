@@ -27,12 +27,48 @@ public class Evaluador {
         this.jugadas.put("twoPair", new HashMap<>());
         this.jugadas.put("pair", new HashMap<>());
         this.jugadas.put("noMadeHand", new HashMap<>());
+        
+    }
 
+    //Calcula el numero de combos que se ha formado con un tipo de jugada
+    public int calculateHandTotalCombos(String s) {
+        Map<String, Integer> combos = jugadas.get(s);
+        int numCombos = 0;
+        for (Integer d : combos.values()) {
+            numCombos += d;
+        }
+        return numCombos;
+    }
+
+    public void imprimirEstadisticas() {
+        for (Map.Entry<String, Map<String, Integer>> entrada : jugadas.entrySet()) {
+            String jugada = entrada.getKey();
+            Map<String, Integer> combos = entrada.getValue();
+            System.out.println(jugada);
+            for (Map.Entry<String, Integer> entrada2 : combos.entrySet()) {
+                System.out.println(String.format("%s %d", entrada2.getKey(), entrada2.getValue()));
+            }
+
+        }
     }
 
     //Calcula todos los combos
-    public void evalueAllCombos() {
-        //Primero filtra todos los combos quitando las que ya aparecen en el board
+    public void evalueAllCombos(List<String> boardCards, List<String> introducedRange) {
+        //Vaciar el mapa 
+        combos.clear();
+        
+        //Vaciar las jugadas ya calculadas
+        for(Map.Entry<String, Map<String, Integer>> entrada : jugadas.entrySet()){
+            entrada.getValue().clear();
+        }
+
+        //Primera desglosar los rangos en manos concretas de todos los palos posibles
+        this.addMapCombos(introducedRange);
+
+        //Actualiza el board
+        this.setBoard(boardCards);
+
+        //Segundo filtra todos los combos quitando las que ya aparecen en el board
         filterBoardCombos();
 
         //Calcula todos las jugadas con todos los combos
@@ -47,6 +83,7 @@ public class Evaluador {
                 evalue(rango, tmp);
 
             }
+
         }
 
     }
@@ -54,42 +91,99 @@ public class Evaluador {
     //Calcula el combo de una mano
     public void evalue(String rango, List<String> mano) {
         //Combina las cartas del board con las de la mano
-        List<Carta> cartas = new ArrayList<>();
-        cartas.addAll(this.board);
-        cartas.addAll(convertirStringsToCartas(mano));
+        List<Carta> cartas = new SortedArrayList<>();
 
-        //Ordena las cartas de mayor a menor
-        Collections.sort(cartas);
+        for (Carta c : board) {
+            cartas.add(c);
+        }
+
+        for (Carta c : convertirStringsToCartas(mano)) {
+            cartas.add(c);
+        }
+        
+        //No hace falta ordenar
 
         //Comprueba si se forma una de las siguientes jugadas
         if (EscaleraColor(cartas)) {
             Map<String, Integer> j = jugadas.get("straightFlush");
-            j.put(rango, j.get(rango) + 1);
+            if(j.containsKey(rango)){
+                j.put(rango, j.get(rango) + 1);
+            }
+            else{
+                j.put(rango, 1);
+            }  
 
         } else if (Poker(cartas)) {
             Map<String, Integer> j = jugadas.get("fourOfKind");
-            j.put(rango, j.get(rango) + 1);
+            if(j.containsKey(rango)){
+                j.put(rango, j.get(rango) + 1);
+            }
+            else{
+                j.put(rango, 1);
+            }  
+
         } else if (FullHouse(cartas)) {
             Map<String, Integer> j = jugadas.get("fullHouse");
-            j.put(rango, j.get(rango) + 1);
+            if(j.containsKey(rango)){
+                j.put(rango, j.get(rango) + 1);
+            }
+            else{
+                j.put(rango, 1);
+            }  
+
         } else if (Flush(cartas)) {
             Map<String, Integer> j = jugadas.get("flush");
-            j.put(rango, j.get(rango) + 1);
+            if(j.containsKey(rango)){
+                j.put(rango, j.get(rango) + 1);
+            }
+            else{
+                j.put(rango, 1);
+            }  
+
         } else if (Escalera(cartas)) {
             Map<String, Integer> j = jugadas.get("straight");
-            j.put(rango, j.get(rango) + 1);
+            if(j.containsKey(rango)){
+                j.put(rango, j.get(rango) + 1);
+            }
+            else{
+                j.put(rango, 1);
+            }  
+
         } else if (Trio(cartas)) {
             Map<String, Integer> j = jugadas.get("threeOfKind");
-            j.put(rango, j.get(rango) + 1);
+            if(j.containsKey(rango)){
+                j.put(rango, j.get(rango) + 1);
+            }
+            else{
+                j.put(rango, 1);
+            }  
+
         } else if (DoblePareja(cartas)) {
             Map<String, Integer> j = jugadas.get("twoPair");
-            j.put(rango, j.get(rango) + 1);
+            if(j.containsKey(rango)){
+                j.put(rango, j.get(rango) + 1);
+            }
+            else{
+                j.put(rango, 1);
+            }  
+
         } else if (Pareja(cartas)) {
             Map<String, Integer> j = jugadas.get("pair");
-            j.put(rango, j.get(rango) + 1);
+            if(j.containsKey(rango)){
+                j.put(rango, j.get(rango) + 1);
+            }
+            else{
+                j.put(rango, 1);
+            }  
+
         } else {
             Map<String, Integer> j = jugadas.get("noMadeHand");
-            j.put(rango, j.get(rango) + 1);
+            if(j.containsKey(rango)){
+                j.put(rango, j.get(rango) + 1);
+            }
+            else{
+                j.put(rango, 1);
+            }        
         }
     }
 
@@ -101,8 +195,7 @@ public class Evaluador {
                 int i = 0;
                 combos.put(s, new ArrayList());
                 while (i < 4) {
-                    combos.get(s).add(new String(s.substring(0, 1) + palo[i] + s.substring(1, 2) + palo[i]));
-                    //combos.get(s).add(String.format("%s%s%s%s",s.substring(0, 1), palo[i],s.substring(1, 2), palo[i] )); Posiblemente mejor hacerlo asi 
+                    combos.get(s).add(String.format("%s%s%s%s", s.substring(0, 1), palo[i], s.substring(1, 2), palo[i]));
                     i++;
                 }
             } else if (s.contains("o"))//offsuite
@@ -111,7 +204,7 @@ public class Evaluador {
                 int j = 1;
                 combos.put(s, new ArrayList());
                 while (i < 4) {
-                    combos.get(s).add(new String(s.substring(0, 1) + palo[i] + s.substring(1, 2) + palo[j]));
+                    combos.get(s).add(String.format("%s%s%s%s", s.substring(0, 1), palo[i], s.substring(1, 2), palo[j]));
                     j++;
                     if (j == i) {
                         j++;
@@ -126,7 +219,7 @@ public class Evaluador {
                 int j = 1;
                 combos.put(s, new ArrayList());
                 while (i < 3) {
-                    combos.get(s).add(new String(s.substring(0, 1) + palo[i] + s.substring(1, 2) + palo[j]));
+                    combos.get(s).add(String.format("%s%s%s%s", s.substring(0, 1), palo[i], s.substring(1, 2), palo[j]));
                     j++;
                     if (j >= 4) {
                         i++;
@@ -156,7 +249,6 @@ public class Evaluador {
                     }
                 }
 
-                //TODO no terminado ta mal
             }
         }
         //recorremos combos para eliminar todo que aparece en la lista boardCombo
@@ -168,6 +260,7 @@ public class Evaluador {
 
     }
 
+    //Convierte una lista manos en forma de Strings una lista de tipo Carta
     public List<Carta> convertirStringsToCartas(List<String> mano) {
         List<Carta> ret = new ArrayList<>();
         for (String s : mano) {
@@ -188,7 +281,7 @@ public class Evaluador {
             int cur = c.get(i).getVal();    //Valor de la ultima carta que se tiene para formar la jugada
 
             int j = i + 1;
-            while (j < c.size()) {
+            while (j < c.size() && (c.size() - j) >= 5) {
                 //Si es del mismo valo y su diferencia vale 1
                 if (cur - c.get(j).getVal() == 1 && palo.equals(c.get(j).getPalo())) {
                     tmp.add(0, c.get(j));   //Se inserta en la lista
@@ -334,6 +427,7 @@ public class Evaluador {
                 case "s" ->
                     contS++;
             }
+            ++i;
         }
 
         //Si hay flush
@@ -408,6 +502,12 @@ public class Evaluador {
         return pareja;
     }
 
+    //Devuelve los resultados una vez calculados los combos
+    public Map<String, Map<String, Integer>> getComboResults() {
+        return this.jugadas;
+    }
+
+    //Actualiza el board con nuevas cartas
     public void setBoard(List<String> c) {
         this.board.clear();
         for (String s : c) {

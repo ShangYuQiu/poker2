@@ -61,7 +61,7 @@ public class Carta implements Comparable<Carta> {
     @Override
     public int compareTo(Carta o) {
 
-//      //Orden descendente
+        //Orden descendente
         if (this.valor < o.getVal()) {
             return 1;
         } else if (this.valor == o.getVal()) {
