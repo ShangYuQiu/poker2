@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,7 @@ public class Evaluador {
     private Map<String, Map<String, Integer>> jugadas; //Par clave valor, donde (<Trio, <AA, 3>>), muestra las cartas asociadas a cada jugada y cuantos
 
     public Evaluador() {
-        this.board = new ArrayList<>();
+        this.board = new SortedArrayList<>();
         this.combos = new HashMap<>();
 
         //Inicializa las entradas de las posibles jugadas
@@ -24,7 +25,11 @@ public class Evaluador {
         this.jugadas.put("straight", new HashMap<>());
         this.jugadas.put("threeOfKind", new HashMap<>());
         this.jugadas.put("twoPair", new HashMap<>());
-        this.jugadas.put("pair", new HashMap<>());
+        this.jugadas.put("overPair", new HashMap<>());
+        this.jugadas.put("topPair", new HashMap<>());
+        this.jugadas.put("ppBelowTopPair", new HashMap<>());
+        this.jugadas.put("middlePair", new HashMap<>());
+        this.jugadas.put("weakPair", new HashMap<>());
         this.jugadas.put("noMadeHand", new HashMap<>());
 
     }
@@ -100,6 +105,8 @@ public class Evaluador {
             cartas.add(c);
         }
 
+        String tPareja; //String para identificar el tipo de pareja
+
         //No hace falta ordenar
         //Comprueba si se forma una de las siguientes jugadas
         if (EscaleraColor(cartas) != null) {
@@ -158,8 +165,8 @@ public class Evaluador {
                 j.put(rango, 1);
             }
 
-        } else if (Pareja(cartas) != null) {
-            Map<String, Integer> j = jugadas.get("pair");
+        } else if ((tPareja = ParejaConDistincion(cartas)) != null) {
+            Map<String, Integer> j = jugadas.get(tPareja);
             if (j.containsKey(rango)) {
                 j.put(rango, j.get(rango) + 1);
             } else {
@@ -260,7 +267,8 @@ public class Evaluador {
     //Comprueba si hay escelera de color
     private Jugada EscaleraColor(List<Carta> c) {
         Jugada escaleraColor = null;
-
+        Collections.sort(c);
+        
         int i = 0;
         while (i < c.size()) {
             ArrayList<Carta> tmp = new ArrayList<>(); //Lista que guarda las carta forma la escalera de color
@@ -290,6 +298,7 @@ public class Evaluador {
                     c.add(0, tmp.remove(0));
                 }
 
+
                 // recorrer tmp y ver si hay alguna carta que no es de mesa
                 escaleraColor = new Jugada(c, tJugada.ESCALERA_COLOR, null);
                 break;
@@ -301,6 +310,7 @@ public class Evaluador {
     }
 
     private Jugada Escalera(List<Carta> c) {
+        Collections.sort(c);
         Jugada escalera = null;
         //Distinguimos casos dependiendo de si la mano contiene Aces o no 
         List<Carta> tmp = new ArrayList<>(c);
@@ -362,6 +372,7 @@ public class Evaluador {
 
     //Devuelve el poker si existe (Funciona)
     private Jugada Poker(List<Carta> c) {
+        Collections.sort(c);
         Jugada poker = null;
 
         int i = 0;
@@ -408,6 +419,7 @@ public class Evaluador {
 
 //Devuelve un Full House (Funciona)
     private Jugada FullHouse(List<Carta> c) {
+        Collections.sort(c);
         Jugada fullHouse = null;
 
         //Lista auxiliar que almacenan las cartas que forman el Full House
@@ -485,6 +497,7 @@ public class Evaluador {
     //Devuelve el mejor trio (Funciona)
     private Jugada Trio(List<Carta> c) {
         Jugada trio = null;
+        Collections.sort(c);
         int i = 0;
         int cont = 1;   //Numero de cartas del trio actual
 
@@ -520,47 +533,11 @@ public class Evaluador {
         return trio;
     }
 
-//    //Comprueba si hay trio
-//    public List<Carta> Trio(List<Carta> c) { // return lista 
-//        boolean trio = false;
-//        int i = 0;
-//        int cont = 1;   //Numero de cartas del trio actual
-//        List<Carta> trios = new ArrayList<>();
-//
-//        while (i < c.size() - 1) {
-//            int cur = c.get(i).getVal();
-//            int sig = c.get(i + 1).getVal();
-//
-//            //Contamos si la actual es igual a la siguiente
-//            if (cur == sig) {
-//                cont++;
-//            } //Contamos de nuevo
-//            else {
-//                cont = 1;
-//            }
-//
-//            //Si hay trio
-//            if (cont == 3) {
-//                trio = true;
-//                trios.add(c.get(i));
-//                trios.add(c.get(i - 1));
-//                trios.add(c.get(i - 2));
-//
-//                break;
-//            }
-//            i++;
-//        }
-//        // 
-//        if (trio) {
-//            return trios;
-//        } else {
-//            return null;
-//        }
-//    }
     //Devuelve la mejor doble pareja (Funciona)
     private Jugada DoblePareja(List<Carta> c) {
         Jugada doblePareja = null;
-
+        Collections.sort(c);
+        
         //Se busca la primera pareja
         if (Pareja(c) != null) {
             //Los quitamos de la lista
@@ -581,8 +558,54 @@ public class Evaluador {
         return doblePareja;
     }
 
-    //Devuelve la mejor pareja (Funciona)
+    //Devuelve el tipo de pareja que se forma si la hay
+    private String ParejaConDistincion(List<Carta> c) {
+        String pareja = null;
+        Collections.sort(c);
+
+        int i = 0;
+        while (i < c.size() - 1) {
+            int cur = c.get(i).getVal();
+            int sig = c.get(i + 1).getVal();
+            if (cur == sig) {
+
+                //Comprobar el tipo de pareja que se forma
+                Carta tmp = c.get(i);
+                Carta tmp2 = c.get(i + 1);
+
+                Carta sec = getSecondLargestFromBoard();
+
+                //Si la pareja actual contiene cartas no pertenecientes del board => pareja valida para el combo
+                if (!this.board.contains(tmp) || !this.board.contains(tmp2)) {
+                    //Si la pareja es mejor que la carta más alta del board
+                    if (tmp.getVal() > this.board.get(0).getVal()) {
+                        pareja = "overPair";
+                    } //Si la pareja formada utiliza la carta más alta del board
+                    else if (tmp.equals(this.board.get(0)) || tmp2.equals(this.board.get(0))) {
+                        pareja = "topPair";
+                    } //Si la pareja es menor que la carta más alta del board pero tampoco es débil
+                    else if ((tmp.getVal() < this.board.get(0).getVal()) && !this.board.contains(tmp) && !this.board.contains(tmp2)
+                            && (tmp.getVal() > this.board.get(this.board.size() - 1).getVal())) {
+                        pareja = "ppBelowTopPair";
+                    } //Si la pareja utiliza la segunda carta más alta del board
+                    else if (tmp.equals(sec) || tmp2.equals(sec)) {
+                        pareja = "middlePair";
+                    } else {
+                        pareja = "weakPair";
+                    }
+                }
+
+                break;
+            }
+            i++;
+        }
+
+        return pareja;
+    }
+
+    //Devuelve la pareja si la hay
     private Jugada Pareja(List<Carta> c) {
+        Collections.sort(c);
         Jugada pareja = null;
 
         int i = 0;
@@ -590,12 +613,6 @@ public class Evaluador {
             int cur = c.get(i).getVal();
             int sig = c.get(i + 1).getVal();
             if (cur == sig) {
-                //Mete la pareja de carta al principio de la jugada
-                Carta tmp = c.remove(i);
-                Carta tmp2 = c.remove(i);
-                c.add(0, tmp);
-                c.add(1, tmp2);
-
                 pareja = new Jugada(c, tJugada.PAREJA, null);
                 break;
             }
@@ -605,18 +622,19 @@ public class Evaluador {
         return pareja;
     }
 
-    public boolean hayCartaMano(List<Carta> c) {
+    //Devuelve la segunda carta más alta del board
+    private Carta getSecondLargestFromBoard() {
+        Carta sec = null;
+        Carta fst = this.board.get(0);
 
-        int i = 0;
-        boolean hay = false;
-        while (i < c.size() && !hay) {
-
-            if (c.get(i).getesdeMesa() == false) {
-                hay = true;
+        for (int i = 1; i < this.board.size(); ++i) {
+            if (!this.board.get(i).getSimb().equals(fst.getSimb())) {
+                sec = this.board.get(i);
+                break;
             }
-            i++;
         }
-        return hay;
+
+        return sec;
     }
 
     //Devuelve los resultados una vez calculados los combos
@@ -629,7 +647,6 @@ public class Evaluador {
         this.board.clear();
         for (String s : c) {
             Carta card = new Carta(Character.toString(s.charAt(0)), Character.toString(s.charAt(1)));
-            card.setesdeMesa(true);
             this.board.add(card);
         }
     }

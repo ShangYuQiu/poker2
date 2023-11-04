@@ -7,6 +7,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -31,30 +32,36 @@ public class MainFrame extends JFrame {
     private JLabel[][] boardLabel = new JLabel[13][4]; //JLabel de las cartas del board
     private JLabel[] selectedBoardJLabel = new JLabel[5]; //Lista de los JLabel del board seleccionados
     private Controller controller;
-    
-    /*
-    straight flush--
-    4 of a kind-----
-    full house------
-    flush-----------
-    straight--------
-    3 of a kind----- 
-    two pair--------
-    pair------------ 
-    no made hand----
-    */
-    
+
+    //Texto de las jugadas
+    private final String straightFlushText = "straigth flush  ";
+    private final String fourOfKindText = "4 of a kind     ";
+    private final String fullHouseText = "full house      ";
+    private final String flushText = "flush           ";
+    private final String straightText = "straight        ";
+    private final String threeOfKindText = "3 of a kind     ";
+    private final String twoPairText = "two pair        ";
+    private final String topPairText = "top pair        ";
+    private final String overPairText = "over pair       ";
+    private final String ppBelowTopPairText = "pp below tp     ";
+    private final String middlePairText = "middle pair     ";
+    private final String weakPairText = "weak pair       ";
+    private final String noMadeHandText = "no made hand    ";
+
     //JLabel de los combos
-    private JLabel straightFlush = new JLabel("straigth flush  ");
-    private JLabel fourOfKind = new JLabel("4 of a kind     ");
-    private JLabel fullHouse = new JLabel("full house      ");
-    private JLabel flush = new JLabel ("flush           ");
-    private JLabel straight = new JLabel ("straight        ");
-    private JLabel threeOfKind = new JLabel ("3 of a kind     ");
-    private JLabel twoPair = new JLabel ("two pair        ");
-    private JLabel pair = new JLabel ("pair            ");
-    private JLabel noMadeHand = new JLabel("no made hand    ");
-    
+    private JLabel straightFlush = new JLabel(straightFlushText);
+    private JLabel fourOfKind = new JLabel(fourOfKindText);
+    private JLabel fullHouse = new JLabel(fullHouseText);
+    private JLabel flush = new JLabel(flushText);
+    private JLabel straight = new JLabel(straightText);
+    private JLabel threeOfKind = new JLabel(threeOfKindText);
+    private JLabel twoPair = new JLabel(twoPairText);
+    private JLabel overPair = new JLabel(overPairText);
+    private JLabel topPair = new JLabel(topPairText);
+    private JLabel ppBelowTopPair = new JLabel(ppBelowTopPairText);
+    private JLabel middlePair = new JLabel(middlePairText);
+    private JLabel weakPair = new JLabel(weakPairText);
+    private JLabel noMadeHand = new JLabel(noMadeHandText);
 
     public MainFrame() {
         initComponents(); //Inicializacion de los componentes visuales usando la utilidad de netbeans
@@ -201,6 +208,7 @@ public class MainFrame extends JFrame {
 
             }
         }
+
         //Inicializa las celdas con las cartas del board
         for (int i = 0; i < 5; ++i) {
             selectedBoardJLabel[i] = new JLabel("");
@@ -210,7 +218,7 @@ public class MainFrame extends JFrame {
             selectedBoardJLabel[i].setForeground(Color.BLACK);
             this.selectedBoardPanel.add(selectedBoardJLabel[i]);
         }
-        
+
         //Inicializa el panel de combos
         comboPanel.add(straightFlush);
         comboPanel.add(fourOfKind);
@@ -219,10 +227,12 @@ public class MainFrame extends JFrame {
         comboPanel.add(straight);
         comboPanel.add(threeOfKind);
         comboPanel.add(twoPair);
-        comboPanel.add(pair);
+        comboPanel.add(overPair);
+        comboPanel.add(topPair);
+        comboPanel.add(ppBelowTopPair);
+        comboPanel.add(middlePair);
+        comboPanel.add(weakPair);
         comboPanel.add(noMadeHand);
-        
-
 
     }
 
@@ -335,6 +345,10 @@ public class MainFrame extends JFrame {
         this.controller.calculateRangePercentage();
     }
 
+    public int getHandTotalCombos(String s) {
+        return controller.getHandTotalCombos(s);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -353,6 +367,8 @@ public class MainFrame extends JFrame {
         handMatrixPanel = new javax.swing.JPanel();
         clearButton = new javax.swing.JButton();
         selectedBoardPanel = new javax.swing.JPanel();
+        calculateComboButton = new javax.swing.JButton();
+        totalCombosLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -403,6 +419,15 @@ public class MainFrame extends JFrame {
 
         selectedBoardPanel.setLayout(new java.awt.GridLayout(1, 5));
 
+        calculateComboButton.setText("calculate combo");
+        calculateComboButton.setToolTipText("");
+        calculateComboButton.setFocusPainted(false);
+        calculateComboButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                calculateComboButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -419,16 +444,28 @@ public class MainFrame extends JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(boardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(selectedBoardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(comboPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(inputRangeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(clearButton)
-                            .addComponent(inputTextFieldLabel))
-                        .addGap(0, 193, Short.MAX_VALUE)))
-                .addContainerGap())
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(comboPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(clearButton)
+                                            .addComponent(inputTextFieldLabel))
+                                        .addGap(0, 0, Short.MAX_VALUE)))
+                                .addContainerGap())
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(inputRangeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
+                                .addComponent(calculateComboButton)
+                                .addGap(58, 58, 58))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(totalCombosLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(86, 86, 86))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -436,11 +473,15 @@ public class MainFrame extends JFrame {
                 .addGap(9, 9, 9)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(comboPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
+                        .addComponent(comboPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(totalCombosLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(inputTextFieldLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(inputRangeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(inputRangeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(calculateComboButton))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(clearButton))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -514,9 +555,114 @@ public class MainFrame extends JFrame {
         percentageTextField.setText(String.valueOf((int) Math.round(getRangePercentage() * 10) / 10.0) + "%");
     }//GEN-LAST:event_inputRangeTextFieldActionPerformed
 
+    //Listener del boton para calcular combos
+    private void calculateComboButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_calculateComboButtonActionPerformed
+        controller.evalueAllCombos();
+
+        Map<String, Map<String, Integer>> results = controller.getComboResults(); //Resultado de calcular los combos
+
+        int totalCombos = 0;
+        //Actualiza los JLabel de los combos
+        for (Map.Entry<String, Map<String, Integer>> entrada : results.entrySet()) {
+            String jugadaActual = entrada.getKey();
+            Map<String, Integer> resultadoJugada = entrada.getValue();
+
+            //Contar cuantas jugadas de tipo actual existen        
+            int handCombos = 0;
+
+            //Construir cadena para saber con que mano se ha formado dicha jugada y cuantas veces se ha formado
+            StringBuilder cadena = new StringBuilder();
+
+            if (resultadoJugada.size() > 1) {
+                for (Map.Entry<String, Integer> var : resultadoJugada.entrySet()) {
+                    cadena.append(var.getKey());
+                    cadena.append("(");
+                    cadena.append(var.getValue());
+                    cadena.append(") ");
+                }
+            } else {
+                if (!resultadoJugada.isEmpty()) {
+                    for (String s : resultadoJugada.keySet()) {
+                        cadena.append(s);
+                    }
+                }
+            }
+
+            if (jugadaActual.equals("straightFlush")) {
+                handCombos = getHandTotalCombos("straightFlush");
+                straightFlush.setText(straightFlushText + handCombos + " " + cadena);
+                totalCombos += handCombos;
+
+            } else if (jugadaActual.equals("fourOfKind")) {
+                handCombos = getHandTotalCombos("fourOfKind");
+                fourOfKind.setText(fourOfKindText + handCombos + " " + cadena);
+                totalCombos += handCombos;
+
+            } else if (jugadaActual.equals("fullHouse")) {
+                handCombos = getHandTotalCombos("fullHouse");
+                fullHouse.setText(fullHouseText + handCombos + " " + cadena);
+                totalCombos += handCombos;
+
+            } else if (jugadaActual.equals("flush")) {
+                handCombos = getHandTotalCombos("flush");
+                flush.setText(flushText + handCombos + " " + cadena);
+                totalCombos += handCombos;
+
+            } else if (jugadaActual.equals("straight")) {
+                handCombos = getHandTotalCombos("straight");
+                straight.setText(straightText + handCombos + " " + cadena);
+                totalCombos += handCombos;
+
+            } else if (jugadaActual.equals("threeOfKind")) {
+                handCombos = getHandTotalCombos("threeOfKind");
+                threeOfKind.setText(threeOfKindText + handCombos + " " + cadena);
+                totalCombos += handCombos;
+
+            } else if (jugadaActual.equals("twoPair")) {
+                handCombos = getHandTotalCombos("twoPair");
+                twoPair.setText(twoPairText + handCombos + " " + cadena);
+                totalCombos += handCombos;
+
+            } else if (jugadaActual.equals("overPair")) {
+                handCombos = getHandTotalCombos("overPair");
+                overPair.setText(overPairText + handCombos + " " + cadena);
+                totalCombos += handCombos;
+
+            }else if (jugadaActual.equals("topPair")) {
+                handCombos = getHandTotalCombos("topPair");
+                topPair.setText(topPairText + handCombos + " " + cadena);
+                totalCombos += handCombos;
+
+            }else if (jugadaActual.equals("ppBelowTopPair")) {
+                handCombos = getHandTotalCombos("ppBelowTopPair");
+                ppBelowTopPair.setText(ppBelowTopPairText + handCombos + " " + cadena);
+                totalCombos += handCombos;
+
+            }else if (jugadaActual.equals("middlePair")) {
+                handCombos = getHandTotalCombos("middlePair");
+                middlePair.setText(middlePairText + handCombos + " " + cadena);
+                totalCombos += handCombos;
+
+            }else if (jugadaActual.equals("weakPair")) {
+                handCombos = getHandTotalCombos("weakPair");
+                weakPair.setText(weakPairText + handCombos + " " + cadena);
+                totalCombos += handCombos;
+
+            } else {
+                handCombos = getHandTotalCombos("noMadeHand");
+                noMadeHand.setText(noMadeHandText + handCombos + " " + cadena);
+                totalCombos += handCombos;
+            }
+        }
+
+        totalCombosLabel.setText("Total number of combos: " + totalCombos);
+
+    }//GEN-LAST:event_calculateComboButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel boardPanel;
+    private javax.swing.JButton calculateComboButton;
     private javax.swing.JButton clearButton;
     private javax.swing.JPanel comboPanel;
     private javax.swing.JPanel handMatrixPanel;
@@ -525,5 +671,6 @@ public class MainFrame extends JFrame {
     private javax.swing.JSlider percentageSlider;
     private javax.swing.JTextField percentageTextField;
     private javax.swing.JPanel selectedBoardPanel;
+    private javax.swing.JLabel totalCombosLabel;
     // End of variables declaration//GEN-END:variables
 }

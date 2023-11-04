@@ -4,7 +4,6 @@ import controller.Controller;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import static java.lang.Math.abs;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -362,6 +361,7 @@ public class HandSelecter {
         }
     }
 
+    /*
     public int calculateNumCombos(List<Carta> board){ // calcula los combos que hay (usar introducedRange)
         int combos = 0;
         
@@ -474,6 +474,8 @@ public class HandSelecter {
         
         return combos;
     }
+    */
+    
     //Funcion para pasar valores numericos de las cartas pareja a Lista de String
     public void celltoParejaListString(List<Pair> array, List<String> sol) {
         // 3 casos: + (AA) , - y solitario
@@ -791,6 +793,10 @@ public class HandSelecter {
     
     public List<String> getBoardCards(){
         return this.boardCards;
+    }
+    
+    public List<String> getIntroducedRange(){
+        return this.introducedRange;
     }
     
   
