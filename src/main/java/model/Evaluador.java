@@ -39,13 +39,20 @@ public class Evaluador {
     
     //Calcula todos los combos
     public void evalueAllCombos(){
-        
+        //addMapCombos
+        //filterboardCombos
     }
     
     
     //Calcula el combo de una mano
     public void evalue(List<String> introducedRange){
         
+        //mezcla introducedRange y board
+        //ordenar
+        // comprobacion en orden: escalera de color, poker, fullhouse.. (ver practica 1)
+        // ej if (poker != null) -> comprobar que hay al menos una carta no comun (con la funcion hayCartaMano())
+        // si hay -> sacamos las cartas no comunes -> ir a la mapa de combos con la clave de la carta extraida obtenemos el numero de combos
+        //actualizamos los numJugada diferentes
     }
     //aniadir todos los combos de las cartas introducidos a la map de combos 
     public void addMapCombos(List<String> introducedRange){
@@ -121,7 +128,7 @@ public class Evaluador {
     }
 
     
-    //Comprueba si hay escelera de color
+    //Comprueba si hay escelera de color //to do
     public boolean EscaleraColor(List<Carta> c) {
         boolean escaleraColor = false;
 
@@ -153,7 +160,7 @@ public class Evaluador {
         return escaleraColor;
     }
 
-    //Comprueba si hay escalera
+    //Comprueba si hay escalera // to do
     public boolean Escalera(List<Carta> c) {
         boolean escalera = false;
         Collections.sort(c);
@@ -214,10 +221,11 @@ public class Evaluador {
     }
 
     //Comprueba si hay poker //to do
-    public boolean Poker(List<Carta> c) {
+    public List<Carta> Poker(List<Carta> c) {
         boolean poker = false;
         Collections.sort(c);
-
+        List<Carta> pokers = new ArrayList<>();
+        
         int i = 0;
         int cont = 1;
 
@@ -233,34 +241,54 @@ public class Evaluador {
 
             if (cont == 4) {
                 poker = true;
+                pokers.add(c.get(i+1));
+                pokers.add(c.get(i));
+                pokers.add(c.get(i-1));
+                pokers.add(c.get(i-2));
                 break;
             }
 
             ++i;
         }
 
-        return poker;
+        if(poker){
+            return pokers;
+        }
+        else{
+            return null;
+        }
     }
 
     //Comprueba si hay full house //to do
-    public boolean FullHouse(List<Carta> c) {
+    public List<Carta> FullHouse(List<Carta> c) {
         boolean fullHouse = false;
         Collections.sort(c);
-
-        if (Trio(c) != null) {
+        List<Carta> trios = Trio(c);
+        List<Carta> fullhouses = new ArrayList<>();
+        if (trios != null) {
              // elimiar de la lista c las cartas devueltas de trio
-
-            if (Pareja(c)) {
+             for(Carta card: trios){
+                 if(c.contains(card)){
+                     c.remove(card);
+                 }
+             }
+            if (Pareja(c) != null) {              
                 fullHouse = true;
             }
         }
-        return fullHouse;
+        
+        if(fullHouse){
+            return fullhouses;
+        }
+        else{
+            return null;
+        }
     }
 
     //Comprueba si hay flush
-    public boolean Flush(List<Carta> c) {
+    public List<Carta> Flush(List<Carta> c) {
         boolean flush = false;
-
+        List<Carta> flushes = new ArrayList<>();
         //Contador para cartas de cada palo
         int contH = 0;
         int contD = 0;
@@ -283,11 +311,48 @@ public class Evaluador {
         }
 
         //Si hay flush
-        if (contH > 4 || contD > 4 || contC > 4 || contS > 4) {
+        if (contH > 4 ) {
             flush = true;
+            for(Carta card: c){
+                if("h".equals(card.getPalo())){
+                    flushes.add(card);
+                }
+            }
+        }
+        
+        else if (contD > 4){
+            flush = true;
+            for(Carta card: c){
+                if("d".equals(card.getPalo())){
+                    flushes.add(card);
+                }
+            }
+        }
+        
+        else if (contC > 4){
+            flush = true;
+            for(Carta card: c){
+                if("c".equals(card.getPalo())){
+                    flushes.add(card);
+                }
+            }
+        }
+        
+        else if (contS > 4){
+            flush = true;
+            for(Carta card: c){
+                if("s".equals(card.getPalo())){
+                    flushes.add(card);
+                }
+            }
         }
 
-        return flush;
+        if(flush){
+            return flushes;
+        }
+        else{
+            return null;
+        }
     }
 
     //Comprueba si hay trio
@@ -313,10 +378,9 @@ public class Evaluador {
             //Si hay trio
             if (cont == 3) {
                 trio = true;
-                trios.add(c.get(i));
                 trios.add(c.get(i-1));
-                trios.add(c.get(i-2));
-                
+                trios.add(c.get(i));              
+                trios.add(c.get(i+1));                
                 break;
             }
             i++;
@@ -331,43 +395,63 @@ public class Evaluador {
     }
 
     //Comprueba si hay doble pareja
-    public boolean DoblePareja(List<Carta> c) {
+    public List<Carta> DoblePareja(List<Carta> c) {
         boolean doblePareja = false;
         Collections.sort(c);
-
+        List<Carta> dobleparejas = new ArrayList<>();
+        List<Carta> parejas1 =Pareja(c);
         //Se busca la primera pareja
-        if (Pareja(c)) {
+        if (parejas1 != null) {
             //Los quitamos de la lista
-            c.remove(0);
-            c.remove(0);
-
+            c.remove(parejas1.get(0));
+            c.remove(parejas1.get(0));           
+            List<Carta> parejas2 =Pareja(c);
             //Si se encuentra una segunda pareja
-            if (Pareja(c)) {
-                doblePareja = true;
+            if (parejas2 != null) {
+                dobleparejas.add(parejas1.get(0));
+                dobleparejas.add(parejas1.get(1));
+                dobleparejas.add(parejas2.get(0));
+                dobleparejas.add(parejas2.get(1));
             }
         }
-        return doblePareja;
+        
+        if (doblePareja){
+            return dobleparejas;
+        }
+        else{
+            return null;
+        }
     }
 
     //Comprueba si hay pareja
-    public boolean Pareja(List<Carta> c) {
+    public List<Carta> Pareja(List<Carta> c) {
         boolean pareja = false;
         Collections.sort(c);
-
+        List<Carta> parejas = new ArrayList<>();
+        
         int i = 0;
         while (i < c.size() - 1) {
             int cur = c.get(i).getVal();
             int sig = c.get(i + 1).getVal();
             if (cur == sig) {
                 pareja = true;
+                parejas.add(c.get(i));
+                parejas.add(c.get(i+1));
                 break;
             }
             i++;
         }
 
-        return pareja;
+        if(pareja){
+            return parejas;}       
+        else{
+            return null;
+        }
     }
 
+    //hay que hacer funcion para ver distintos tipos de pareja
+    
+    //comprueba si en una lista de cartas hay al menos una carta no comun
     public boolean hayCartaMano(List<Carta> c){
         
         int i  = 0;
