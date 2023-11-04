@@ -558,53 +558,71 @@ public class MainFrame extends JFrame {
             //Contar cuantas jugadas de tipo actual existen        
             int handCombos = 0;
 
+            //Construir cadena para saber con que mano se ha formado dicha jugada y cuantas veces se ha formado
+            StringBuilder cadena = new StringBuilder();
+
+            if (resultadoJugada.size() > 1) {
+                for (Map.Entry<String, Integer> var : resultadoJugada.entrySet()) {
+                    cadena.append(var.getKey());
+                    cadena.append("(");
+                    cadena.append(var.getValue());
+                    cadena.append(") ");
+                }
+            } else {
+                if (!resultadoJugada.isEmpty()) {
+                    for (String s : resultadoJugada.keySet()) {
+                        cadena.append(s);
+                    }
+                }
+            }
+
             if (jugadaActual.equals("straightFlush")) {
                 handCombos = getHandTotalCombos("straightFlush");
-                straightFlush.setText(straightFlushText + handCombos);
+                straightFlush.setText(straightFlushText + handCombos + " " + cadena);
                 totalCombos += handCombos;
 
             } else if (jugadaActual.equals("fourOfKind")) {
                 handCombos = getHandTotalCombos("fourOfKind");
-                fourOfKind.setText(fourOfKindText + handCombos);
+                fourOfKind.setText(fourOfKindText + handCombos + " " + cadena);
                 totalCombos += handCombos;
 
             } else if (jugadaActual.equals("fullHouse")) {
                 handCombos = getHandTotalCombos("fullHouse");
-                fullHouse.setText(fullHouseText + handCombos);
+                fullHouse.setText(fullHouseText + handCombos + " " + cadena);
                 totalCombos += handCombos;
 
             } else if (jugadaActual.equals("flush")) {
                 handCombos = getHandTotalCombos("flush");
-                flush.setText(flushText + handCombos);
+                flush.setText(flushText + handCombos + " " + cadena);
                 totalCombos += handCombos;
 
             } else if (jugadaActual.equals("straight")) {
                 handCombos = getHandTotalCombos("straight");
-                straight.setText(straightText + handCombos);
+                straight.setText(straightText + handCombos + " " + cadena);
                 totalCombos += handCombos;
 
             } else if (jugadaActual.equals("threeOfKind")) {
                 handCombos = getHandTotalCombos("threeOfKind");
-                threeOfKind.setText(threeOfKindText + handCombos);
+                threeOfKind.setText(threeOfKindText + handCombos + " " + cadena);
                 totalCombos += handCombos;
 
             } else if (jugadaActual.equals("twoPair")) {
                 handCombos = getHandTotalCombos("twoPair");
-                twoPair.setText(twoPairText + handCombos);
+                twoPair.setText(twoPairText + handCombos + " " + cadena);
                 totalCombos += handCombos;
 
             } else if (jugadaActual.equals("pair")) {
                 handCombos = getHandTotalCombos("pair");
-                pair.setText(pairText + handCombos);
+                pair.setText(pairText + handCombos + " " + cadena);
                 totalCombos += handCombos;
 
             } else {
                 handCombos = getHandTotalCombos("noMadeHand");
-                noMadeHand.setText(noMadeHandText + handCombos);
+                noMadeHand.setText(noMadeHandText + handCombos + " " + cadena);
                 totalCombos += handCombos;
             }
         }
-        
+
         totalCombosLabel.setText("Total number of combos: " + totalCombos);
 
     }//GEN-LAST:event_calculateComboButtonActionPerformed
