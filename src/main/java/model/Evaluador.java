@@ -461,75 +461,7 @@ public class Evaluador {
 //        }
 //        return fullHouse;
 //    }
-    //Comprueba si hay flush
-    /*public boolean Flush(List<Carta> c) {
-        boolean flush = false;
-        List<Carta> flushes = new ArrayList<>();
-        //Contador para cartas de cada palo
-        int contH = 0;
-        int contD = 0;
-        int contC = 0;
-        int contS = 0;
-        int i = 0;
-        while (i < c.size()) {
-        //Contamos los palos
-            switch (c.get(i).getPalo()) {
-                case "h" ->
-                    contH++;
-                case "d" ->
-                    contD++;
-                case "c" ->
-                    contC++;
-                case "s" ->
-                    contS++;
-            }
-        }
-
-        //Si hay flush
-        if (contH > 4 ) {
-            flush = true;
-            for(Carta card: c){
-                if("h".equals(card.getPalo())){
-                    flushes.add(card);
-                }
-            }
-        }
-        
-        else if (contD > 4){
-            flush = true;
-            for(Carta card: c){
-                if("d".equals(card.getPalo())){
-                    flushes.add(card);
-                }
-            }
-        }
-        
-        else if (contC > 4){
-            flush = true;
-            for(Carta card: c){
-                if("c".equals(card.getPalo())){
-                    flushes.add(card);
-                }
-            }
-        }
-        
-        else if (contS > 4){
-            flush = true;
-            for(Carta card: c){
-                if("s".equals(card.getPalo())){
-                    flushes.add(card);
-                }
-            }
-        }
-
-        flushes.removeAll(board);
-        if(!flushes.isEmpty()){
-            flush = true;
-        }
-        
-        return flush;
-    }*/
-    //Comprueba si hay flush
+    //Comprueba si hay flush //no hace falta cambiar
     public Jugada Flush(List<Carta> c) {
 
         //Contador para cartas de cada palo
