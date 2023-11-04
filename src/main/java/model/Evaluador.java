@@ -123,15 +123,13 @@ public class Evaluador {
             for(String s: BoardCombos){
                 combos.get(rango).remove(s);
             }
-        }
-   
+        } 
     }
 
-    
     //Comprueba si hay escelera de color //to do
-    public boolean EscaleraColor(List<Carta> c) {
+    public List<Carta> EscaleraColor(List<Carta> c) {
         boolean escaleraColor = false;
-
+        List<Carta> escaleraColors = new ArrayList<>();
         int i = 0;
         while (i < c.size()) {
             ArrayList<Carta> tmp = new ArrayList<>(); //Lista que guarda las carta forma la escalera de color
@@ -152,19 +150,30 @@ public class Evaluador {
             //Si la jugada llega a tener 5 cartas => Escalera Color
             if (tmp.size() == 5) {
                 escaleraColor = true;
+                //no se si esta bien
+                /*escaleraColors.add(c.get(i-3));
+                escaleraColors.add(c.get(i-2));
+                escaleraColors.add(c.get(i-1));
+                escaleraColors.add(c.get(i));
+                escaleraColors.add(c.get(i+1));*/
                 break;
             }
             ++i;
         }
 
-        return escaleraColor;
+       if(escaleraColor){
+            return escaleraColors;
+        }
+        else{
+            return null;
+        }
     }
 
     //Comprueba si hay escalera // to do
-    public boolean Escalera(List<Carta> c) {
+    public List<Carta> Escalera(List<Carta> c) {
         boolean escalera = false;
         Collections.sort(c);
-
+        List<Carta> escaleras = new ArrayList<>();
         boolean ace = false;
 
         //Distinguimos casos dependiendo de si la mano contiene Aces o no 
@@ -192,6 +201,11 @@ public class Evaluador {
 
             if (cont == 5) { //Escalera
                 escalera = true;
+                escaleras.add(c.get(i-3));
+                escaleras.add(c.get(i-2));
+                escaleras.add(c.get(i-1));
+                escaleras.add(c.get(i));
+                escaleras.add(c.get(i+1));
             }
 
         }
@@ -212,12 +226,23 @@ public class Evaluador {
 
                 if (cont == 5) { //Escalera
                     escalera = true;
+                    escaleras.add(c.get(i-3));
+                    escaleras.add(c.get(i-2));
+                    escaleras.add(c.get(i-1));
+                    escaleras.add(c.get(i));
+                    escaleras.add(c.get(i+1));
                 }
 
             }
         }
-
-        return escalera;
+        
+        if(escalera){
+            return escaleras;
+        }
+        else{
+            return null;
+        }
+        
     }
 
     //Comprueba si hay poker //to do
@@ -241,10 +266,10 @@ public class Evaluador {
 
             if (cont == 4) {
                 poker = true;
-                pokers.add(c.get(i+1));
-                pokers.add(c.get(i));
-                pokers.add(c.get(i-1));
                 pokers.add(c.get(i-2));
+                pokers.add(c.get(i-1));
+                pokers.add(c.get(i));               
+                pokers.add(c.get(i+1));
                 break;
             }
 
