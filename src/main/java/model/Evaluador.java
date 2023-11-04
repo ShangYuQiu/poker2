@@ -157,7 +157,7 @@ public class Evaluador {
                 j.put(rango, 1);
             }
 
-        } else if (DoblePareja(cartas) != null) {
+        } else if (DoblePareja(cartas)) {
             Map<String, Integer> j = jugadas.get("twoPair");
             if (j.containsKey(rango)) {
                 j.put(rango, j.get(rango) + 1);
@@ -463,7 +463,7 @@ public class Evaluador {
 //    }
     //Comprueba si hay flush
     public Jugada Flush(List<Carta> c) {
-
+        Collections.sort(c);
         //Contador para cartas de cada palo
         int contH = 0;
         int contD = 0;
@@ -495,9 +495,10 @@ public class Evaluador {
     }
 
     //Devuelve el mejor trio (Funciona)
-    private boolean Trio(List<Carta> c) {
-        boolean trio = false;
+    //Comprueba si hay trio
+    public boolean Trio(List<Carta> c) { // return lista 
         Collections.sort(c);
+        boolean trio = false;        
         int i = 0;
         int cont = 1;   //Numero de cartas del trio actual
         List<Carta> trios = new ArrayList<>();
@@ -513,49 +514,65 @@ public class Evaluador {
             else {
                 cont = 1;
             }
-
-            //Si hay trio
-            if (cont == 3) {
-                //Almacenos las cartas que forman el trio en una lista                
+            //Si hay posibilidad de trio
+            if (cont == 3){               
+                //Almacenamos las cartas que forman el trio
                 trios.add(c.get(i-1));
                 trios.add(c.get(i));              
                 trios.add(c.get(i+1));
-                //quitamos de la lista de trios las cartas que son de mesa
+                //quitamos de la lista de trios las cartas de board
                 trios.removeAll(board);
-                
-                if(!trios.isEmpty()){
-                    trio = true;
+                if(!trios.isEmpty()){// si no esta vacia
+                    trio = true;          
                     break;
                 }
-                
             }
             i++;
         }
         return trio;
     }
 
-    //Devuelve la mejor doble pareja (Funciona)
-    private Jugada DoblePareja(List<Carta> c) {
-        Jugada doblePareja = null;
+    //Comprueba si hay doble pareja
+    public boolean DoblePareja(List<Carta> c) {
+        boolean doblePareja = false;
         Collections.sort(c);
-        
+        List<Carta> tmp =c;
+        List<Carta> parejas1 =Pareja(c);
         //Se busca la primera pareja
-        if (Pareja(c) != null) {
-            //Los quitamos de la lista
-            Carta tmp = c.remove(0);
-            Carta tmp2 = c.remove(0);
-
-            //Si se encuentra una segunda pareja
-            if (Pareja(c) != null) {
-                //Se insertan la primera pareja en la mano
-                c.add(0, tmp2);
-                c.add(0, tmp);
-                doblePareja = new Jugada(c, tJugada.DOBLE_PAREJA, null);
-            } else {
-                c.add(0, tmp2);
-                c.add(0, tmp);
+        if (parejas1 != null) {
+            //Los quitamos de la lista tmp
+            tmp.remove(parejas1.get(0));
+            tmp.remove(parejas1.get(1));
+            //miramos si la primera pareja tiene alguna carta de rango
+            List <Carta> aux = parejas1;
+            aux.removeAll(board);
+            if(!aux.isEmpty()){ // si tiene carta de rango                
+                List<Carta> parejas2 =Pareja(tmp);
+                //Si se encuentra una segunda pareja
+                if (parejas2 != null) {
+                    doblePareja = true;
+                }
             }
+            
+            else{// si son todas de mesa
+                parejas1 = Pareja(tmp); // tmp ya se elimino la pareja anterior asi que buscamos una nueva pareja                
+                if(parejas1 != null){
+                    tmp.remove(parejas1.get(0));
+                    tmp.remove(parejas1.get(1));
+                    aux = parejas1;
+                    aux.removeAll(board);
+                    if(!aux.isEmpty()){ // si tiene carta de rango                
+                        List<Carta> parejas2 =Pareja(tmp);
+                        //Si se encuentra una segunda pareja
+                        if (parejas2 != null) {
+                            doblePareja = true;
+                        }
+                    }
+                }
+            }           
+            
         }
+        
         return doblePareja;
     }
 
@@ -604,23 +621,30 @@ public class Evaluador {
         return pareja;
     }
 
-    //Devuelve la pareja si la hay
-    private Jugada Pareja(List<Carta> c) {
+    //Comprueba si hay pareja
+    private List<Carta> Pareja(List<Carta> c) {
+        boolean pareja = false;
         Collections.sort(c);
-        Jugada pareja = null;
-
+        List<Carta> parejas = new ArrayList<>();
+        
         int i = 0;
         while (i < c.size() - 1) {
             int cur = c.get(i).getVal();
             int sig = c.get(i + 1).getVal();
             if (cur == sig) {
-                pareja = new Jugada(c, tJugada.PAREJA, null);
+                pareja = true;
+                parejas.add(c.get(i));
+                parejas.add(c.get(i+1));
                 break;
             }
             i++;
         }
 
-        return pareja;
+        if(pareja){
+            return parejas;}       
+        else{
+            return null;
+        }
     }
 
     //Devuelve la segunda carta más alta del board
