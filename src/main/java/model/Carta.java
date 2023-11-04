@@ -55,12 +55,13 @@ public class Carta implements Comparable<Carta> {
         return simbolo;
     }
 
-    public void setesdeMesa(boolean b) {
-        this.esdeMesa = b;
-    }
-
-    public boolean getesdeMesa() {
-        return this.esdeMesa;
+    @Override
+    public boolean equals(Object obj) {
+        Carta tmp = (Carta) obj;
+        if (this.simbolo.equals(tmp.getSimb()) && this.palo.equals(tmp.getPalo())) {
+            return true;
+        }
+        return false;
     }
 
     @Override

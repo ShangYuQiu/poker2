@@ -41,7 +41,11 @@ public class MainFrame extends JFrame {
     private final String straightText = "straight        ";
     private final String threeOfKindText = "3 of a kind     ";
     private final String twoPairText = "two pair        ";
-    private final String pairText = "pair            ";
+    private final String topPairText = "top pair        ";
+    private final String overPairText = "over pair       ";
+    private final String ppBelowTopPairText = "pp below tp     ";
+    private final String middlePairText = "middle pair     ";
+    private final String weakPairText = "weak pair       ";
     private final String noMadeHandText = "no made hand    ";
 
     //JLabel de los combos
@@ -52,7 +56,11 @@ public class MainFrame extends JFrame {
     private JLabel straight = new JLabel(straightText);
     private JLabel threeOfKind = new JLabel(threeOfKindText);
     private JLabel twoPair = new JLabel(twoPairText);
-    private JLabel pair = new JLabel(pairText);
+    private JLabel overPair = new JLabel(overPairText);
+    private JLabel topPair = new JLabel(topPairText);
+    private JLabel ppBelowTopPair = new JLabel(ppBelowTopPairText);
+    private JLabel middlePair = new JLabel(middlePairText);
+    private JLabel weakPair = new JLabel(weakPairText);
     private JLabel noMadeHand = new JLabel(noMadeHandText);
 
     public MainFrame() {
@@ -219,7 +227,11 @@ public class MainFrame extends JFrame {
         comboPanel.add(straight);
         comboPanel.add(threeOfKind);
         comboPanel.add(twoPair);
-        comboPanel.add(pair);
+        comboPanel.add(overPair);
+        comboPanel.add(topPair);
+        comboPanel.add(ppBelowTopPair);
+        comboPanel.add(middlePair);
+        comboPanel.add(weakPair);
         comboPanel.add(noMadeHand);
 
     }
@@ -611,9 +623,29 @@ public class MainFrame extends JFrame {
                 twoPair.setText(twoPairText + handCombos + " " + cadena);
                 totalCombos += handCombos;
 
-            } else if (jugadaActual.equals("pair")) {
-                handCombos = getHandTotalCombos("pair");
-                pair.setText(pairText + handCombos + " " + cadena);
+            } else if (jugadaActual.equals("overPair")) {
+                handCombos = getHandTotalCombos("overPair");
+                overPair.setText(overPairText + handCombos + " " + cadena);
+                totalCombos += handCombos;
+
+            }else if (jugadaActual.equals("topPair")) {
+                handCombos = getHandTotalCombos("topPair");
+                topPair.setText(topPairText + handCombos + " " + cadena);
+                totalCombos += handCombos;
+
+            }else if (jugadaActual.equals("ppBelowTopPair")) {
+                handCombos = getHandTotalCombos("ppBelowTopPair");
+                ppBelowTopPair.setText(ppBelowTopPairText + handCombos + " " + cadena);
+                totalCombos += handCombos;
+
+            }else if (jugadaActual.equals("middlePair")) {
+                handCombos = getHandTotalCombos("middlePair");
+                middlePair.setText(middlePairText + handCombos + " " + cadena);
+                totalCombos += handCombos;
+
+            }else if (jugadaActual.equals("weakPair")) {
+                handCombos = getHandTotalCombos("weakPair");
+                weakPair.setText(weakPairText + handCombos + " " + cadena);
                 totalCombos += handCombos;
 
             } else {
