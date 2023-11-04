@@ -142,7 +142,7 @@ public class Evaluador {
                 j.put(rango, 1);
             }
 
-        } else if (Trio(cartas) != null) {
+        } else if (Trio(cartas)) {
             Map<String, Integer> j = jugadas.get("threeOfKind");
             if (j.containsKey(rango)) {
                 j.put(rango, j.get(rango) + 1);
@@ -217,7 +217,7 @@ public class Evaluador {
                 }
             }
         }
-        board.add(new Carta("A", "h"));
+        //board.add(new Carta("A", "h"));
     }
 
     //Filtra quitando aquellos combos que aparecen las cartas del board
@@ -413,7 +413,7 @@ public class Evaluador {
         //Lista auxiliar que almacenan las cartas que forman el Full House
         ArrayList<Carta> lista = new ArrayList<>();
 
-        if (Trio(c) != null) {
+        if (Trio(c)) {
             lista.add(0, c.remove(0));
             lista.add(0, c.remove(0));
             lista.add(0, c.remove(0));
@@ -483,11 +483,12 @@ public class Evaluador {
     }
 
     //Devuelve el mejor trio (Funciona)
-    private Jugada Trio(List<Carta> c) {
-        Jugada trio = null;
+    private boolean Trio(List<Carta> c) {
+        boolean trio = false;
         int i = 0;
         int cont = 1;   //Numero de cartas del trio actual
-
+        List<Carta> trios = new ArrayList<>();
+        
         while (i < c.size() - 1) {
             int cur = c.get(i).getVal();
             int sig = c.get(i + 1).getVal();
@@ -502,61 +503,24 @@ public class Evaluador {
 
             //Si hay trio
             if (cont == 3) {
-                //Quitamos esas cartas de la mano para insertarlas al inicio 
-                int index = i - 1;
-                Carta tmp = c.remove(index);
-                Carta tmp2 = c.remove(index);
-                Carta tmp3 = c.remove(index);
-                //Los insertamos de esta manera para que se mantenga el orden relativo
-                c.add(0, tmp3);
-                c.add(0, tmp2);
-                c.add(0, tmp);
-                //
-                trio = new Jugada(c, tJugada.TRIO, null);
-                break;
+                //Almacenos las cartas que forman el trio en una lista                
+                trios.add(c.get(i-1));
+                trios.add(c.get(i));              
+                trios.add(c.get(i+1));
+                //quitamos de la lista de trios las cartas que son de mesa
+                trios.removeAll(board);
+                
+                if(!trios.isEmpty()){
+                    trio = true;
+                    break;
+                }
+                
             }
             i++;
         }
         return trio;
     }
 
-//    //Comprueba si hay trio
-//    public List<Carta> Trio(List<Carta> c) { // return lista 
-//        boolean trio = false;
-//        int i = 0;
-//        int cont = 1;   //Numero de cartas del trio actual
-//        List<Carta> trios = new ArrayList<>();
-//
-//        while (i < c.size() - 1) {
-//            int cur = c.get(i).getVal();
-//            int sig = c.get(i + 1).getVal();
-//
-//            //Contamos si la actual es igual a la siguiente
-//            if (cur == sig) {
-//                cont++;
-//            } //Contamos de nuevo
-//            else {
-//                cont = 1;
-//            }
-//
-//            //Si hay trio
-//            if (cont == 3) {
-//                trio = true;
-//                trios.add(c.get(i));
-//                trios.add(c.get(i - 1));
-//                trios.add(c.get(i - 2));
-//
-//                break;
-//            }
-//            i++;
-//        }
-//        // 
-//        if (trio) {
-//            return trios;
-//        } else {
-//            return null;
-//        }
-//    }
     //Devuelve la mejor doble pareja (Funciona)
     private Jugada DoblePareja(List<Carta> c) {
         Jugada doblePareja = null;
