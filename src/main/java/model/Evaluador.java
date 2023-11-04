@@ -133,7 +133,7 @@ public class Evaluador {
                 j.put(rango, 1);
             }
 
-        } else if (Flush(cartas) != null) {
+        } else if (Flush(cartas)!=null) {
             Map<String, Integer> j = jugadas.get("flush");
             if (j.containsKey(rango)) {
                 j.put(rango, j.get(rango) + 1);
@@ -462,8 +462,76 @@ public class Evaluador {
 //        return fullHouse;
 //    }
     //Comprueba si hay flush
+    /*public boolean Flush(List<Carta> c) {
+        boolean flush = false;
+        List<Carta> flushes = new ArrayList<>();
+        //Contador para cartas de cada palo
+        int contH = 0;
+        int contD = 0;
+        int contC = 0;
+        int contS = 0;
+        int i = 0;
+        while (i < c.size()) {
+        //Contamos los palos
+            switch (c.get(i).getPalo()) {
+                case "h" ->
+                    contH++;
+                case "d" ->
+                    contD++;
+                case "c" ->
+                    contC++;
+                case "s" ->
+                    contS++;
+            }
+        }
+
+        //Si hay flush
+        if (contH > 4 ) {
+            flush = true;
+            for(Carta card: c){
+                if("h".equals(card.getPalo())){
+                    flushes.add(card);
+                }
+            }
+        }
+        
+        else if (contD > 4){
+            flush = true;
+            for(Carta card: c){
+                if("d".equals(card.getPalo())){
+                    flushes.add(card);
+                }
+            }
+        }
+        
+        else if (contC > 4){
+            flush = true;
+            for(Carta card: c){
+                if("c".equals(card.getPalo())){
+                    flushes.add(card);
+                }
+            }
+        }
+        
+        else if (contS > 4){
+            flush = true;
+            for(Carta card: c){
+                if("s".equals(card.getPalo())){
+                    flushes.add(card);
+                }
+            }
+        }
+
+        flushes.removeAll(board);
+        if(!flushes.isEmpty()){
+            flush = true;
+        }
+        
+        return flush;
+    }*/
+    //Comprueba si hay flush
     public Jugada Flush(List<Carta> c) {
-        Collections.sort(c);
+
         //Contador para cartas de cada palo
         int contH = 0;
         int contD = 0;
@@ -493,7 +561,6 @@ public class Evaluador {
 
         return null;
     }
-
     //Devuelve el mejor trio (Funciona)
     //Comprueba si hay trio
     public boolean Trio(List<Carta> c) { // return lista 
@@ -543,6 +610,7 @@ public class Evaluador {
             //Los quitamos de la lista tmp
             tmp.remove(parejas1.get(0));
             tmp.remove(parejas1.get(1));
+            Collections.sort(tmp);
             //miramos si la primera pareja tiene alguna carta de rango
             List <Carta> aux = parejas1;
             aux.removeAll(board);
@@ -559,6 +627,7 @@ public class Evaluador {
                 if(parejas1 != null){
                     tmp.remove(parejas1.get(0));
                     tmp.remove(parejas1.get(1));
+                    Collections.sort(tmp);
                     aux = parejas1;
                     aux.removeAll(board);
                     if(!aux.isEmpty()){ // si tiene carta de rango                
