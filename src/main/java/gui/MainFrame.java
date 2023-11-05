@@ -557,7 +557,9 @@ public class MainFrame extends JFrame {
 
     //Listener del boton para calcular combos
     private void calculateComboButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_calculateComboButtonActionPerformed
-        controller.evalueAllCombos();
+        if (!controller.getIntroducedRange().isEmpty() && !controller.getBoardCards().isEmpty()) {
+            controller.evalueAllCombos();
+        }
 
         Map<String, Map<String, Integer>> results = controller.getComboResults(); //Resultado de calcular los combos
 
@@ -628,22 +630,22 @@ public class MainFrame extends JFrame {
                 overPair.setText(overPairText + handCombos + " " + cadena);
                 totalCombos += handCombos;
 
-            }else if (jugadaActual.equals("topPair")) {
+            } else if (jugadaActual.equals("topPair")) {
                 handCombos = getHandTotalCombos("topPair");
                 topPair.setText(topPairText + handCombos + " " + cadena);
                 totalCombos += handCombos;
 
-            }else if (jugadaActual.equals("ppBelowTopPair")) {
+            } else if (jugadaActual.equals("ppBelowTopPair")) {
                 handCombos = getHandTotalCombos("ppBelowTopPair");
                 ppBelowTopPair.setText(ppBelowTopPairText + handCombos + " " + cadena);
                 totalCombos += handCombos;
 
-            }else if (jugadaActual.equals("middlePair")) {
+            } else if (jugadaActual.equals("middlePair")) {
                 handCombos = getHandTotalCombos("middlePair");
                 middlePair.setText(middlePairText + handCombos + " " + cadena);
                 totalCombos += handCombos;
 
-            }else if (jugadaActual.equals("weakPair")) {
+            } else if (jugadaActual.equals("weakPair")) {
                 handCombos = getHandTotalCombos("weakPair");
                 weakPair.setText(weakPairText + handCombos + " " + cadena);
                 totalCombos += handCombos;

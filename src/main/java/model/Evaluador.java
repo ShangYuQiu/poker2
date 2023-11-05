@@ -125,7 +125,7 @@ public class Evaluador {
                 j.put(rango, 1);
             }
 
-        } else if (FullHouse(cartas) != null) {
+        } else if (FullHouse(cartas)) {
             Map<String, Integer> j = jugadas.get("fullHouse");
             if (j.containsKey(rango)) {
                 j.put(rango, j.get(rango) + 1);
@@ -133,7 +133,7 @@ public class Evaluador {
                 j.put(rango, 1);
             }
 
-        } else if (Flush(cartas) != null) {
+        } else if (Flush(cartas)) {
             Map<String, Integer> j = jugadas.get("flush");
             if (j.containsKey(rango)) {
                 j.put(rango, j.get(rango) + 1);
@@ -149,7 +149,7 @@ public class Evaluador {
                 j.put(rango, 1);
             }
 
-        } else if (Trio(cartas) != null) {
+        } else if (Trio(cartas)) {
             Map<String, Integer> j = jugadas.get("threeOfKind");
             if (j.containsKey(rango)) {
                 j.put(rango, j.get(rango) + 1);
@@ -157,7 +157,7 @@ public class Evaluador {
                 j.put(rango, 1);
             }
 
-        } else if (DoblePareja(cartas) != null) {
+        } else if (DoblePareja(cartas)) {
             Map<String, Integer> j = jugadas.get("twoPair");
             if (j.containsKey(rango)) {
                 j.put(rango, j.get(rango) + 1);
@@ -268,7 +268,7 @@ public class Evaluador {
     private Jugada EscaleraColor(List<Carta> c) {
         Jugada escaleraColor = null;
         Collections.sort(c);
-        
+
         int i = 0;
         while (i < c.size()) {
             ArrayList<Carta> tmp = new ArrayList<>(); //Lista que guarda las carta forma la escalera de color
@@ -415,39 +415,69 @@ public class Evaluador {
         return poker;
     }
 
-//Devuelve un Full House (Funciona)
-    private Jugada FullHouse(List<Carta> c) {
-        Collections.sort(c);
-        Jugada fullHouse = null;
+    private boolean FullHouse(List<Carta> c) {
+        boolean fullHouse = false;
+        List<Carta> lista = new ArrayList<>();
+        List<Carta> tmp = new ArrayList<>();
 
-        //Lista auxiliar que almacenan las cartas que forman el Full House
-        ArrayList<Carta> lista = new ArrayList<>();
+        int i = 0;
+        while (i < c.size() - 2) {
+            Carta cur = c.get(i);
+            Carta sig = c.get(i + 1);
+            Carta sig2 = c.get(i + 2);
 
-        if (Trio(c) != null) {
-            lista.add(0, c.remove(0));
-            lista.add(0, c.remove(0));
-            lista.add(0, c.remove(0));
+            tmp.add(cur);
+            tmp.add(sig);
+            tmp.add(sig2);
+            lista.add(cur);
+            lista.add(sig);
+            lista.add(sig2);
 
-            if (Pareja(c) != null) {
-                lista.add(0, c.remove(0));
-                lista.add(0, c.remove(0));
+            //Comprueba si forma trio
+            if (Trio(tmp)) {
+                tmp.clear();
+                int j = i + 3;
+                while (j < c.size() - 1) {
+                    Carta curj = c.get(j);
+                    Carta sigj = c.get(j + 1);
 
-                for (int i = 0; i < 5; ++i) {
-                    Carta tmp = lista.remove(0);
-                    c.add(0, tmp);
+                    if (curj.getVal() == sigj.getVal()) {
+                        tmp.add(curj);
+                        tmp.add(sigj);
+
+                        if (Pareja(tmp)) {
+                            lista.add(curj);
+                            lista.add(sigj);
+
+                            lista.removeAll(this.board);
+                            if (!lista.isEmpty()) {
+                                fullHouse = true;
+                                break;
+                            }
+
+                        }
+                    }
+
+                    ++j;
                 }
-                fullHouse = new Jugada(c, tJugada.FULL_HOUSE, null);
-            } else {
-                c.add(0, lista.remove(0));
-                c.add(0, lista.remove(0));
-                c.add(0, lista.remove(0));
+
             }
+
+            if (fullHouse) {
+                break;
+            }
+
+            lista.clear();
+            tmp.clear();
+            ++i;
         }
+
         return fullHouse;
     }
 
-    //Comprueba si hay flush
-    public Jugada Flush(List<Carta> c) {
+    //Comprueba si hay flush 
+    public boolean Flush(List<Carta> c) {
+        boolean flush = false;
 
         //Contador para cartas de cada palo
         int contH = 0;
@@ -473,18 +503,18 @@ public class Evaluador {
 
         //Si hay flush
         if (contH > 4 || contD > 4 || contC > 4 || contS > 4) {
-            return new Jugada(c, tJugada.COLOR, null);
+            flush = true;
         }
 
-        return null;
+        return flush;
     }
 
-    //Devuelve el mejor trio (Funciona)
-    private Jugada Trio(List<Carta> c) {
-        Jugada trio = null;
-        Collections.sort(c);
+    //Comprueba si hay trio
+    public boolean Trio(List<Carta> c) { // return lista 
+        boolean trio = false;
         int i = 0;
         int cont = 1;   //Numero de cartas del trio actual
+        List<Carta> trios = new ArrayList<>();
 
         while (i < c.size() - 1) {
             int cur = c.get(i).getVal();
@@ -497,49 +527,68 @@ public class Evaluador {
             else {
                 cont = 1;
             }
-
-            //Si hay trio
+            //Si hay posibilidad de trio
             if (cont == 3) {
-                //Quitamos esas cartas de la mano para insertarlas al inicio 
-                int index = i - 1;
-                Carta tmp = c.remove(index);
-                Carta tmp2 = c.remove(index);
-                Carta tmp3 = c.remove(index);
-                //Los insertamos de esta manera para que se mantenga el orden relativo
-                c.add(0, tmp3);
-                c.add(0, tmp2);
-                c.add(0, tmp);
-                //
-                trio = new Jugada(c, tJugada.TRIO, null);
-                break;
+                //Almacenamos las cartas que forman el trio
+                trios.add(c.get(i - 1));
+                trios.add(c.get(i));
+                trios.add(c.get(i + 1));
+                //quitamos de la lista de trios las cartas de board
+                trios.removeAll(board);
+                if (!trios.isEmpty()) {// si no esta vacia
+                    trio = true;
+                    break;
+                }
             }
             i++;
         }
         return trio;
     }
 
-    //Devuelve la mejor doble pareja (Funciona)
-    private Jugada DoblePareja(List<Carta> c) {
-        Jugada doblePareja = null;
-        Collections.sort(c);
-        
-        //Se busca la primera pareja
-        if (Pareja(c) != null) {
-            //Los quitamos de la lista
-            Carta tmp = c.remove(0);
-            Carta tmp2 = c.remove(0);
+    //Daixiang
+    public boolean DoblePareja(List<Carta> c) {
+        boolean doblePareja = false;
+        List<Carta> original = new ArrayList<>(c);
+        List<Carta> tmp = new ArrayList<>();
 
-            //Si se encuentra una segunda pareja
-            if (Pareja(c) != null) {
-                //Se insertan la primera pareja en la mano
-                c.add(0, tmp2);
-                c.add(0, tmp);
-                doblePareja = new Jugada(c, tJugada.DOBLE_PAREJA, null);
-            } else {
-                c.add(0, tmp2);
-                c.add(0, tmp);
+        int i = 0;
+        while (i < original.size() - 1) {
+            Carta cur = original.get(i);
+            Carta sig = original.get(i + 1);
+
+            //Primera pareja encontrada
+            if (cur.getVal() == sig.getVal()) {
+                tmp.add(cur);
+                tmp.add(sig);
+
+                int j = i + 2;
+                while (j < original.size() - 1) {
+                    Carta cur2 = original.get(j);
+                    Carta sig2 = original.get(j + 1);
+
+                    //Segunda pareja encontrada
+                    if (cur2.getVal() == sig2.getVal()) {
+                        tmp.add(cur2);
+                        tmp.add(sig2);
+
+                        //Comprobar que hay al menos una carta no común
+                        tmp.removeAll(this.board);
+                        if (!tmp.isEmpty()) {
+                            return true;
+                        } else {
+                            tmp.remove(cur2);
+                            tmp.remove(sig2);
+                        }
+                    }
+                    ++j;
+                }
+
+                tmp.remove(cur);
+                tmp.remove(sig);
             }
+            ++i;
         }
+
         return doblePareja;
     }
 
@@ -587,22 +636,20 @@ public class Evaluador {
         return pareja;
     }
 
-    //Devuelve la pareja si la hay
-    private Jugada Pareja(List<Carta> c) {
-        Collections.sort(c);
-        Jugada pareja = null;
+    //Comprueba si hay pareja
+    private boolean Pareja(List<Carta> c) {
+        boolean pareja = false;
 
         int i = 0;
         while (i < c.size() - 1) {
             int cur = c.get(i).getVal();
             int sig = c.get(i + 1).getVal();
             if (cur == sig) {
-                pareja = new Jugada(c, tJugada.PAREJA, null);
+                pareja = true;
                 break;
             }
             i++;
         }
-
         return pareja;
     }
 
