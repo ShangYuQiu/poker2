@@ -348,39 +348,42 @@ public class Evaluador {
     private boolean FullHouse(List<Carta> c) {
         boolean fullHouse = false;
         //Lista auxiliar que almacenan las cartas que forman el Full House
+        List <Carta> tmp = c;
+        boolean trio = false;
         ArrayList<Carta> lista = new ArrayList<>();
         int cont = 1;
         int i = 0;
 
-        while (i < c.size() - 1) {
-            int cur = c.get(i).getVal();
-            int sig = c.get(i + 1).getVal();
+        while (i < tmp.size() - 1) {
+            int cur = tmp.get(i).getVal();
+            int sig = tmp.get(i + 1).getVal();
 
             if (cur == sig) {
                 cont++;
                 if (cont == 3) {
-                    lista.add(c.get(i - 1));
-                    lista.add(c.get(i));
-                    lista.add(c.get(i + 1));
+                    lista.add(tmp.get(i - 1));
+                    lista.add(tmp.get(i));
+                    lista.add(tmp.get(i + 1));
+                    trio = true;
                     cont = 1;
                 }
             } else {//si se corta en medio                             
                 if (cont == 2) {
 
-                    lista.add(c.get(i - 1));
-                    lista.add(c.get(i));
+                    lista.add(tmp.get(i - 1));
+                    lista.add(tmp.get(i));
                 }
                 cont = 1;
             }
 
             if (i == c.size() - 2 && cont == 2) {
-                lista.add(c.get(i - 1));
-                lista.add(c.get(i));
+                lista.add(tmp.get(i - 1));
+                lista.add(tmp.get(i));
             }
             i++;
         }
 
-        if (lista.size() > 4) {
+        if (lista.size() > 4 && trio) {
             lista.removeAll(board);
             if (!lista.isEmpty()) {
                 fullHouse = true;
