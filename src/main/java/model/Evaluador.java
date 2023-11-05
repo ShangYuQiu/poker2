@@ -488,9 +488,11 @@ public class Evaluador {
            i++;            
         }
         
-        lista.removeAll(board);
-        if(!lista.isEmpty()){
-            fullHouse = true;
+        if(lista.size() > 4){
+            lista.removeAll(board);
+            if(!lista.isEmpty()){
+                fullHouse = true;
+            }
         }
         return fullHouse;
     }
