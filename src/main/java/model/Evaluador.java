@@ -330,55 +330,7 @@ public class Evaluador {
         }
 
         return escalera;
-    }
-    //Devuelve el poker si existe (Funciona)
-    /*private boolean Poker(List<Carta> c) {
-        Collections.sort(c);
-        boolean poker = false;
-
-        int i = 0;
-        int cont = 1;
-        List<Carta> tmp= new ArrayList<>();
-       // ArrayList<Carta> lista = new ArrayList<>();
-        List<Carta> pokers = new ArrayList<>();
-
-        while (i < c.size() - 1) {
-            int cur = c.get(i).getVal();
-            int sig = c.get(i + 1).getVal();
-
-            if (cur == sig) {
-                cont++;
-            } else {
-                cont = 1;
-            }
-
-            if (cont == 4) {
-                int index = i - 2;
-
-                //Quita las 4 cartas iguales
-                for (int j = index; j < index+4; j++) {
-                    Carta aux =tmp.get(index);
-                    //lista.add(0, tmp);
-                    pokers.add(aux);
-                }
-
-                pokers.removeAll(board);
-                if(!pokers.isEmpty()){
-                    poker = true;
-                    break;
-                }
-               
-                /*else{
-                    pokers.clear();
-                    cont = 1;
-                }
-            }
-
-            ++i;
-        }
-
-        return poker;
-    }*/
+    }  
 
     public boolean Poker(List<Carta> c) {
         boolean poker = false;
@@ -415,6 +367,7 @@ public class Evaluador {
     private boolean FullHouse(List<Carta> c) {
         Collections.sort(c);
         boolean fullHouse = false;
+        boolean trio = false;
         List<Carta> tmp =c;
         //Lista auxiliar que almacenan las cartas que forman el Full House
         ArrayList<Carta> lista = new ArrayList<>();
@@ -431,6 +384,7 @@ public class Evaluador {
                     lista.add(tmp.get(i-1));  
                     lista.add(tmp.get(i));
                     lista.add(tmp.get(i+1));
+                    trio = true;
                     cont=1;
                 }
             }            
@@ -450,7 +404,7 @@ public class Evaluador {
            i++;            
         }
         
-        if(lista.size() > 4){
+        if(lista.size() > 4 && trio){
             lista.removeAll(board);
             if(!lista.isEmpty()){
                 fullHouse = true;
@@ -522,10 +476,6 @@ public class Evaluador {
                     trio = true;          
                     break;
                 }
-                /*else {
-                    trios.clear();
-                    cont --;
-                }*/
             }
             i++;
         }
