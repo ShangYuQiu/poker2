@@ -349,7 +349,6 @@ public class Evaluador {
                 }
                 ++j;
             }
-
             //Si la jugada llega a tener al menos 4 cartas => quad
             if (tmp.size() >= 4) {
                 tmp.removeAll(this.board);
@@ -368,7 +367,7 @@ public class Evaluador {
         Collections.sort(c);
         boolean fullHouse = false;
         boolean trio = false;
-        List<Carta> tmp =c;
+        List<Carta> tmp =new ArrayList<>(c);
         //Lista auxiliar que almacenan las cartas que forman el Full House
         ArrayList<Carta> lista = new ArrayList<>();
         int cont = 1;
@@ -519,51 +518,6 @@ public class Evaluador {
         
         return doblePareja;
     }
-    
-    /*public boolean DoblePareja(List<Carta> c) {
-        boolean doblePareja = false;
-        List<Carta> original = new ArrayList<>(c);
-        List<Carta> tmp = new ArrayList<>();
-
-        int i = 0;
-        while (i < original.size() - 1) {
-            Carta cur = original.get(i);
-            Carta sig = original.get(i + 1);
-
-            //Primera pareja encontrada
-            if (cur.getVal() == sig.getVal()) {
-                tmp.add(cur);
-                tmp.add(sig);
-
-                int j = i + 2;
-                while (j < original.size() - 1) {
-                    Carta cur2 = original.get(j);
-                    Carta sig2 = original.get(j + 1);
-
-                    //Segunda pareja encontrada
-                    if (cur2.getVal() == sig2.getVal()) {
-                        tmp.add(cur2);
-                        tmp.add(sig2);
-
-                        //Comprobar que hay al menos una carta no común
-                        tmp.removeAll(this.board);
-                        if (!tmp.isEmpty()) {
-                            return true;
-                        } else {
-                            tmp.remove(cur2);
-                            tmp.remove(sig2);
-                        }
-                    }
-                    ++j;
-                }
-
-                tmp.remove(cur);
-                tmp.remove(sig);
-            }
-            ++i;
-        }
-        return doblePareja;
-    }*/
 
     //Devuelve el tipo de pareja que se forma si la hay
     //Devuelve el tipo de pareja que se forma si la hay
