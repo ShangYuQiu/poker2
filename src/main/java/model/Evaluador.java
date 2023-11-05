@@ -432,13 +432,13 @@ public class Evaluador {
                 }
 
                 //Este seria el kicker (Primero de la mano (Descendente) quitado las 4 cartas iguales)
-                Carta kicker = c.remove(0);
+                /*Carta kicker = c.remove(0);
                 lista.add(0, kicker);
 
                 for (int k = 0; k < 5; k++) {
                     Carta tmp = lista.remove(0);
                     c.add(0, tmp);
-                }
+                }*/
 
                 pokers.removeAll(board);
                 if(!pokers.isEmpty()){
@@ -470,20 +470,25 @@ public class Evaluador {
             
             if(cur == sig){
                 cont ++;
+                if (cont == 3){
+                    lista.add(tmp.get(i-1));  
+                    lista.add(tmp.get(i));
+                    lista.add(tmp.get(i+1));
+                    cont=1;
+                }
+            }            
+            else {//si se corta en medio                             
+                if(cont == 2){                  
+                    
+                    lista.add(tmp.get(i-1));
+                    lista.add(tmp.get(i));
+                }                                
+                cont = 1;
             }
             
-            else {//si se corta en medio              
-                if(cont == 2){
-                  lista.add(tmp.get(i-1));
-                  lista.add(tmp.get(i));
-                }               
-                else if (cont == 3){
-                  lista.add(tmp.get(i-2));  
-                  lista.add(tmp.get(i-1));
-                  lista.add(tmp.get(i));
-                }    
-                
-                cont = 1;
+            if (i == tmp.size() -2 &&cont == 2){
+                lista.add(tmp.get(i-1));
+                lista.add(tmp.get(i));
             }
            i++;            
         }
