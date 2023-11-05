@@ -229,28 +229,22 @@ public class Evaluador {
 
     //Filtra quitando aquellos combos que aparecen las cartas del board
     public void filterBoardCombos() {
-        List<String> BoardCombos = new ArrayList();//para guardar todos los combos que deben eliminar
-        //Para cada carta del board miro si puedo eliminar combos
-        for (Carta c : board) {
-            //Miro en cada mano
-            for (String rango : combos.keySet()) {
-                //Si el combo contiene una carta del board hay que eliminar combos
-                if (rango.contains(c.getSimb())) {
-                    //String carta = c.getSimb() + c.getPalo();
-                    List<String> card = combos.get(rango);
-                    for (String s : card) {
-                        if (s.contains(c.getPalo())) {
-                            BoardCombos.add(s);
-                        }
+        //Para cada carta del board
+        for (Carta c : this.board) {
+            //Comprobar en cada mano
+            for (List<String> comb : combos.values()) {
+                
+                List<String> aux = new ArrayList<>(); //Lista auxiliar para insertar los elementos a eliminar 
+                for (String s : comb) {
+                    if (s.contains(c.getSimb() + c.getPalo())) {
+                        aux.add(s);
                     }
                 }
 
-            }
-        }
-        //recorremos combos para eliminar todo que aparece en la lista boardCombo
-        for (String rango : combos.keySet()) {
-            for (String s : BoardCombos) {
-                combos.get(rango).remove(s);
+                //Eliminar elementos de la lista aux
+                for (String s : aux) {
+                    comb.remove(s);
+                }
             }
         }
     }
@@ -609,7 +603,7 @@ public class Evaluador {
                 else if (temp.equals(this.board.get(0)) || tmp2.equals(this.board.get(0))){
                     pareja = "topPair";
                 }
-                else if ((temp.getVal() < this.board.get(0).getVal()) && !this.board.contains(temp) && !this.board.contains(tmp2)
+                else if ((Math.abs(temp.getVal() - this.board.get(0).getVal()) == 1) && !this.board.contains(temp) && !this.board.contains(tmp2)
                             && (temp.getVal() > this.board.get(this.board.size() - 1).getVal())){
                     pareja = "ppBelowTopPair";
                 }
