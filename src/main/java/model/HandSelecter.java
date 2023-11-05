@@ -799,20 +799,6 @@ public class HandSelecter {
         return this.introducedRange;
     }
     
-  
-//    public void p(){
-//        ev.addMapCombos(introducedRange);
-//        ev.filterBoardCombos();
-//        
-//        for(String s: ev.getCombos().keySet()){
-//            List<String> card = ev.getCombos().get(s);
-//            System.out.print(s+"->");
-//            for(int i=0;i<card.size();i++){
-//                System.out.print(card.get(i)+ " ");
-//            }
-//            System.out.println();
-//            
-//        }
-//    }
+
 
 }
