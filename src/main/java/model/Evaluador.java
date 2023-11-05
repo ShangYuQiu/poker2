@@ -485,10 +485,10 @@ public class Evaluador {
     public boolean DoblePareja(List<Carta> c) {
         boolean doblePareja = false;
         Collections.sort(c);
-        
-        List<Carta> parejas1 =Pareja(c);
+        List<Carta> tmp =new ArrayList<>(c);
+        List<Carta> parejas1 =Pareja(tmp);
         //Se busca la primera pareja
-        if (parejas1 != null) {
+        /*if (parejas1 != null) { // si hay al menos una carta no comun
             List<Carta> tmp =new ArrayList<>(c);
             //Los quitamos de la lista tmp
             tmp.remove(parejas1.get(0));
@@ -514,6 +514,27 @@ public class Evaluador {
                 }
             }           
             
+        }*/
+        
+        //si hay dos cartas no comun
+        
+        if (parejas1 != null) {        
+            //Los quitamos de la lista tmp
+            tmp.remove(parejas1.get(0));
+            tmp.remove(parejas1.get(1));
+            //miramos si la primera pareja tiene alguna carta de rango
+            List <Carta> aux = new ArrayList<>(parejas1);
+            aux.removeAll(board);
+            if(!aux.isEmpty()){
+                Collections.sort(tmp);              
+                List<Carta> parejas2 =Pareja(tmp);
+                if(parejas2 != null){
+                    parejas2.removeAll(board);
+                    if(!parejas2.isEmpty()){
+                        doblePareja = true;
+                    }
+                }
+            }
         }
         
         return doblePareja;
