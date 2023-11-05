@@ -265,190 +265,107 @@ public class Evaluador {
     }
 
     //Comprueba si hay escelera de color
-    private boolean EscaleraColor(List<Carta> c) {
+    public boolean EscaleraColor(List<Carta> c) {
         boolean escaleraColor = false;
-        Collections.sort(c);
-        List< Carta> escaleraColores = new ArrayList<>();
-        List<Carta> aux = new ArrayList<>();
 
         int i = 0;
-        int index = 0;
-        int cont = 1;
+        while (i < c.size()) {
+            ArrayList<Carta> tmp = new ArrayList<>(); //Lista que guarda las carta forma la escalera de color
+            tmp.add(c.get(i));  //Inserta la primera carta a partir de la cual empieza la busqueda
+            String palo = c.get(i).getPalo();   //El palo que se busca         
+            int cur = c.get(i).getVal();    //Valor de la ultima carta que se tiene para formar la jugada
 
-        if (c.get(0).getSimb().equals("A")) {
-            Carta card = new Carta("A", c.get(0).getPalo());
-            card.setValor(1);
-            c.add(card);
-
-        }
-
-        while (i < c.size() - 1) {
-            int cur = c.get(i).getVal();
-            int sig = c.get(i + 1).getVal();
-
-            String p1 = c.get(i).getPalo();
-            String p2 = c.get(i + 1).getPalo();
-
-            if (cur - sig == 1 && (p1.equals(p2))) {
-                cont++;
-            } else {
-                cont = 1;
+            int j = i + 1;
+            while (j < c.size()) {
+                //Si es del mismo valo y su diferencia vale 1
+                if (cur - c.get(j).getVal() == 1 && palo.equals(c.get(j).getPalo())) {
+                    tmp.add(c.get(j));   //Se inserta en la lista
+                    cur = c.get(j).getVal();    //Se actualiza el ultimo valor
+                }
+                ++j;
             }
 
-            if (cont == 5) {
-                index = i - 3;
-
-                for (int k = index; k <= index + 4; k++) {
-                    escaleraColores.add(c.get(k));
-                }
-                aux = escaleraColores;
-                aux.removeAll(board);
-                if (!aux.isEmpty()) {
+            //Si la jugada llega a tener 5 cartas => Escalera Color
+            if (tmp.size() >= 5) {
+                tmp.removeAll(this.board);
+                if (!tmp.isEmpty()) {
                     escaleraColor = true;
                     break;
-                } else {//quitar al principio y seguir por detras
-                    escaleraColores.clear();
-                    cont--;
                 }
             }
-            i++;
+            ++i;
         }
 
         return escaleraColor;
     }
 
-    private boolean Escalera(List<Carta> c) {
-        Collections.sort(c);
+    public boolean Escalera(List<Carta> c) {
         boolean escalera = false;
-        //Distinguimos casos dependiendo de si la mano contiene Aces o no 
-        if (c.get(0).getSimb().equals("A")) {
-            Carta card = new Carta("A", c.get(0).getPalo());
-            card.setValor(1);
-            c.add(card);
 
-        }
+        int i = 0;
+        while (i < c.size()) {
+            ArrayList<Carta> tmp = new ArrayList<>(); //Lista que guarda las carta forma la escalera de color
+            tmp.add(c.get(i));  //Inserta la primera carta a partir de la cual empieza la busqueda       
+            int cur = c.get(i).getVal();    //Valor de la ultima carta que se tiene para formar la jugada
 
-        int cont = 1; // contador = num elemento de escalera
-        //boolean gutshot = false;
-        //boolean openended = false;
-        //boolean ace = false;
-        //boolean roto = false; // booleano = true cuando puede haber posibilidad de un gutshot
-        //int contR = 0; // valor auxiliar para conservar el cont anterior cuando se rompe la escalera (si hay posibilidad de gutshot)
-        int index = 0;
-        List<Carta> escaleras = new ArrayList<>();
-        List<Carta> aux = new ArrayList<>();
-        for (int i = 0; i < c.size() - 1; i++) {
-
-            int cur = c.get(i).getVal();
-            int sig = c.get(i + 1).getVal();
-
-            if (cur - sig == 1) {
-                cont++;
-            } //gutshot : K Q J 9 8 / K J T 9 5 / K Q T 9 5
-            /*else if (cur - sig == 2) { //posible gutshot
-                roto = true;
-                contR = cont + 1; // suma 1 al contador antes de que se haga reset 
-                cont = 1;
-                ace = false;
-
-            } else if (cur - sig > 2) { // la resta es mayor 2 -> no va a formar nada
-                roto = false;
-                contR = 0;
-                cont = 1;
-                ace = false;
-            }*/ else {
-                cont = 1;
+            int j = i + 1;
+            while (j < c.size()) {
+                //Si es del mismo valo y su diferencia vale 1
+                if (cur - c.get(j).getVal() == 1) {
+                    tmp.add(c.get(j));   //Se inserta en la lista
+                    cur = c.get(j).getVal();    //Se actualiza el ultimo valor
+                }
+                ++j;
             }
 
-            if (cont == 5) { // escalera
-                //escalera = new Jugada(c, tJugada.ESCALERA, null);
-                index = i - 3;
-
-                for (int k = index; k <= index + 4; k++) {
-                    escaleras.add(c.get(k));
-                }
-                aux = escaleras;
-                aux.removeAll(board);
-                if (!aux.isEmpty()) {
+            //Si la jugada llega a tener 5 cartas => Escalera 
+            if (tmp.size() >=  5) {
+                tmp.removeAll(this.board);
+                if (!tmp.isEmpty()) {
                     escalera = true;
                     break;
-                } else {//quitar al principio y seguir por detras
-                    escaleras.clear();
-                    cont--;
                 }
-                //gutshot = false;
-                //roto = false;
-                //openended = false; // -> no habra openended
-                //contR = 0;
             }
-            /*else if (cont == 4) { // 4 elem de escalera -> openended 
-                openended = true;
-
-            } else if (cont > 0 && roto && contR > 0) { // caso gutshot
-                if (cont + contR == 5) { // cont actual + valor aux de cont antes de romper la escalera == 5 -> gutshot
-                    gutshot = true;
-                    roto = false;
-                    contR = 0;
-                }
-            }*/
+            ++i;
         }
 
         return escalera;
     }
 
     //Devuelve el poker si existe (Funciona)
-    private boolean Poker(List<Carta> c) {
-        Collections.sort(c);
-        boolean poker = false;
+    public boolean Poker(List<Carta> c) {
+         boolean poker = false;
 
         int i = 0;
-        int cont = 1;
-        ArrayList<Carta> lista = new ArrayList<>();
-        List<Carta> pokers = new ArrayList<>();
+        while (i < c.size()) {
+            ArrayList<Carta> tmp = new ArrayList<>(); //Lista que guarda las carta forma la escalera de color
+            tmp.add(c.get(i));  //Inserta la primera carta a partir de la cual empieza la busqueda       
+            Carta cur = c.get(i);    //Valor de la ultima carta que se tiene para formar la jugada
 
-        while (i < c.size() - 1) {
-            int cur = c.get(i).getVal();
-            int sig = c.get(i + 1).getVal();
-
-            if (cur == sig) {
-                cont++;
-            } else {
-                cont = 1;
+            int j = i + 1;
+            while (j < c.size()) {
+                //Si las 2 cartas es tienen el mismo valor
+                if (cur.getSimb().equals(c.get(j).getSimb())) {
+                    tmp.add(c.get(j));   //Se inserta en la lista
+                }
+                ++j;
             }
 
-            if (cont == 4) {
-                int index = i - 2;
-
-                //Quita las 4 cartas iguales
-                for (int j = 0; j < 4; j++) {
-                    Carta tmp = c.remove(index);
-                    lista.add(0, tmp);
-                    pokers.add(tmp);
-                }
-
-                //Este seria el kicker (Primero de la mano (Descendente) quitado las 4 cartas iguales)
-                /*Carta kicker = c.remove(0);
-                lista.add(0, kicker);
-
-                for (int k = 0; k < 5; k++) {
-                    Carta tmp = lista.remove(0);
-                    c.add(0, tmp);
-                }*/
-                pokers.removeAll(board);
-                if (!pokers.isEmpty()) {
+            //Si la jugada llega a tener al menos 4 cartas => quad
+            if (tmp.size() >= 4) {
+                tmp.removeAll(this.board);
+                if (!tmp.isEmpty()) {
                     poker = true;
                     break;
                 }
-
             }
-
             ++i;
         }
 
         return poker;
     }
 
-    private boolean FullHouse(List<Carta> c) {
+    public boolean FullHouse(List<Carta> c) {
         boolean fullHouse = false;
         List<Carta> lista = new ArrayList<>();
         List<Carta> tmp = new ArrayList<>();
@@ -670,7 +587,7 @@ public class Evaluador {
     }
 
     //Comprueba si hay pareja
-    private boolean Pareja(List<Carta> c) {
+    public boolean Pareja(List<Carta> c) {
         boolean pareja = false;
         int i = 0;
         while (i < c.size() - 1) {
