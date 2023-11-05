@@ -1,7 +1,6 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,19 +42,7 @@ public class Evaluador {
         }
         return numCombos;
     }
-
-    public void imprimirEstadisticas() {
-        for (Map.Entry<String, Map<String, Integer>> entrada : jugadas.entrySet()) {
-            String jugada = entrada.getKey();
-            Map<String, Integer> combos = entrada.getValue();
-            System.out.println(jugada);
-            for (Map.Entry<String, Integer> entrada2 : combos.entrySet()) {
-                System.out.println(String.format("%s %d", entrada2.getKey(), entrada2.getValue()));
-            }
-
-        }
-    }
-
+    
     //Calcula todos los combos
     public void evalueAllCombos(List<String> boardCards, List<String> introducedRange) {
         //Vaciar el mapa 
@@ -226,31 +213,24 @@ public class Evaluador {
         }
         //board.add(new Carta("A", "h"));
     }
-
-    //Filtra quitando aquellos combos que aparecen las cartas del board
+    
     public void filterBoardCombos() {
-        List<String> BoardCombos = new ArrayList();//para guardar todos los combos que deben eliminar
-        //Para cada carta del board miro si puedo eliminar combos
-        for (Carta c : board) {
-            //Miro en cada mano
-            for (String rango : combos.keySet()) {
-                //Si el combo contiene una carta del board hay que eliminar combos
-                if (rango.contains(c.getSimb())) {
-                    //String carta = c.getSimb() + c.getPalo();
-                    List<String> card = combos.get(rango);
-                    for (String s : card) {
-                        if (s.contains(c.getPalo())) {
-                            BoardCombos.add(s);
-                        }
+        //Para cada carta del board
+        for (Carta c : this.board) {
+            //Comprobar en cada mano
+            for (List<String> comb : combos.values()) {
+                
+                List<String> aux = new ArrayList<>(); //Lista auxiliar para insertar los elementos a eliminar 
+                for (String s : comb) {
+                    if (s.contains(c.getSimb() + c.getPalo())) {
+                        aux.add(s);
                     }
                 }
 
-            }
-        }
-        //recorremos combos para eliminar todo que aparece en la lista boardCombo
-        for (String rango : combos.keySet()) {
-            for (String s : BoardCombos) {
-                combos.get(rango).remove(s);
+                //Eliminar elementos de la lista aux
+                for (String s : aux) {
+                    comb.remove(s);
+                }
             }
         }
     }
@@ -479,7 +459,6 @@ public class Evaluador {
         return trio;
     }
 
-    //Daixiang
     public boolean DoblePareja(List<Carta> c) {
         boolean doblePareja = false;
         List<Carta> original = new ArrayList<>(c);
@@ -528,7 +507,6 @@ public class Evaluador {
     //Devuelve el tipo de pareja que se forma si la hay
     private String ParejaConDistincion(List<Carta> c) {
         String pareja = null;
-        Collections.sort(c);
 
         int i = 0;
         while (i < c.size() - 1) {
@@ -551,7 +529,7 @@ public class Evaluador {
                     else if (tmp.equals(this.board.get(0)) || tmp2.equals(this.board.get(0))) {
                         pareja = "topPair";
                     } //Si la pareja es menor que la carta más alta del board pero tampoco es débil
-                    else if ((tmp.getVal() < this.board.get(0).getVal()) && !this.board.contains(tmp) && !this.board.contains(tmp2)
+                    else if ((Math.abs(tmp.getVal() - this.board.get(0).getVal()) == 1) && !this.board.contains(tmp) && !this.board.contains(tmp2)
                             && (tmp.getVal() > this.board.get(this.board.size() - 1).getVal())) {
                         pareja = "ppBelowTopPair";
                     } //Si la pareja utiliza la segunda carta más alta del board

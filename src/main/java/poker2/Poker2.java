@@ -15,6 +15,28 @@ public class Poker2 {
         frame.setVisible(true);
 //        Evaluador ev = new Evaluador();
 //
+//        List<String> rango = new ArrayList<>();
+//        rango.add("AJo");
+//
+//        ev.addMapCombos(rango);
+//        Map<String, List<String>> combos = ev.getCombos();
+//
+//        for (String s : combos.get("AJo")) {
+//            System.out.println(s);
+//        }
+//
+//        List<String> board = new ArrayList<>();
+//        board.add("Jh");
+//        board.add("Jc");
+//        ev.setBoard(board);
+//
+//        ev.filterBoardCombos();
+//        System.out.println("-----------------------------");
+//        
+//        for (String s : combos.get("AJo")) {
+//            System.out.println(s);
+//        }
+
 //        List<String> board = new ArrayList<>();
 //        board.add("Ah");
 //        board.add("Qh");
@@ -28,9 +50,7 @@ public class Poker2 {
 //        rango.add("Q9s");
 //        rango.add("65s");
 //        rango.add("22");
-//
 //        ev.evalueAllCombos(board, rango);
 //        ev.imprimirEstadisticas();
-
     }
 }
