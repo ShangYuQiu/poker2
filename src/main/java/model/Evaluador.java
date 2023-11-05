@@ -542,7 +542,7 @@ public class Evaluador {
 
     //Devuelve el tipo de pareja que se forma si la hay
     //Devuelve el tipo de pareja que se forma si la hay
-    private String ParejaConDistincion(List<Carta> c) {
+   /* private String ParejaConDistincion(List<Carta> c) {
         String pareja = null;
         Collections.sort(c);
 
@@ -584,8 +584,54 @@ public class Evaluador {
         }
 
         return pareja;
-    }
+    }*/
 
+    private String ParejaConDistincion(List<Carta> c) {
+        String pareja = null;
+        Collections.sort(c);
+        List<Carta> tmp =new ArrayList<>(c);
+        boolean seguir = true;
+        int i = 0;
+        List<Carta> parejas1 = Pareja(tmp);
+        
+        while(parejas1 != null && seguir){
+            List<Carta> aux = new ArrayList<>(parejas1);
+
+            aux.removeAll(board);
+            if(!aux.isEmpty()){ //pareja valida -> examinar de que tipo es
+                seguir = false;
+                Carta temp = parejas1.get(0);
+                Carta tmp2 =parejas1.get(1);
+                Carta sec = getSecondLargestFromBoard();
+                if(temp.getVal() > this.board.get(0).getVal()){
+                    pareja = "overPair";
+                }
+                else if (temp.equals(this.board.get(0)) || tmp2.equals(this.board.get(0))){
+                    pareja = "topPair";
+                }
+                else if ((temp.getVal() < this.board.get(0).getVal()) && !this.board.contains(temp) && !this.board.contains(tmp2)
+                            && (temp.getVal() > this.board.get(this.board.size() - 1).getVal())){
+                    pareja = "ppBelowTopPair";
+                }
+                else if (temp.equals(sec) || tmp2.equals(sec)){
+                    pareja = "middlePair";
+                }
+                else {
+                    pareja = "weakPair";
+                }
+            }        
+            else {//eliminamos la pareja invalidas
+                tmp.remove(parejas1.get(0));
+                tmp.remove(parejas1.get(1));
+                parejas1.clear();
+                Collections.sort(tmp);
+                parejas1 = Pareja(tmp); //buscamos de nuevo si hay parejas
+            }
+            
+        }
+        
+        return pareja;
+    }
     //Comprueba si hay pareja
     private List<Carta> Pareja(List<Carta> c) {
         boolean pareja = false;
