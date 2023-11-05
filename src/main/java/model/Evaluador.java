@@ -319,7 +319,7 @@ public class Evaluador {
             }
 
             //Si la jugada llega a tener 5 cartas => Escalera 
-            if (tmp.size() >=  5) {
+            if (tmp.size() >= 5) {
                 tmp.removeAll(this.board);
                 if (!tmp.isEmpty()) {
                     escalera = true;
@@ -334,7 +334,7 @@ public class Evaluador {
 
     //Devuelve el poker si existe (Funciona)
     public boolean Poker(List<Carta> c) {
-         boolean poker = false;
+        boolean poker = false;
 
         int i = 0;
         while (i < c.size()) {
@@ -365,63 +365,47 @@ public class Evaluador {
         return poker;
     }
 
-    public boolean FullHouse(List<Carta> c) {
+    private boolean FullHouse(List<Carta> c) {
         boolean fullHouse = false;
-        List<Carta> lista = new ArrayList<>();
-        List<Carta> tmp = new ArrayList<>();
-
+        //Lista auxiliar que almacenan las cartas que forman el Full House
+        ArrayList<Carta> lista = new ArrayList<>();
+        int cont = 1;
         int i = 0;
-        while (i < c.size() - 2) {
-            Carta cur = c.get(i);
-            Carta sig = c.get(i + 1);
-            Carta sig2 = c.get(i + 2);
 
-            tmp.add(cur);
-            tmp.add(sig);
-            tmp.add(sig2);
-            lista.add(cur);
-            lista.add(sig);
-            lista.add(sig2);
+        while (i < c.size() - 1) {
+            int cur = c.get(i).getVal();
+            int sig = c.get(i + 1).getVal();
 
-            //Comprueba si forma trio
-            if (Trio(tmp)) {
-                tmp.clear();
-                int j = i + 3;
-                while (j < c.size() - 1) {
-                    Carta curj = c.get(j);
-                    Carta sigj = c.get(j + 1);
-
-                    if (curj.getVal() == sigj.getVal()) {
-                        tmp.add(curj);
-                        tmp.add(sigj);
-
-                        if (Pareja(tmp)) {
-                            lista.add(curj);
-                            lista.add(sigj);
-
-                            lista.removeAll(this.board);
-                            if (!lista.isEmpty()) {
-                                fullHouse = true;
-                                break;
-                            }
-
-                        }
-                    }
-
-                    ++j;
+            if (cur == sig) {
+                cont++;
+                if (cont == 3) {
+                    lista.add(c.get(i - 1));
+                    lista.add(c.get(i));
+                    lista.add(c.get(i + 1));
+                    cont = 1;
                 }
+            } else {//si se corta en medio                             
+                if (cont == 2) {
 
+                    lista.add(c.get(i - 1));
+                    lista.add(c.get(i));
+                }
+                cont = 1;
             }
 
-            if (fullHouse) {
-                break;
+            if (i == c.size() - 2 && cont == 2) {
+                lista.add(c.get(i - 1));
+                lista.add(c.get(i));
             }
-
-            lista.clear();
-            tmp.clear();
-            ++i;
+            i++;
         }
 
+        if (lista.size() > 4) {
+            lista.removeAll(board);
+            if (!lista.isEmpty()) {
+                fullHouse = true;
+            }
+        }
         return fullHouse;
     }
 

@@ -517,6 +517,8 @@ public class MainFrame extends JFrame {
         totalCombosLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMaximumSize(new java.awt.Dimension(1000, 575));
+        setMinimumSize(new java.awt.Dimension(1000, 575));
 
         percentageSlider.setValue(0);
         percentageSlider.addChangeListener(new javax.swing.event.ChangeListener() {
