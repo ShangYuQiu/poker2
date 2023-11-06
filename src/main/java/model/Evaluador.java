@@ -34,28 +34,6 @@ public class Evaluador {
 
     }
 
-    //Calcula el numero de combos que se ha formado con un tipo de jugada
-    public int calculateHandTotalCombos(String s) {
-        Map<String, Integer> combos = jugadas.get(s);
-        int numCombos = 0;
-        for (Integer d : combos.values()) {
-            numCombos += d;
-        }
-        return numCombos;
-    }
-
-    public void imprimirEstadisticas() {
-        for (Map.Entry<String, Map<String, Integer>> entrada : jugadas.entrySet()) {
-            String jugada = entrada.getKey();
-            Map<String, Integer> combos = entrada.getValue();
-            System.out.println(jugada);
-            for (Map.Entry<String, Integer> entrada2 : combos.entrySet()) {
-                System.out.println(String.format("%s %d", entrada2.getKey(), entrada2.getValue()));
-            }
-
-        }
-    }
-
     //Calcula todos los combos
     public void evalueAllCombos(List<String> boardCards, List<String> introducedRange) {
         //Vaciar el mapa 
@@ -93,7 +71,7 @@ public class Evaluador {
     }
 
     //Calcula el combo de una mano
-    public void evalue(String rango, List<String> mano) {
+    private void evalue(String rango, List<String> mano) {
         //Combina las cartas del board con las de la mano
         List<Carta> cartas = new SortedArrayList<>();
 
@@ -184,7 +162,7 @@ public class Evaluador {
     }
 
     //aniadir todos los combos a la map combos 
-    public void addMapCombos(List<String> introducedRange) {
+    private void addMapCombos(List<String> introducedRange) {
         String[] palo = {"h", "c", "d", "s"};
         for (String s : introducedRange) {
             if (s.contains("s")) {//para los suite
@@ -228,12 +206,12 @@ public class Evaluador {
     }
 
     //Filtra quitando aquellos combos que aparecen las cartas del board
-    public void filterBoardCombos() {
+    private void filterBoardCombos() {
         //Para cada carta del board
         for (Carta c : this.board) {
             //Comprobar en cada mano
             for (List<String> comb : combos.values()) {
-                
+
                 List<String> aux = new ArrayList<>(); //Lista auxiliar para insertar los elementos a eliminar 
                 for (String s : comb) {
                     if (s.contains(c.getSimb() + c.getPalo())) {
@@ -249,17 +227,8 @@ public class Evaluador {
         }
     }
 
-    //Convierte una lista manos en forma de Strings una lista de tipo Carta
-    public List<Carta> convertirStringsToCartas(List<String> mano) {
-        List<Carta> ret = new ArrayList<>();
-        for (String s : mano) {
-            ret.add(new Carta(Character.toString(s.charAt(0)), Character.toString(s.charAt(1))));
-        }
-        return ret;
-    }
-
     //Comprueba si hay escelera de color
-    public boolean EscaleraColor(List<Carta> c) {
+    private boolean EscaleraColor(List<Carta> c) {
         boolean escaleraColor = false;
 
         int i = 0;
@@ -293,6 +262,7 @@ public class Evaluador {
         return escaleraColor;
     }
 
+    //Comprueba si hay escalera
     public boolean Escalera(List<Carta> c) {
         boolean escalera = false;
 
@@ -324,9 +294,10 @@ public class Evaluador {
         }
 
         return escalera;
-    }  
+    }
 
-    public boolean Poker(List<Carta> c) {
+    //Comprueba si hay poker
+    private boolean Poker(List<Carta> c) {
         boolean poker = false;
 
         int i = 0;
@@ -356,56 +327,56 @@ public class Evaluador {
 
         return poker;
     }
-//Devuelve un Full House (Funciona)
+
+    //Comprueba si hay full house
     private boolean FullHouse(List<Carta> c) {
-        Collections.sort(c);
         boolean fullHouse = false;
         boolean trio = false;
-        List<Carta> tmp =new ArrayList<>(c);
+        List<Carta> tmp = new ArrayList<>(c);
         //Lista auxiliar que almacenan las cartas que forman el Full House
         ArrayList<Carta> lista = new ArrayList<>();
         int cont = 1;
         int i = 0;
-        
-        while (i < tmp.size()-1){
+
+        while (i < tmp.size() - 1) {
             int cur = tmp.get(i).getVal();
             int sig = tmp.get(i + 1).getVal();
-            
-            if(cur == sig){
-                cont ++;
-                if (cont == 3){
-                    lista.add(tmp.get(i-1));  
+
+            if (cur == sig) {
+                cont++;
+                if (cont == 3) {
+                    lista.add(tmp.get(i - 1));
                     lista.add(tmp.get(i));
-                    lista.add(tmp.get(i+1));
+                    lista.add(tmp.get(i + 1));
                     trio = true;
-                    cont=1;
+                    cont = 1;
                 }
-            }            
-            else {//si se corta en medio                             
-                if(cont == 2){                  
-                    
-                    lista.add(tmp.get(i-1));
+            } else {//si se corta en medio                             
+                if (cont == 2) {
+
+                    lista.add(tmp.get(i - 1));
                     lista.add(tmp.get(i));
-                }                                
+                }
                 cont = 1;
             }
-            
-            if (i == tmp.size() -2 &&cont == 2){
-                lista.add(tmp.get(i-1));
+
+            if (i == tmp.size() - 2 && cont == 2) {
+                lista.add(tmp.get(i - 1));
                 lista.add(tmp.get(i));
             }
-           i++;            
+            i++;
         }
-        
-        if(lista.size() > 4 && trio){
+
+        if (lista.size() > 4 && trio) {
             lista.removeAll(board);
-            if(!lista.isEmpty()){
+            if (!lista.isEmpty()) {
                 fullHouse = true;
             }
         }
         return fullHouse;
     }
-    //Comprueba si hay flush //no hace falta cambiar
+
+    //Comprueba si hay flush 
     public boolean Flush(List<Carta> c) {
         boolean flush = false;
         //Contador para cartas de cada palo
@@ -437,15 +408,14 @@ public class Evaluador {
 
         return flush;
     }
-    //Devuelve el mejor trio (Funciona)
+
     //Comprueba si hay trio
     public boolean Trio(List<Carta> c) { // return lista 
-        Collections.sort(c);
-        boolean trio = false;        
+        boolean trio = false;
         int i = 0;
         int cont = 1;   //Numero de cartas del trio actual
         List<Carta> trios = new ArrayList<>();
-        
+
         while (i < c.size() - 1) {
             int cur = c.get(i).getVal();
             int sig = c.get(i + 1).getVal();
@@ -458,15 +428,15 @@ public class Evaluador {
                 cont = 1;
             }
             //Si hay posibilidad de trio
-            if (cont == 3){               
+            if (cont == 3) {
                 //Almacenamos las cartas que forman el trio
-                trios.add(c.get(i-1));
-                trios.add(c.get(i));              
-                trios.add(c.get(i+1));
+                trios.add(c.get(i - 1));
+                trios.add(c.get(i));
+                trios.add(c.get(i + 1));
                 //quitamos de la lista de trios las cartas de board
                 trios.removeAll(board);
-                if(!trios.isEmpty()){// si no esta vacia
-                    trio = true;          
+                if (!trios.isEmpty()) {// si no esta vacia
+                    trio = true;
                     break;
                 }
             }
@@ -478,9 +448,8 @@ public class Evaluador {
     //Comprueba si hay doble pareja
     public boolean DoblePareja(List<Carta> c) {
         boolean doblePareja = false;
-        Collections.sort(c);
-        List<Carta> tmp =new ArrayList<>(c);
-        List<Carta> parejas1 =Pareja(tmp);
+        List<Carta> tmp = new ArrayList<>(c);
+        List<Carta> parejas1 = Pareja(tmp);
         //Se busca la primera pareja
         /*if (parejas1 != null) { // si hay al menos una carta no comun
             List<Carta> tmp =new ArrayList<>(c);
@@ -509,34 +478,33 @@ public class Evaluador {
             }           
             
         }*/
-        
+
         //si hay dos cartas no comun
-        
-        if (parejas1 != null) {        
+        if (parejas1 != null) {
             //Los quitamos de la lista tmp
             tmp.remove(parejas1.get(0));
             tmp.remove(parejas1.get(1));
             //miramos si la primera pareja tiene alguna carta de rango
-            List <Carta> aux = new ArrayList<>(parejas1);
+            List<Carta> aux = new ArrayList<>(parejas1);
             aux.removeAll(board);
-            if(!aux.isEmpty()){
-                Collections.sort(tmp);              
-                List<Carta> parejas2 =Pareja(tmp);
-                if(parejas2 != null){
+            if (!aux.isEmpty()) {
+                Collections.sort(tmp);
+                List<Carta> parejas2 = Pareja(tmp);
+                if (parejas2 != null) {
                     parejas2.removeAll(board);
-                    if(!parejas2.isEmpty()){
+                    if (!parejas2.isEmpty()) {
                         doblePareja = true;
                     }
                 }
             }
         }
-        
+
         return doblePareja;
     }
 
     //Devuelve el tipo de pareja que se forma si la hay
     //Devuelve el tipo de pareja que se forma si la hay
-   /* private String ParejaConDistincion(List<Carta> c) {
+    /* private String ParejaConDistincion(List<Carta> c) {
         String pareja = null;
         Collections.sort(c);
 
@@ -579,76 +547,70 @@ public class Evaluador {
 
         return pareja;
     }*/
-
+    
+    //Distingue las distintas parejas formadas
     private String ParejaConDistincion(List<Carta> c) {
         String pareja = null;
-        Collections.sort(c);
-        List<Carta> tmp =new ArrayList<>(c);
+        List<Carta> original = new ArrayList<>(c);
         boolean seguir = true;
         int i = 0;
-        List<Carta> parejas1 = Pareja(tmp);
-        
-        while(parejas1 != null && seguir){
+        List<Carta> parejas1 = Pareja(original);
+
+        while (parejas1 != null && seguir) {
             List<Carta> aux = new ArrayList<>(parejas1);
 
             aux.removeAll(board);
-            if(!aux.isEmpty()){ //pareja valida -> examinar de que tipo es
+            if (!aux.isEmpty()) { //pareja valida -> examinar de que tipo es
                 seguir = false;
-                Carta temp = parejas1.get(0);
-                Carta tmp2 =parejas1.get(1);
+                Carta tmp = parejas1.get(0);
+                Carta tmp2 = parejas1.get(1);
                 Carta sec = getSecondLargestFromBoard();
-                if(temp.getVal() > this.board.get(0).getVal()){
+                if (tmp.getVal() > this.board.get(0).getVal()) {
                     pareja = "overPair";
-                }
-                else if (temp.equals(this.board.get(0)) || tmp2.equals(this.board.get(0))){
+                } else if (tmp.equals(this.board.get(0)) || tmp2.equals(this.board.get(0))) {
                     pareja = "topPair";
-                }
-                else if ((Math.abs(temp.getVal() - this.board.get(0).getVal()) == 1) && !this.board.contains(temp) && !this.board.contains(tmp2)
-                            && (temp.getVal() > this.board.get(this.board.size() - 1).getVal())){
+                } else if ((Math.abs(tmp.getVal() - this.board.get(0).getVal()) == 1) && !this.board.contains(tmp) && !this.board.contains(tmp2)
+                        && (tmp.getVal() > this.board.get(this.board.size() - 1).getVal())) {
                     pareja = "ppBelowTopPair";
-                }
-                else if (temp.equals(sec) || tmp2.equals(sec)){
+                } else if (tmp.equals(sec) || tmp2.equals(sec)) {
                     pareja = "middlePair";
-                }
-                else {
+                } else {
                     pareja = "weakPair";
                 }
-            }        
-            else {//eliminamos la pareja invalidas
-                tmp.remove(parejas1.get(0));
-                tmp.remove(parejas1.get(1));
+            } else {//eliminamos la pareja invalidas
+                original.remove(parejas1.get(0));
+                original.remove(parejas1.get(1));
                 parejas1.clear();
-                Collections.sort(tmp);
-                parejas1 = Pareja(tmp); //buscamos de nuevo si hay parejas
+                Collections.sort(original);
+                parejas1 = Pareja(original); //buscamos de nuevo si hay parejas
             }
-            
+
         }
-        
+
         return pareja;
     }
+
     //Comprueba si hay pareja
     private List<Carta> Pareja(List<Carta> c) {
         boolean pareja = false;
-        Collections.sort(c);
-        List<Carta> tmp = c;
         List<Carta> parejas = new ArrayList<>();
-        
+
         int i = 0;
         while (i < c.size() - 1) {
-            int cur = tmp.get(i).getVal();
-            int sig = tmp.get(i + 1).getVal();
+            int cur = c.get(i).getVal();
+            int sig = c.get(i + 1).getVal();
             if (cur == sig) {
                 pareja = true;
-                parejas.add(tmp.get(i));
-                parejas.add(tmp.get(i+1));
+                parejas.add(c.get(i));
+                parejas.add(c.get(i + 1));
                 break;
             }
             i++;
         }
 
-        if(pareja){
-            return parejas;}       
-        else{
+        if (pareja) {
+            return parejas;
+        } else {
             return null;
         }
     }
@@ -668,9 +630,23 @@ public class Evaluador {
         return sec;
     }
 
-    //Devuelve los resultados una vez calculados los combos
-    public Map<String, Map<String, Integer>> getComboResults() {
-        return this.jugadas;
+    //Convierte una lista manos en forma de Strings una lista de tipo Carta
+    private List<Carta> convertirStringsToCartas(List<String> mano) {
+        List<Carta> ret = new ArrayList<>();
+        for (String s : mano) {
+            ret.add(new Carta(Character.toString(s.charAt(0)), Character.toString(s.charAt(1))));
+        }
+        return ret;
+    }
+
+    //Calcula el numero de combos que se ha formado con un tipo de jugada
+    public int calculateHandTotalCombos(String s) {
+        Map<String, Integer> combos = jugadas.get(s);
+        int numCombos = 0;
+        for (Integer d : combos.values()) {
+            numCombos += d;
+        }
+        return numCombos;
     }
 
     //Actualiza el board con nuevas cartas
@@ -682,7 +658,13 @@ public class Evaluador {
         }
     }
 
+    //Devuelve los combos calculados 
     public Map<String, List<String>> getCombos() {
         return this.combos;
+    }
+
+    //Devuelve los resultados una vez calculados los combos
+    public Map<String, Map<String, Integer>> getComboResults() {
+        return this.jugadas;
     }
 }

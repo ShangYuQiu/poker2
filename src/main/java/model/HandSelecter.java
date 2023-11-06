@@ -15,9 +15,9 @@ import java.util.TreeMap;
 public class HandSelecter {
 
     private static String simb[] = {"A", "K", "Q", "J", "T", "9", "8", "7", "6", "5", "4", "3", "2"};
-    
+
     private Map<String, Pair> allHandsMap; //Par clave valor, representa una Mano, y su poscición en la Matriz
-    private Map<Pair,String> allPosHandsMap;//Par clave valor, representa una posicion, y la mano que esta en esa posicion
+    private Map<Pair, String> allPosHandsMap;//Par clave valor, representa una posicion, y la mano que esta en esa posicion
     private Map<Float, List<Pair>> rankingMap;  //Par clave valor, representa el ranking, y su posición en la Matriz (Ordenado por clave)    
     private List<String> introducedRange; //Rango de manos introducidas por el usuario
     private List<String> range;
@@ -31,22 +31,18 @@ public class HandSelecter {
 
     public HandSelecter() {
         this.allHandsMap = new HashMap<>();
-        this.allPosHandsMap=new HashMap<>();
+        this.allPosHandsMap = new HashMap<>();
         this.rankingMap = new TreeMap<>(Collections.reverseOrder());
         this.selectedHandsPos = new ArrayList<>();
         this.introducedRange = new ArrayList<>();
         this.percentagePaintedCells = new ArrayList<>();
         this.boardCards = new ArrayList<>();
         this.numBoardCards = 0;
-        this.ev=new Evaluador();
+        this.ev = new Evaluador();
         //Carga el ranking de SKLANSKY-CHUBUKOV en rankingMap
         loadRanking();
         //Carga las manos y su posición en la matriz
         loadHands();
-    }
-
-    public void setController(Controller controller) {
-        this.controller = controller;
     }
 
     //Carga la tabla de ranking desde fichero 
@@ -88,15 +84,15 @@ public class HandSelecter {
                 //Si se encuentra por encima de la diagonal principal
                 if (j > i) {
                     allHandsMap.put(simb[i] + simb[j] + "s", new Pair(i, j));
-                    allPosHandsMap.put(new Pair(i, j),simb[i] + simb[j] + "s");
+                    allPosHandsMap.put(new Pair(i, j), simb[i] + simb[j] + "s");
                 } //Si se encuentra por debajo de la diagonal principal
                 else if (i > j) {
                     allHandsMap.put(simb[j] + simb[i] + "o", new Pair(i, j));
-                    allPosHandsMap.put(new Pair(i, j),simb[j] + simb[i] + "o");
+                    allPosHandsMap.put(new Pair(i, j), simb[j] + simb[i] + "o");
                 } //Si encuentra en la diagonal principal
                 else {
                     allHandsMap.put(simb[i] + simb[i], new Pair(i, j));
-                    allPosHandsMap.put(new Pair(i, j),simb[i] + simb[j]);
+                    allPosHandsMap.put(new Pair(i, j), simb[i] + simb[j]);
                 }
             }
         }
@@ -271,9 +267,8 @@ public class HandSelecter {
                         sol.add(a);
                     }
                 }
-            } 
-            else if ((array.get(i).getFirst() - array.get(i + 1).getFirst()) == 1){//la diferencia del primer carta es 1
-                    
+            } else if ((array.get(i).getFirst() - array.get(i + 1).getFirst()) == 1) {//la diferencia del primer carta es 1
+
                 if ((array.get(i).getSecond() - array.get(i + 1).getSecond()) == 0) {// la segunda carta es misma
                     continuo = true;
                     aux.setFirst(array.get(i + 1).getFirst());
@@ -289,8 +284,8 @@ public class HandSelecter {
 
                 } else {//la segunda carta no es la misma
                     if (aux.getFirst() != -1 && aux.getSecond() != -1 && continuo && !mas) { //(Ej K6 Q6 J6 T5 -> K6-J6
-                       String a = intToChar(ini.getFirst()) + intToChar(ini.getSecond()) + suit
-                            + "-" + intToChar(aux.getFirst()) + intToChar(aux.getSecond()) + suit;
+                        String a = intToChar(ini.getFirst()) + intToChar(ini.getSecond()) + suit
+                                + "-" + intToChar(aux.getFirst()) + intToChar(aux.getSecond()) + suit;
                         sol.add(a);
                         //reseteamos a -1
                         aux.setFirst(-1);
@@ -298,21 +293,19 @@ public class HandSelecter {
                         mas = false;
                         continuo = false;
                         init = false;
-                    }
-                    else if (aux.getFirst() == -1 && aux.getSecond() == -1 && !continuo) {// El primero es un elemento solitario Ej Q5 J4 T4                     
+                    } else if (aux.getFirst() == -1 && aux.getSecond() == -1 && !continuo) {// El primero es un elemento solitario Ej Q5 J4 T4                     
                         mas = false;
                         init = false;
                         String a = intToChar(array.get(i).getFirst()) + intToChar(array.get(i).getSecond()) + suit;
                         sol.add(a);
                     }
-                    
+
                     if (i == array.size() - 2) {
                         String a = intToChar(array.get(i + 1).getFirst()) + intToChar(array.get(i + 1).getSecond()) + suit;
                         sol.add(a);
                     }
                 }
-            }
-            else { // no empieza por la misma carta (Ej AK 98 65)
+            } else { // no empieza por la misma carta (Ej AK 98 65)
 
                 if (aux.getFirst() != -1 && aux.getSecond() != -1 && continuo && mas) { //AK AQ 98-> AQ+
                     String a = intToChar(aux.getFirst()) + intToChar(aux.getSecond()) + suit + "+";
@@ -462,8 +455,7 @@ public class HandSelecter {
         
         return combos;
     }
-    */
-    
+     */
     //Funcion para pasar valores numericos de las cartas pareja a Lista de String
     public void celltoParejaListString(List<Pair> array, List<String> sol) {
         // 3 casos: + (AA) , - y solitario
@@ -575,7 +567,7 @@ public class HandSelecter {
     public void singleRangeToCellPos(String s) {
         //Caso 1: si el rango actual contiene "+"
         if (s.contains("+")) {
-            
+
             String hand = s.replaceAll("\\+", ""); //La mano si el rango
             Pair pos = returnCellPos(hand); //Pos de la mano sobre el que está definido el rango
             int x = pos.getFirst();
@@ -606,7 +598,7 @@ public class HandSelecter {
                     x--;
                     y--;
                 }
-            }  
+            }
         } //Caso 2: si el rango actual contiene "-"
         else if (s.contains("-")) {
             String[] hand = s.split("-"); //Separamos las 2 partes del rango de mano
@@ -624,17 +616,16 @@ public class HandSelecter {
 
                 //Inserta todas las manos comprendidas en el rango definido
                 //horizontal
-                if(xMin==xMax){
+                if (xMin == xMax) {
                     while (yMin <= yMax) {
                         selectedHandsPos.add(new Pair(xMin, yMin));
                         introducedRange.add(allPosHandsMap.get(new Pair(xMin, yMin)));
                         yMin++;
                     }
-                }
-                else{//vertical
+                } else {//vertical
                     while (xMin <= xMax) {
                         selectedHandsPos.add(new Pair(xMin, yMin));
-                       introducedRange.add(allPosHandsMap.get(new Pair(xMin, yMin)));
+                        introducedRange.add(allPosHandsMap.get(new Pair(xMin, yMin)));
                         xMin++;
                     }
                 }
@@ -643,14 +634,13 @@ public class HandSelecter {
             else if (s.contains("o")) {
 
                 //Inserta todas las manos comprendidas en el rango definido
-                if(yMin==yMax){//vertical
+                if (yMin == yMax) {//vertical
                     while (xMin <= xMax) {
                         selectedHandsPos.add(new Pair(xMin, yMin));
                         introducedRange.add(allPosHandsMap.get(new Pair(xMin, yMin)));
                         xMin++;
                     }
-                }
-                else{//horizontal
+                } else {//horizontal
                     while (yMin <= yMax) {
                         selectedHandsPos.add(new Pair(xMin, yMin));
                         introducedRange.add(allPosHandsMap.get(new Pair(xMin, yMin)));
@@ -672,15 +662,14 @@ public class HandSelecter {
 
         } //Caso 3: si la mano no contiene "+" ni "-"
         else {
-            
+
             //Se inserta tal cual ya que no define ningun rango
             Pair pos = returnCellPos(s);
-            if(pos!=null){
+            if (pos != null) {
                 selectedHandsPos.add(new Pair(pos.getFirst(), pos.getSecond()));
                 introducedRange.add(allPosHandsMap.get(new Pair(pos.getFirst(), pos.getSecond())));
-            }
-            else{
-                pos = returnCellPos(s+"s");
+            } else {
+                pos = returnCellPos(s + "s");
                 selectedHandsPos.add(new Pair(pos.getFirst(), pos.getSecond()));
                 introducedRange.add(allPosHandsMap.get(new Pair(pos.getFirst(), pos.getSecond())));
                 selectedHandsPos.add(new Pair(pos.getSecond(), pos.getFirst()));
@@ -779,38 +768,42 @@ public class HandSelecter {
     public void deleteSingleSelectedHandPos(String s) {
         this.selectedHandsPos.remove(returnCellPos(s));
     }
+
     //aniadir los textos de las posiciones de las casillas seleccionado segun el valor del JSlider
-    private void addIntroducedRange(){
-        for(Pair p:percentagePaintedCells){
+    private void addIntroducedRange() {
+        for (Pair p : percentagePaintedCells) {
             introducedRange.add(allPosHandsMap.get(p));
         }
     }
-    
-    public int getNumBoardCard(){
+
+    public int getNumBoardCard() {
         return this.numBoardCards;
     }
-    
-    public void addBoardCard(String card ){
+
+    public void addBoardCard(String card) {
         this.boardCards.add(card);
         this.numBoardCards++;
     }
-    
-    public void removeBoardCard(String card){
+
+    public void removeBoardCard(String card) {
         this.boardCards.remove(card);
         this.numBoardCards--;
     }
-    
-    public void removeRangeIntroduced(String card){
+
+    public void removeRangeIntroduced(String card) {
         introducedRange.remove(card);
     }
-    public List<String> getBoardCards(){
+
+    public List<String> getBoardCards() {
         return this.boardCards;
     }
-    
-    public List<String> getIntroducedRange(){
+
+    public List<String> getIntroducedRange() {
         return this.introducedRange;
     }
-    
 
+    public void setController(Controller controller) {
+        this.controller = controller;
+    }
 
 }

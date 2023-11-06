@@ -36,7 +36,6 @@ public class MainFrame extends JFrame {
     private JLabel[][] boardLabel = new JLabel[13][4]; //JLabel de las cartas del board
     private JLabel[] selectedBoardJLabel = new JLabel[5]; //Lista de los JLabel del board seleccionados
     private Controller controller;
-    
 
     //Texto de las jugadas
     private final String straightFlushText = "straigth flush  ";
@@ -69,19 +68,20 @@ public class MainFrame extends JFrame {
     private JLabel noMadeHand = new JLabel();
 
     //Barra de los combos
-    private JProgressBar straightFlushProgressBar = new JProgressBar(0,100);
-    private JProgressBar fourOfKindProgressBar = new JProgressBar(0,100);
-    private JProgressBar fullHouseProgressBar = new JProgressBar(0,100);
-    private JProgressBar flushProgressBar = new JProgressBar(0,100);
-    private JProgressBar straightProgressBar = new JProgressBar(0,100);
-    private JProgressBar threeOfKindProgressBar = new JProgressBar(0,100);
-    private JProgressBar twoPairProgressBar = new JProgressBar(0,100);
-    private JProgressBar overPairProgressBar = new JProgressBar(0,100);
-    private JProgressBar topPairProgressBar = new JProgressBar(0,100);
-    private JProgressBar ppBelowTopPairProgressBar = new JProgressBar(0,100);
-    private JProgressBar middlePairProgressBar = new JProgressBar(0,100);
-    private JProgressBar weakPairProgressBar = new JProgressBar(0,100);
-    private JProgressBar noMadeHandProgressBar = new JProgressBar(0,100);
+    private JProgressBar straightFlushProgressBar = new JProgressBar(0, 100);
+    private JProgressBar fourOfKindProgressBar = new JProgressBar(0, 100);
+    private JProgressBar fullHouseProgressBar = new JProgressBar(0, 100);
+    private JProgressBar flushProgressBar = new JProgressBar(0, 100);
+    private JProgressBar straightProgressBar = new JProgressBar(0, 100);
+    private JProgressBar threeOfKindProgressBar = new JProgressBar(0, 100);
+    private JProgressBar twoPairProgressBar = new JProgressBar(0, 100);
+    private JProgressBar overPairProgressBar = new JProgressBar(0, 100);
+    private JProgressBar topPairProgressBar = new JProgressBar(0, 100);
+    private JProgressBar ppBelowTopPairProgressBar = new JProgressBar(0, 100);
+    private JProgressBar middlePairProgressBar = new JProgressBar(0, 100);
+    private JProgressBar weakPairProgressBar = new JProgressBar(0, 100);
+    private JProgressBar noMadeHandProgressBar = new JProgressBar(0, 100);
+
     public MainFrame() {
         initComponents(); //Inicializacion de los componentes visuales usando la utilidad de netbeans
         initMyComponents(); //Inicializacion de mis componentes
@@ -239,8 +239,8 @@ public class MainFrame extends JFrame {
             this.selectedBoardPanel.add(selectedBoardJLabel[i]);
         }
         //Inicializa el panel de combos
-        JPanel straightFlushPanel=new JPanel();
-        JLabel straightFlushTextLabel=new JLabel(straightFlushText);
+        JPanel straightFlushPanel = new JPanel();
+        JLabel straightFlushTextLabel = new JLabel(straightFlushText);
         straightFlushPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         straightFlushPanel.add(straightFlushTextLabel);
         straightFlushPanel.add(straightFlushProgressBar);
@@ -248,10 +248,10 @@ public class MainFrame extends JFrame {
         straightFlushProgressBar.setForeground(Color.BLUE);
         straightFlushProgressBar.setStringPainted(true);
         comboPanel.add(straightFlushPanel);
-        
-//        comboPanel.add(fourOfKind);
-        JPanel fourOfKindPanel=new JPanel();
-        JLabel fourOfKindTextLabel=new JLabel(fourOfKindText);
+
+        //comboPanel.add(fourOfKind);
+        JPanel fourOfKindPanel = new JPanel();
+        JLabel fourOfKindTextLabel = new JLabel(fourOfKindText);
         fourOfKindPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         fourOfKindPanel.add(fourOfKindTextLabel);
         fourOfKindPanel.add(fourOfKindProgressBar);
@@ -259,10 +259,10 @@ public class MainFrame extends JFrame {
         fourOfKindProgressBar.setForeground(Color.BLUE);
         fourOfKindProgressBar.setStringPainted(true);
         comboPanel.add(fourOfKindPanel);
-        
-//        comboPanel.add(fullHouse);
-        JPanel fullHousePanel=new JPanel();
-        JLabel fullHouseTextLabel=new JLabel(fullHouseText);
+
+        //comboPanel.add(fullHouse);
+        JPanel fullHousePanel = new JPanel();
+        JLabel fullHouseTextLabel = new JLabel(fullHouseText);
         fullHousePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         fullHousePanel.add(fullHouseTextLabel);
         fullHousePanel.add(fullHouseProgressBar);
@@ -270,10 +270,10 @@ public class MainFrame extends JFrame {
         fullHouseProgressBar.setForeground(Color.BLUE);
         fullHouseProgressBar.setStringPainted(true);
         comboPanel.add(fullHousePanel);
-        
+
         //comboPanel.add(flush);
-        JPanel flushPanel=new JPanel();
-        JLabel flushTextLabel=new JLabel(flushText);
+        JPanel flushPanel = new JPanel();
+        JLabel flushTextLabel = new JLabel(flushText);
         flushPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         flushPanel.add(flushTextLabel);
         flushPanel.add(flushProgressBar);
@@ -281,10 +281,10 @@ public class MainFrame extends JFrame {
         flushProgressBar.setForeground(Color.BLUE);
         flushProgressBar.setStringPainted(true);
         comboPanel.add(flushPanel);
-        
+
         //comboPanel.add(straight);
-        JPanel straightPanel=new JPanel();
-        JLabel straightTextLabel=new JLabel(straightText);
+        JPanel straightPanel = new JPanel();
+        JLabel straightTextLabel = new JLabel(straightText);
         straightPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         straightPanel.add(straightTextLabel);
         straightPanel.add(straightProgressBar);
@@ -292,10 +292,10 @@ public class MainFrame extends JFrame {
         straightProgressBar.setForeground(Color.BLUE);
         straightProgressBar.setStringPainted(true);
         comboPanel.add(straightPanel);
-        
+
         //comboPanel.add(threeOfKind);
-        JPanel threeOfKindPanel=new JPanel();
-        JLabel threeOfKindTextLabel=new JLabel(threeOfKindText);
+        JPanel threeOfKindPanel = new JPanel();
+        JLabel threeOfKindTextLabel = new JLabel(threeOfKindText);
         threeOfKindPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         threeOfKindPanel.add(threeOfKindTextLabel);
         threeOfKindPanel.add(threeOfKindProgressBar);
@@ -303,54 +303,54 @@ public class MainFrame extends JFrame {
         threeOfKindProgressBar.setForeground(Color.BLUE);
         threeOfKindProgressBar.setStringPainted(true);
         comboPanel.add(threeOfKindPanel);
-        
+
         //comboPanel.add(twoPair);
-        JPanel twoPairPanel=new JPanel();
+        JPanel twoPairPanel = new JPanel();
         twoPairPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        JLabel twoPairTextLabel=new JLabel(twoPairText);
+        JLabel twoPairTextLabel = new JLabel(twoPairText);
         twoPairPanel.add(twoPairTextLabel);
         twoPairPanel.add(twoPairProgressBar);
         twoPairPanel.add(twoPair);
         twoPairProgressBar.setForeground(Color.BLUE);
         twoPairProgressBar.setStringPainted(true);
         comboPanel.add(twoPairPanel);
-        
+
         //comboPanel.add(overPair);
-        JPanel overPairPanel=new JPanel();
+        JPanel overPairPanel = new JPanel();
         overPairPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        JLabel overPairTextLabel=new JLabel(overPairText);
+        JLabel overPairTextLabel = new JLabel(overPairText);
         overPairPanel.add(overPairTextLabel);
         overPairPanel.add(overPairProgressBar);
         overPairPanel.add(overPair);
         overPairProgressBar.setForeground(Color.BLUE);
         overPairProgressBar.setStringPainted(true);
         comboPanel.add(overPairPanel);
-        
+
         //comboPanel.add(topPair);
-        JPanel topPairPanel=new JPanel();
+        JPanel topPairPanel = new JPanel();
         topPairPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        JLabel topPairTextLabel=new JLabel(topPairText);
+        JLabel topPairTextLabel = new JLabel(topPairText);
         topPairPanel.add(topPairTextLabel);
         topPairPanel.add(topPairProgressBar);
         topPairPanel.add(topPair);
         topPairProgressBar.setForeground(Color.BLUE);
         topPairProgressBar.setStringPainted(true);
         comboPanel.add(topPairPanel);
-        
+
         //comboPanel.add(ppBelowTopPair);
-        JPanel ppBelowTopPairPanel=new JPanel();
+        JPanel ppBelowTopPairPanel = new JPanel();
         ppBelowTopPairPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        JLabel ppBelowTopPairTextLabel=new JLabel(ppBelowTopPairText);
+        JLabel ppBelowTopPairTextLabel = new JLabel(ppBelowTopPairText);
         ppBelowTopPairPanel.add(ppBelowTopPairTextLabel);
         ppBelowTopPairPanel.add(ppBelowTopPairProgressBar);
         ppBelowTopPairPanel.add(ppBelowTopPair);
         ppBelowTopPairProgressBar.setForeground(Color.BLUE);
         ppBelowTopPairProgressBar.setStringPainted(true);
         comboPanel.add(ppBelowTopPairPanel);
-        
+
         //comboPanel.add(middlePair);
-        JPanel middlePairPanel=new JPanel();
-        JLabel middlePairTextLabel=new JLabel(middlePairText);
+        JPanel middlePairPanel = new JPanel();
+        JLabel middlePairTextLabel = new JLabel(middlePairText);
         middlePairPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         middlePairPanel.add(middlePairTextLabel);
         middlePairPanel.add(middlePairProgressBar);
@@ -358,10 +358,10 @@ public class MainFrame extends JFrame {
         middlePairProgressBar.setForeground(Color.BLUE);
         middlePairProgressBar.setStringPainted(true);
         comboPanel.add(middlePairPanel);
-        
+
         //comboPanel.add(weakPair);
-        JPanel weakPairPanel=new JPanel();
-        JLabel weakPairTextLabel=new JLabel(weakPairText);
+        JPanel weakPairPanel = new JPanel();
+        JLabel weakPairTextLabel = new JLabel(weakPairText);
         weakPairPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         weakPairPanel.add(weakPairTextLabel);
         weakPairPanel.add(weakPairProgressBar);
@@ -369,10 +369,10 @@ public class MainFrame extends JFrame {
         weakPairProgressBar.setForeground(Color.BLUE);
         weakPairProgressBar.setStringPainted(true);
         comboPanel.add(weakPairPanel);
-        
+
         //comboPanel.add(noMadeHand);
-        JPanel noMadeHandPanel=new JPanel();
-        JLabel noMadeHandTextLabel=new JLabel(noMadeHandText);
+        JPanel noMadeHandPanel = new JPanel();
+        JLabel noMadeHandTextLabel = new JLabel(noMadeHandText);
         noMadeHandPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         noMadeHandPanel.add(noMadeHandTextLabel);
         noMadeHandPanel.add(noMadeHandProgressBar);
@@ -404,7 +404,7 @@ public class MainFrame extends JFrame {
         }
     }
 
-    //Pinta las casillas de morado segun el JSlider
+    //Pinta las celdas de morado segun el JSlider
     private void colorCellsPurple(Float percentage) {
         for (Pair p : controller.getPercentagePaintedCells(percentage)) {
             handsLabel[p.getFirst()][p.getSecond()].setBackground(MORADO);
@@ -453,7 +453,7 @@ public class MainFrame extends JFrame {
         this.controller = controller;
     }
 
-    //Devuelve las celdas a colorear
+    //Devuelve las celdas a colorear de amarillo
     public List<Pair> getCellsToColor() {
         return this.controller.getCellsToColor();
     }
@@ -468,6 +468,7 @@ public class MainFrame extends JFrame {
         this.controller.clearRangePercentage();
     }
 
+    //Borra todos los rangos introducidos
     public void clearIntroducedRange() {
         this.controller.clearIntroducedRange();
     }
@@ -492,6 +493,7 @@ public class MainFrame extends JFrame {
         this.controller.calculateRangePercentage();
     }
 
+    //Calcula todos los combos según el tipo de jugada en el parámetro String
     public int getHandTotalCombos(String s) {
         return controller.getHandTotalCombos(s);
     }
@@ -656,7 +658,7 @@ public class MainFrame extends JFrame {
         clearSelectedHands();   //Borra los elementos de la lista de manos dentro del rango
         clearIntroducedRange(); //Borra los elementos de la lista de introducedRange
         inputRangeTextField.setEnabled(true);
-        
+
         //resetear el panel combo
         straightFlush.setText("");
         fourOfKind.setText("");
@@ -671,7 +673,7 @@ public class MainFrame extends JFrame {
         middlePair.setText("");
         weakPair.setText("");
         noMadeHand.setText("");
-        
+
         straightFlushProgressBar.setValue(0);
         fourOfKindProgressBar.setValue(0);
         fullHouseProgressBar.setValue(0);
@@ -685,7 +687,7 @@ public class MainFrame extends JFrame {
         middlePairProgressBar.setValue(0);
         weakPairProgressBar.setValue(0);
         noMadeHandProgressBar.setValue(0);
-        
+
         totalCombosLabel.setText("");
 
     }//GEN-LAST:event_clearButtonActionPerformed
@@ -735,7 +737,7 @@ public class MainFrame extends JFrame {
     //Listener del boton para calcular combos
     private void calculateComboButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_calculateComboButtonActionPerformed
         controller.evalueAllCombos();
-        
+
         Map<String, Map<String, Integer>> results = controller.getComboResults(); //Resultado de calcular los combos
 
         int totalCombos = 0;
@@ -769,12 +771,12 @@ public class MainFrame extends JFrame {
                 handCombos = getHandTotalCombos("straightFlush");
                 straightFlush.setText(handCombos + " " + cadena);
                 totalCombos += handCombos;
-                
+
             } else if (jugadaActual.equals("fourOfKind")) {
                 handCombos = getHandTotalCombos("fourOfKind");
                 fourOfKind.setText(handCombos + " " + cadena);
                 totalCombos += handCombos;
-                
+
             } else if (jugadaActual.equals("fullHouse")) {
                 handCombos = getHandTotalCombos("fullHouse");
                 fullHouse.setText(handCombos + " " + cadena);
@@ -805,22 +807,22 @@ public class MainFrame extends JFrame {
                 overPair.setText(handCombos + " " + cadena);
                 totalCombos += handCombos;
 
-            }else if (jugadaActual.equals("topPair")) {
+            } else if (jugadaActual.equals("topPair")) {
                 handCombos = getHandTotalCombos("topPair");
                 topPair.setText(handCombos + " " + cadena);
                 totalCombos += handCombos;
 
-            }else if (jugadaActual.equals("ppBelowTopPair")) {
+            } else if (jugadaActual.equals("ppBelowTopPair")) {
                 handCombos = getHandTotalCombos("ppBelowTopPair");
                 ppBelowTopPair.setText(handCombos + " " + cadena);
                 totalCombos += handCombos;
 
-            }else if (jugadaActual.equals("middlePair")) {
+            } else if (jugadaActual.equals("middlePair")) {
                 handCombos = getHandTotalCombos("middlePair");
                 middlePair.setText(handCombos + " " + cadena);
                 totalCombos += handCombos;
 
-            }else if (jugadaActual.equals("weakPair")) {
+            } else if (jugadaActual.equals("weakPair")) {
                 handCombos = getHandTotalCombos("weakPair");
                 weakPair.setText(handCombos + " " + cadena);
                 totalCombos += handCombos;
@@ -831,22 +833,22 @@ public class MainFrame extends JFrame {
                 totalCombos += handCombos;
             }
         }
-        percentageTextField.setText(String.valueOf((int) Math.round((double)totalCombos/ 1326*100 * 10) / 10.00) + "%");
+        percentageTextField.setText(String.valueOf((int) Math.round((double) totalCombos / 1326 * 100 * 10) / 10.00) + "%");
         totalCombosLabel.setText("Total number of combos: " + totalCombos);
         //modificar los porcentajes de las barras
-        straightFlushProgressBar.setValue(((int) Math.round((double)getHandTotalCombos("straightFlush")/totalCombos*100)));
-        fourOfKindProgressBar.setValue(((int) Math.round((double)getHandTotalCombos("fourOfKind")/totalCombos*100)));
-        fullHouseProgressBar.setValue(((int) Math.round((double)getHandTotalCombos("fullHouse")/totalCombos*100)));
-        flushProgressBar.setValue(((int) Math.round((double)getHandTotalCombos("flush")/totalCombos*100)));
-        straightProgressBar.setValue(((int) Math.round((double)getHandTotalCombos("straight")/totalCombos*100)));
-        threeOfKindProgressBar.setValue(((int) Math.round((double)getHandTotalCombos("threeOfKind")/totalCombos*100)));
-        twoPairProgressBar.setValue(((int) Math.round((double)getHandTotalCombos("twoPair")/totalCombos*100)));
-        overPairProgressBar.setValue(((int) Math.round((double)getHandTotalCombos("overPair")/totalCombos*100)));
-        topPairProgressBar.setValue(((int) Math.round((double)getHandTotalCombos("topPair")/totalCombos*100)));
-        ppBelowTopPairProgressBar.setValue(((int) Math.round((double)getHandTotalCombos("ppBelowTopPair")/totalCombos*100)));
-        middlePairProgressBar.setValue(((int) Math.round((double)getHandTotalCombos("middlePair")/totalCombos*100)));
-        weakPairProgressBar.setValue(((int) Math.round((double)getHandTotalCombos("weakPair")/totalCombos*100)));
-        noMadeHandProgressBar.setValue(((int) Math.round((double)getHandTotalCombos("noMadeHand")/totalCombos*100)));
+        straightFlushProgressBar.setValue(((int) Math.round((double) getHandTotalCombos("straightFlush") / totalCombos * 100)));
+        fourOfKindProgressBar.setValue(((int) Math.round((double) getHandTotalCombos("fourOfKind") / totalCombos * 100)));
+        fullHouseProgressBar.setValue(((int) Math.round((double) getHandTotalCombos("fullHouse") / totalCombos * 100)));
+        flushProgressBar.setValue(((int) Math.round((double) getHandTotalCombos("flush") / totalCombos * 100)));
+        straightProgressBar.setValue(((int) Math.round((double) getHandTotalCombos("straight") / totalCombos * 100)));
+        threeOfKindProgressBar.setValue(((int) Math.round((double) getHandTotalCombos("threeOfKind") / totalCombos * 100)));
+        twoPairProgressBar.setValue(((int) Math.round((double) getHandTotalCombos("twoPair") / totalCombos * 100)));
+        overPairProgressBar.setValue(((int) Math.round((double) getHandTotalCombos("overPair") / totalCombos * 100)));
+        topPairProgressBar.setValue(((int) Math.round((double) getHandTotalCombos("topPair") / totalCombos * 100)));
+        ppBelowTopPairProgressBar.setValue(((int) Math.round((double) getHandTotalCombos("ppBelowTopPair") / totalCombos * 100)));
+        middlePairProgressBar.setValue(((int) Math.round((double) getHandTotalCombos("middlePair") / totalCombos * 100)));
+        weakPairProgressBar.setValue(((int) Math.round((double) getHandTotalCombos("weakPair") / totalCombos * 100)));
+        noMadeHandProgressBar.setValue(((int) Math.round((double) getHandTotalCombos("noMadeHand") / totalCombos * 100)));
     }//GEN-LAST:event_calculateComboButtonActionPerformed
 
 
