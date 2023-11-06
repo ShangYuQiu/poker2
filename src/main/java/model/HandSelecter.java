@@ -20,6 +20,7 @@ public class HandSelecter {
     private Map<Pair,String> allPosHandsMap;//Par clave valor, representa una posicion, y la mano que esta en esa posicion
     private Map<Float, List<Pair>> rankingMap;  //Par clave valor, representa el ranking, y su posición en la Matriz (Ordenado por clave)    
     private List<String> introducedRange; //Rango de manos introducidas por el usuario
+    private List<String> range;
     private List<Pair> selectedHandsPos; //Posición en matriz de las manos seleccionadas 
     private List<Pair> percentagePaintedCells; //Posición de las celdas pintadas según porcentaje (Apartado 2)
     private float rangePercentage; //Porcentaje de rango que pertenece el rango actual (introducedRange)
@@ -580,7 +581,7 @@ public class HandSelecter {
 
     //Guarda el rango de cartas introducido por el usuario
     public void setHandsRange(List<String> range) {
-        this.introducedRange = range;
+        this.range = range;
     }
 
     //Desglosa un unico rango en posiciones de celdas seleccionadas
@@ -598,6 +599,7 @@ public class HandSelecter {
                 //Inserta todas las manos de la fila mejores que "hand" sin formar pareja
                 while (y >= 0 && x != y) {
                     selectedHandsPos.add(new Pair(x, y));
+                    introducedRange.add(allPosHandsMap.get(new Pair(x, y)));
                     y--;
                 }
             } //Caso 1.2: si la mano es "Offsuited"
@@ -605,6 +607,7 @@ public class HandSelecter {
                 //Inserta todas las manos de la columna mejores que "hand" sin formar pareja
                 while (x >= 0 && x != y) {
                     selectedHandsPos.add(new Pair(x, y));
+                    introducedRange.add(allPosHandsMap.get(new Pair(x, y)));
                     x--;
                 }
             } //Caso 1.3: si la mano no es "Suited" ni "Offsuited" 
@@ -612,6 +615,7 @@ public class HandSelecter {
                 //Inserta todas las manos en la diagonal mejores que "hand" formando pareja
                 while (x >= 0 && y >= 0) {
                     selectedHandsPos.add(new Pair(x, y));
+                    introducedRange.add(allPosHandsMap.get(new Pair(x, y)));
                     x--;
                     y--;
                 }
@@ -636,12 +640,14 @@ public class HandSelecter {
                 if(xMin==xMax){
                     while (yMin <= yMax) {
                         selectedHandsPos.add(new Pair(xMin, yMin));
+                        introducedRange.add(allPosHandsMap.get(new Pair(xMin, yMin)));
                         yMin++;
                     }
                 }
                 else{//vertical
                     while (xMin <= xMax) {
                         selectedHandsPos.add(new Pair(xMin, yMin));
+                       introducedRange.add(allPosHandsMap.get(new Pair(xMin, yMin)));
                         xMin++;
                     }
                 }
@@ -653,12 +659,14 @@ public class HandSelecter {
                 if(yMin==yMax){//vertical
                     while (xMin <= xMax) {
                         selectedHandsPos.add(new Pair(xMin, yMin));
+                        introducedRange.add(allPosHandsMap.get(new Pair(xMin, yMin)));
                         xMin++;
                     }
                 }
                 else{//horizontal
                     while (yMin <= yMax) {
                         selectedHandsPos.add(new Pair(xMin, yMin));
+                        introducedRange.add(allPosHandsMap.get(new Pair(xMin, yMin)));
                         yMin++;
                     }
                 }
@@ -669,6 +677,7 @@ public class HandSelecter {
                 //Inserta todas las manos compredidas en el rango definido
                 while (xMin <= xMax && yMin <= yMax) {
                     selectedHandsPos.add(new Pair(xMax, yMax));
+                    introducedRange.add(allPosHandsMap.get(new Pair(xMax, yMax)));
                     xMax--;
                     yMax--;
                 }
@@ -676,16 +685,28 @@ public class HandSelecter {
 
         } //Caso 3: si la mano no contiene "+" ni "-"
         else {
+            
             //Se inserta tal cual ya que no define ningun rango
             Pair pos = returnCellPos(s);
-            selectedHandsPos.add(new Pair(pos.getFirst(), pos.getSecond()));
+            if(pos!=null){
+                selectedHandsPos.add(new Pair(pos.getFirst(), pos.getSecond()));
+                introducedRange.add(allPosHandsMap.get(new Pair(pos.getFirst(), pos.getSecond())));
+            }
+            else{
+                pos = returnCellPos(s+"s");
+                selectedHandsPos.add(new Pair(pos.getFirst(), pos.getSecond()));
+                introducedRange.add(allPosHandsMap.get(new Pair(pos.getFirst(), pos.getSecond())));
+                selectedHandsPos.add(new Pair(pos.getSecond(), pos.getFirst()));
+                introducedRange.add(allPosHandsMap.get(new Pair(pos.getSecond(), pos.getFirst())));
+            }
         }
     }
 
     //Desglosa todos los rangos de manos en posiciones de casillas que hay que pintar y los introduce en una lista
     public void rangeToCellsPos() {
-        for (int i = 0; i < introducedRange.size(); i++) {
-            singleRangeToCellPos(introducedRange.get(i));
+        introducedRange.clear();
+        for (int i = 0; i < range.size(); i++) {
+            singleRangeToCellPos(range.get(i));
         }
     }
 

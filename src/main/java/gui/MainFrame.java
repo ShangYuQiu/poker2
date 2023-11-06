@@ -115,7 +115,7 @@ public class MainFrame extends JFrame {
                         if (jl.getBackground().equals(Color.YELLOW)) {
                             resetCellColor(jl.getText()); //Devuelve la celda seleccionada a su color original
                             //Actualiza en las listas de rangos introducidos 
-                            controller.deleteSingleIntroducedRange(jl.getText());
+                            //controller.deleteSingleIntroducedRange(jl.getText());
                             controller.deleteSingleSelectedHandPos(jl.getText());
                             inputRangeTextField.setText(controller.getRangeSelect()); //Vuelve a actualizar los rangos mostrados
                             calculateRangePercentage(); //Calcula el porcentaje de rango
@@ -125,7 +125,7 @@ public class MainFrame extends JFrame {
                         else {
                             jl.setBackground(Color.YELLOW);
                             //texto de los rangos seleccionado
-                            controller.addRangeSelect(jl.getText());
+                            //controller.addRangeSelect(jl.getText());
                             controller.singleRangeToCellPos(jl.getText()); //Necesario para poder borrar el color amarillo con boton "clear"
                             inputRangeTextField.setText(controller.getRangeSelect()); //Actualiza el texto de rango 
                             calculateRangePercentage(); //Calcula el porcentaje de rango
@@ -684,6 +684,8 @@ public class MainFrame extends JFrame {
         middlePairProgressBar.setValue(0);
         weakPairProgressBar.setValue(0);
         noMadeHandProgressBar.setValue(0);
+        
+        totalCombosLabel.setText("");
 
     }//GEN-LAST:event_clearButtonActionPerformed
 
