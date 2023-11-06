@@ -106,9 +106,9 @@ public class HandSelecter {
     public String getSelectedCellText() {
         String s = "";
 
-        List<Pair> suited = new ArrayList<>(); // lista del valor numero de las dos cartas suited
-        List<Pair> offsuited = new ArrayList<>(); // lista del valor numero de las dos cartas offsuited
-        List<Pair> par = new ArrayList<>(); // lista del valor numero de las dos cartas pareja
+        List<Pair> suited = new SortedArrayList<>(); // lista del valor numero de las dos cartas suited
+        List<Pair> offsuited = new SortedArrayList<>(); // lista del valor numero de las dos cartas offsuited
+        List<Pair> par = new SortedArrayList<>(); // lista del valor numero de las dos cartas pareja
         List<String> sol = new ArrayList<>();
         //separarl las cartas suited y offsuited
         for (String c : introducedRange) {
@@ -133,20 +133,6 @@ public class HandSelecter {
         celltoSOffsuitedListString(offsuited, sol, false);
         Collections.sort(par);
         celltoParejaListString(par, sol);
-
-        //ordenamos la lista de sol
-        sol.sort(new Comparator() {
-            @Override
-            public int compare(Object o1, Object o2) {
-                if (o2.toString().compareTo(o1.toString()) > 0) {
-                    return 1;
-                } else if (o1.toString().equals(o2.toString())) {
-                    return 0;
-                } else {
-                    return -1;
-                }
-            }
-        });
 
         //juntamos las soluciones
         for (int i = 0; i < sol.size(); i++) {
@@ -303,7 +289,8 @@ public class HandSelecter {
 
                 } else {//la segunda carta no es la misma
                     if (aux.getFirst() != -1 && aux.getSecond() != -1 && continuo && !mas) { //(Ej K6 Q6 J6 T5 -> K6-J6
-                        String a = intToChar(aux.getFirst()) + intToChar(aux.getSecond()) + suit + "-";
+                       String a = intToChar(ini.getFirst()) + intToChar(ini.getSecond()) + suit
+                            + "-" + intToChar(aux.getFirst()) + intToChar(aux.getSecond()) + suit;
                         sol.add(a);
                         //reseteamos a -1
                         aux.setFirst(-1);
