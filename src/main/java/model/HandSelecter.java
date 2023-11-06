@@ -767,6 +767,7 @@ public class HandSelecter {
 
     public void clearIntroducedRange() {
         this.introducedRange.clear();
+        this.range.clear();
     }
 
     //Borra una entrada en la lista de rangos de manos
