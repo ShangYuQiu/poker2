@@ -543,8 +543,8 @@ public class HandSelecter {
                     continuo = false;
                     init = false;
                 } else if (aux.getFirst() != -1 && aux.getSecond() != -1 && continuo && !mas) { //caso -
-                    String a = intToChar(ini.getFirst()) + intToChar(ini.getSecond()) + "s"
-                            + "-" + intToChar(aux.getFirst()) + intToChar(aux.getSecond()) + "s";
+                    String a = intToChar(ini.getFirst()) + intToChar(ini.getSecond())
+                            + "-" + intToChar(aux.getFirst()) + intToChar(aux.getSecond());
                     sol.add(a);
                     //reseteamos aux a -1
                     aux.setFirst(-1);
@@ -554,12 +554,12 @@ public class HandSelecter {
                 } else if (aux.getFirst() == -1 && aux.getSecond() == -1 && !continuo) { //caso AK 98 -> AK // primer elemento solitario
                     init = false;
                     mas = false;
-                    String a = intToChar(array.get(i).getFirst()) + intToChar(array.get(i).getSecond()) + "s";
+                    String a = intToChar(array.get(i).getFirst()) + intToChar(array.get(i).getSecond());
                     sol.add(a);
                 }
                 //para añadir el ultimo elemento que es solitario y no comienza por la misma carta, ej: 98, AK AQ 98-> [AQ+ ,98] , i solo llega hasta AQ
                 if (i == array.size() - 2) {
-                    String a = intToChar(array.get(i + 1).getFirst()) + intToChar(array.get(i + 1).getSecond()) + "s";
+                    String a = intToChar(array.get(i + 1).getFirst()) + intToChar(array.get(i + 1).getSecond());
                     sol.add(a);
                     mas = false;
                     continuo = false;
