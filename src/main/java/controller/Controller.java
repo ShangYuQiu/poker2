@@ -89,6 +89,9 @@ public class Controller {
         hs.addRangeSelect(s);
     }
 
+    public void removeRangeSelect(String s){
+        hs.removeRangeIntroduced(s);
+    }
     public String getRangeSelect() {
         return hs.getSelectedCellText();
     }

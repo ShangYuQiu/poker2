@@ -117,6 +117,7 @@ public class MainFrame extends JFrame {
                             //Actualiza en las listas de rangos introducidos 
                             //controller.deleteSingleIntroducedRange(jl.getText());
                             controller.deleteSingleSelectedHandPos(jl.getText());
+                            controller.removeRangeSelect(jl.getText());
                             inputRangeTextField.setText(controller.getRangeSelect()); //Vuelve a actualizar los rangos mostrados
                             calculateRangePercentage(); //Calcula el porcentaje de rango
                             percentageTextField.setText(String.valueOf((int) Math.round(getRangePercentage() * 10) / 10.0) + "%");

@@ -799,6 +799,9 @@ public class HandSelecter {
         this.numBoardCards--;
     }
     
+    public void removeRangeIntroduced(String card){
+        introducedRange.remove(card);
+    }
     public List<String> getBoardCards(){
         return this.boardCards;
     }
