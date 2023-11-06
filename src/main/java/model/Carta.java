@@ -73,15 +73,15 @@ public class Carta implements Comparable<Carta> {
     public int compareTo(Carta o) {
 
         //Orden descendente
-        /*if (this.valor < o.getVal()) {
+        if (this.valor < o.getVal()) {
             return 1;
         } else if (this.valor == o.getVal()) {
             return 0;
         } else {
             return -1;
-        }*/
+        }
 
-        return o.getVal() - this.valor;
+        //return o.getVal() - this.valor;
     }
 
 }
